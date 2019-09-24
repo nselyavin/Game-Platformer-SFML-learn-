@@ -1,22 +1,45 @@
-#include <SFML/Graphics.hpp>
+#include "IMainMenu.h"
+
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
 
-	while (window.isOpen())
+	//TODO Реализовать чтение настроек из файла////////
+	sf::Uint32 ScrWidth, ScrHeight;
+	sf::Uint32 FrameRate;
+	ScrWidth = 800;
+	ScrHeight = 600;
+	FrameRate = 30;
+
+	// Иницализации игрового пространства (окна, в котором происходит игра)
+	// Установка соотношения сторон и частоты кадров
+	sf::RenderWindow window(sf::VideoMode(ScrWidth, ScrHeight), "SFML works!");
+	window.setFramerateLimit(FrameRate);
+
+	// Инициализация класса меню.
+	IMainMenu MainMenu(ScrWidth, ScrHeight, FrameRate);
+
+	bool bGameEnd = false;
+	int res = 0;
+	// Родительский цикл игры, в нем происходит вызов основных этапов игры: меню, уровень и тд. — пока игра не закочнена
+	while (!bGameEnd)
 	{
+		if (res != 0) {
+			window.close();
+			bGameEnd = true;
+		}
+
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed) {
 				window.close();
+				bGameEnd = true;
+			}
 		}
 
-		window.clear();
-		window.draw(shape);
+		window.clear(); // ToDo на всякий случай потом убрать 
+		res = MainMenu.DrawCicle(window);
 		window.display();
 	}
 
