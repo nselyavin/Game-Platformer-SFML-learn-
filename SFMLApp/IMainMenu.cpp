@@ -7,32 +7,61 @@ IMainMenu::IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 Frame
 	this->ScrHeight = ScrHeight;
 	this->FrameRate = FrameRate;
 	isMenuClosed = false;
-	Font.loadFromFile("..\\Resourse\\MenuFont.ttf");
 
-	Button.setString("");
-	Button.setFont(Font);
-	Button.setCharacterSize(70);
+	// Задаем тексутры, рект и позицию для логотипа
+	LogoTexture.loadFromFile("..\\Resource\\Logo.png");
+
+	Logo.setTexture(LogoTexture);
+	sf::FloatRect LogoRect = Logo.getLocalBounds();
+	Logo.setOrigin(LogoRect.left + LogoRect.width / 2,
+						LogoRect.top + LogoRect.height / 2);
+	Logo.setPosition(ScrWidth / 2, 130);
+
+	// ToDo реализовать ошибку при не подключении шрифта
+	Font.loadFromFile("..\\Resource\\MenuFont.ttf");
+
+	StartBtn.setString("Start Game");
+	StartBtn.setFont(Font);
+	StartBtn.setCharacterSize(45);
+
+	SettingBtn.setString("Setting");
+	SettingBtn.setFont(Font);
+	SettingBtn.setCharacterSize(45);
+
+	EndBtn.setString("End Game");
+	EndBtn.setFont(Font);
+	EndBtn.setCharacterSize(45);
 }
 
-void IMainMenu::DrawText(sf::RenderWindow& window, const FString OutText, int height)
+void IMainMenu::Center(FText &ObjText)
 {
-	sf::FloatRect ButtonRect = Button.getLocalBounds();
-	Button.setOrigin(ButtonRect.left + ButtonRect.width / 2,
-					ButtonRect.top + ButtonRect.height / 2);
+	sf::FloatRect TextRect = ObjText.getLocalBounds();
+	ObjText.setOrigin(TextRect.left + TextRect.width / 2,
+						TextRect.top + TextRect.height / 2);
 
+	ObjText.setPosition(ScrWidth / 2, ScrHeight / 2);
 
-	// ToDo додвигать текста в центр, или поменять их на спрайты
-	Button.setString(OutText);
-	Button.setPosition(ScrWidth / 2, height);
-	window.draw(Button);
 }
 
 int IMainMenu::DrawCicle(sf::RenderWindow& window)
 {
-	FFont Font;
-	Font.loadFromFile("..\\Resourse\\MenuFont.ttf");
 
+	sf::FloatRect StartBtnRect = StartBtn.getLocalBounds();
+	sf::FloatRect SettingBtnRect= SettingBtn.getLocalBounds();
+	sf::FloatRect EndBtnRect = EndBtn.getLocalBounds();
 
+	Center(StartBtn);
+	StartBtn.setPosition(ScrWidth / 2, 260);
+	Center(SettingBtn);
+	SettingBtn.setPosition(ScrWidth / 2, 340);
+	Center(EndBtn);
+	EndBtn.setPosition(ScrWidth / 2, 420);
+
+	std::cout << EndBtn.getGlobalBounds().left << " " << EndBtn.getGlobalBounds().top << std::endl;
+	std::cout << EndBtn.getGlobalBounds().width << " " << EndBtn.getGlobalBounds().height << std::endl;
+
+	// toDo Нужно реализовать enum ошибок.
+	// Здесь можно ретюрнить все ошибки через код, следовательно делать проверки.  
 	while (!isMenuClosed) {
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -41,13 +70,33 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 				isMenuClosed = true;
 				return 1;
 			}
+			
+			if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::Escape) {
+					isMenuClosed = true;
+					return 1;
+				}
+			}
+
+			if (event.type == sf::Event::MouseButtonPressed){
+				if (event.mouseButton.button == sf::Mouse::Left) {
+					std::cout << "Left Mouse coord: " << event.mouseButton.x << " " << event.mouseButton.y << std::endl;
+					if (event.mouseButton.x > EndBtn.getGlobalBounds().left &&	event.mouseButton.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
+						if (event.mouseButton.y > EndBtn.getGlobalBounds().top && event.mouseButton.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
+							isMenuClosed = true;
+							return 1;
+						}
+					}
+				}
+			}
 		}
 
 		window.clear(Gray);
-		
-		DrawText(window, StartStr, 150);
-		DrawText(window, SettingStr, 250);
-		DrawText(window, EndStr, 350);
+
+		window.draw(Logo);
+		window.draw(StartBtn);
+		window.draw(SettingBtn);
+		window.draw(EndBtn);
 		
 		window.display();
 	}

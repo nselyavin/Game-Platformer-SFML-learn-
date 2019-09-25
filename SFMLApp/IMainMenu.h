@@ -22,20 +22,21 @@ class IMainMenu
 private:
 	int LvlChoose;
 	bool isMenuClosed;
-	FString StartStr = "Start Game", SettingStr = "Settings\*", EndStr = "End Game";
 	FFont MenuFont;
 	sf::Uint32 ScrWidth, ScrHeight;
 	sf::Uint32 FrameRate;
 	FFont Font;
-	FText Button;
+	FText StartBtn, SettingBtn, EndBtn;
+	sf::Texture LogoTexture;
+	sf::Sprite Logo;
 
 public:
 
 	// Инициализация параметров меню. Создание кнопок меню.
 	IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate);
 
+	void Center(FText& ObjText);
 	// Создает текстовые пункты меню
-	void DrawText(sf::RenderWindow& window, const FString OutText, int height);
 	int DrawCicle(sf::RenderWindow& window);
 
 };
