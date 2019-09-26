@@ -9,12 +9,13 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include "APlayerPawn.h"
+#include "UWorld.h"
 
 class ULevel
 {
 private:
-	// Двумерный массив с данными об объектах карты
-	// Задний фон карты
+	// Объект игрока и мира
 	// Позиция спавна игрока
 	// Результаты\миссии игры. Проверка пройден или закончен ли уровен.
 public:

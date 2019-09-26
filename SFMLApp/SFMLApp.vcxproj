@@ -129,12 +129,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="APlayerPawn.cpp" />
     <ClCompile Include="IMainMenu.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UClass.cpp" />
+    <ClCompile Include="ULevel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="APlayerPawn.h" />
     <ClInclude Include="IMainMenu.h" />
     <ClInclude Include="LevelEndStatus.h" />
+    <ClInclude Include="FLevel.h" />
+    <ClInclude Include="UWorld.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
