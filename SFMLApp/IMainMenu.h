@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include "LevelEndStatus.h"
+#include "EEndStatus.h"
 
 using FText = sf::Text;
 using FString = sf::String;
@@ -21,7 +21,7 @@ class IMainMenu
 {
 private:
 	int LvlChoose;
-	bool isMenuClosed;
+	bool bMenuClosed;
 	FFont MenuFont;
 	sf::Uint32 ScrWidth, ScrHeight;
 	sf::Uint32 FrameRate;

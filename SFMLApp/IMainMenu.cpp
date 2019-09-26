@@ -6,7 +6,7 @@ IMainMenu::IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 Frame
 	this->ScrWidth = ScrWidth;
 	this->ScrHeight = ScrHeight;
 	this->FrameRate = FrameRate;
-	isMenuClosed = false;
+	bMenuClosed = false;
 
 	// Задаем тексутры, рект и позицию для логотипа
 	LogoTexture.loadFromFile("..\\Resource\\Logo.png");
@@ -17,7 +17,7 @@ IMainMenu::IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 Frame
 						LogoRect.top + LogoRect.height / 2);
 	Logo.setPosition(ScrWidth / 2, 130);
 
-	// Задник
+	// Задний фон игры
 	BackMenuText.loadFromFile("..\\Resource\\MenuBack.png");
 	BackMenu.setTexture(BackMenuText);
 
@@ -63,18 +63,18 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 
 	// toDo Нужно реализовать enum ошибок.
 	// Здесь можно ретюрнить все ошибки через код, следовательно делать проверки.  
-	while (!isMenuClosed) {
+	while (!bMenuClosed) {
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed) {
-				isMenuClosed = true;
+				bMenuClosed = true;
 				return EEndStatus::Exit;
 			}
 			
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
-					isMenuClosed = true;
+					bMenuClosed = true;
 					return EEndStatus::Exit;
 				}
 			}
@@ -84,7 +84,7 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 					//std::cout << "Left Mouse coord: " << event.mouseButton.x << " " << event.mouseButton.y << std::endl;
 					if (event.mouseButton.x > EndBtn.getGlobalBounds().left &&	event.mouseButton.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
 						if (event.mouseButton.y > EndBtn.getGlobalBounds().top && event.mouseButton.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
-							isMenuClosed = true;
+							bMenuClosed = true;
 							return EEndStatus::Exit;
 						}
 					}
