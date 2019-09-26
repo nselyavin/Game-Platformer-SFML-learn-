@@ -17,6 +17,10 @@ IMainMenu::IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 Frame
 						LogoRect.top + LogoRect.height / 2);
 	Logo.setPosition(ScrWidth / 2, 130);
 
+	// Задник
+	BackMenuText.loadFromFile("..\\Resource\\MenuBack.png");
+	BackMenu.setTexture(BackMenuText);
+
 	// ToDo реализовать ошибку при не подключении шрифта
 	Font.loadFromFile("..\\Resource\\MenuFont.ttf");
 
@@ -57,9 +61,6 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 	Center(EndBtn);
 	EndBtn.setPosition(ScrWidth / 2, 420);
 
-	std::cout << EndBtn.getGlobalBounds().left << " " << EndBtn.getGlobalBounds().top << std::endl;
-	std::cout << EndBtn.getGlobalBounds().width << " " << EndBtn.getGlobalBounds().height << std::endl;
-
 	// toDo Нужно реализовать enum ошибок.
 	// Здесь можно ретюрнить все ошибки через код, следовательно делать проверки.  
 	while (!isMenuClosed) {
@@ -68,31 +69,41 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 		{
 			if (event.type == sf::Event::Closed) {
 				isMenuClosed = true;
-				return 1;
+				return EEndStatus::Exit;
 			}
 			
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
 					isMenuClosed = true;
-					return 1;
+					return EEndStatus::Exit;
 				}
 			}
 
 			if (event.type == sf::Event::MouseButtonPressed){
 				if (event.mouseButton.button == sf::Mouse::Left) {
-					std::cout << "Left Mouse coord: " << event.mouseButton.x << " " << event.mouseButton.y << std::endl;
+					//std::cout << "Left Mouse coord: " << event.mouseButton.x << " " << event.mouseButton.y << std::endl;
 					if (event.mouseButton.x > EndBtn.getGlobalBounds().left &&	event.mouseButton.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
 						if (event.mouseButton.y > EndBtn.getGlobalBounds().top && event.mouseButton.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
 							isMenuClosed = true;
-							return 1;
+							return EEndStatus::Exit;
 						}
 					}
 				}
 			}
+			if (event.type == sf::Event::MouseMoved) {
+				if (event.mouseMove.x > EndBtn.getGlobalBounds().left && event.mouseMove.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
+					if (event.mouseMove.y > EndBtn.getGlobalBounds().top && event.mouseMove.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
+						EndBtn.setFillColor(Reds);
+					}
+					else
+						EndBtn.setFillColor(sf::Color::White);
+				}
+			}
 		}
 
-		window.clear(Gray);
+		window.clear();
 
+		window.draw(BackMenu);
 		window.draw(Logo);
 		window.draw(StartBtn);
 		window.draw(SettingBtn);
@@ -100,5 +111,5 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 		
 		window.display();
 	}
-	return 0;
+	return EEndStatus::NextLevel;
 }

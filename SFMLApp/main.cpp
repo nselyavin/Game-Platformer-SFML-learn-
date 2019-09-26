@@ -20,22 +20,13 @@ int main()
 	IMainMenu MainMenu(ScrWidth, ScrHeight, FrameRate);
 
 	bool bGameEnd = false;
-	int res = 0;
+	int res = -1;
 	// Родительский цикл игры, в нем происходит вызов основных этапов игры: меню, уровень и тд. — пока игра не закочнена
 	while (!bGameEnd)
 	{
-		if (res != 0) {
+		if (res == EEndStatus::Exit) {
 			window.close();
 			bGameEnd = true;
-		}
-
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed) {
-				window.close();
-				bGameEnd = true;
-			}
 		}
 
 		window.clear(); // ToDo на всякий случай потом убрать 

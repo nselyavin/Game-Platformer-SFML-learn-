@@ -7,14 +7,14 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-
+#include "LevelEndStatus.h"
 
 using FText = sf::Text;
 using FString = sf::String;
 using FFont = sf::Font;
 
 const sf::Color Gray(90, 105, 136);
-
+const sf::Color Reds = sf::Color::Red;
 
 // Класс главного меню игры
 class IMainMenu
@@ -27,8 +27,8 @@ private:
 	sf::Uint32 FrameRate;
 	FFont Font;
 	FText StartBtn, SettingBtn, EndBtn;
-	sf::Texture LogoTexture;
-	sf::Sprite Logo;
+	sf::Texture LogoTexture, BackMenuText;
+	sf::Sprite Logo, BackMenu;
 
 public:
 
