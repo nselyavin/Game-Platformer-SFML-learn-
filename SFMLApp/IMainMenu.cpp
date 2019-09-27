@@ -1,12 +1,11 @@
 #include "IMainMenu.h"
 #include <iostream>;
 
-IMainMenu::IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate)
+int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate)
 {
 	this->ScrWidth = ScrWidth;
 	this->ScrHeight = ScrHeight;
 	this->FrameRate = FrameRate;
-	bMenuClosed = false;
 
 	// Задаем тексутры, рект и позицию для логотипа
 	LogoTexture.loadFromFile("..\\Resource\\Logo.png");
@@ -14,7 +13,7 @@ IMainMenu::IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 Frame
 	Logo.setTexture(LogoTexture);
 	sf::FloatRect LogoRect = Logo.getLocalBounds();
 	Logo.setOrigin(LogoRect.left + LogoRect.width / 2,
-						LogoRect.top + LogoRect.height / 2);
+		LogoRect.top + LogoRect.height / 2);
 	Logo.setPosition(ScrWidth / 2, 130);
 
 	// Задний фон игры
@@ -35,6 +34,11 @@ IMainMenu::IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 Frame
 	EndBtn.setString("End Game");
 	EndBtn.setFont(Font);
 	EndBtn.setCharacterSize(45);
+
+	int EndStatus = EEndStatus::GameError;
+	EndStatus = DrawCicle(window);
+
+	return EndStatus;
 }
 
 void IMainMenu::Center(FText &ObjText)
@@ -49,11 +53,15 @@ void IMainMenu::Center(FText &ObjText)
 
 int IMainMenu::DrawCicle(sf::RenderWindow& window)
 {
+	// ToDo Перенсти действия из конструктора в функцию
+	// Конструкток оставить пустой
 
+	// Инициализация ректов кнопок меню
 	sf::FloatRect StartBtnRect = StartBtn.getLocalBounds();
 	sf::FloatRect SettingBtnRect= SettingBtn.getLocalBounds();
 	sf::FloatRect EndBtnRect = EndBtn.getLocalBounds();
 
+	// Задача положений кнопок меню
 	Center(StartBtn);
 	StartBtn.setPosition(ScrWidth / 2, 260);
 	Center(SettingBtn);
@@ -61,7 +69,7 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 	Center(EndBtn);
 	EndBtn.setPosition(ScrWidth / 2, 420);
 
-	// toDo Нужно реализовать enum ошибок.
+	bMenuClosed = false;
 	// Здесь можно ретюрнить все ошибки через код, следовательно делать проверки.  
 	while (!bMenuClosed) {
 		sf::Event event;
@@ -81,7 +89,15 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 
 			if (event.type == sf::Event::MouseButtonPressed){
 				if (event.mouseButton.button == sf::Mouse::Left) {
-					//std::cout << "Left Mouse coord: " << event.mouseButton.x << " " << event.mouseButton.y << std::endl;
+					// Координаты кнопки старта.
+					if (event.mouseButton.x > StartBtn.getGlobalBounds().left && event.mouseButton.x < (StartBtn.getGlobalBounds().left + StartBtnRect.width)) {
+						if (event.mouseButton.y > StartBtn.getGlobalBounds().top && event.mouseButton.y < (StartBtn.getGlobalBounds().top + StartBtnRect.height)) {
+							bMenuClosed = true;
+							return EEndStatus::StartGame;
+						}
+					}
+
+					// Координаты кнопки выхода.
 					if (event.mouseButton.x > EndBtn.getGlobalBounds().left &&	event.mouseButton.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
 						if (event.mouseButton.y > EndBtn.getGlobalBounds().top && event.mouseButton.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
 							bMenuClosed = true;
@@ -91,6 +107,16 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 				}
 			}
 			if (event.type == sf::Event::MouseMoved) {
+				// Координаты кнопки старта.
+				if (event.mouseMove.x > StartBtn.getGlobalBounds().left && event.mouseMove.x < (StartBtn.getGlobalBounds().left + StartBtnRect.width)) {
+					if (event.mouseMove.y > StartBtn.getGlobalBounds().top && event.mouseMove.y < (StartBtn.getGlobalBounds().top + StartBtnRect.height)) {
+						StartBtn.setFillColor(Reds);
+					}
+					else
+						StartBtn.setFillColor(sf::Color::White);
+				}
+
+				// Координаты кнопки выхода.
 				if (event.mouseMove.x > EndBtn.getGlobalBounds().left && event.mouseMove.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
 					if (event.mouseMove.y > EndBtn.getGlobalBounds().top && event.mouseMove.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
 						EndBtn.setFillColor(Reds);
@@ -111,5 +137,5 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 		
 		window.display();
 	}
-	return EEndStatus::NextLevel;
+	return EEndStatus::GameError;
 }

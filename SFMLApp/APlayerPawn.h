@@ -9,10 +9,12 @@
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
 
+using FClock = sf::Clock;
 
 enum EActionList
 {
-	Idle,
+	Idle_Left,
+	Idle_Right,
 	Jump_Left,
 	Jump_Right,
 	Move_Left,
@@ -24,24 +26,48 @@ class APlayerPawn
 private:
 	sf::Texture ATexture;
 	sf::Sprite ASprite; 
+	// Нужны для плавной смены поз
+	FClock Clock;
+	// Задержка для смены кадров
+	int delay;
 	bool bAlive;
 	int Health;
 	float Speed;
-	// Текущая позиция игрока по [0] = Х и [1] = У
-	float pos[2];
-	// Текущая поза игрока по [0] = Row и [1] = Line
-	int CurrPose[2];
+	// Направление персонажа по X, 0 - влево, 1 - вправо
+	sf::Int8 XDirection = 1;
+	// Текущая поза игрока при воспроизведении анимации
+	int CurrPose;
+	
 
 public:
 	// Инициализация массива по позиции из игрока из класса мира.
-	APlayerPawn(float x, float y);
+	APlayerPawn();
+
+	// Инициализация пешки игрока 
+	void BeginPawn(sf::RenderWindow &window, float x, float y);
 
 	// Цикл отображения пешки
-	int PawnDrawCicle(sf::RenderWindow &window);
+	void DrawPawn(sf::RenderWindow &window);
 
 	// Метод смены спрайта в зависимости от направления
 	void SetPose(EActionList Action);
 
-	// Методы геторы всех параметров
+	// Спрашивает жив ли игрок
+	bool isAlive();
+
+	// Возвращает ссылку объект спрайта игрока
+	const sf::Sprite& GetSprite();
+
+	// Возвращает ссылку объект текстуры игрока
+	const sf::Texture& GetTexture();
+
+	// Возвращает позицию игрока
+	const sf::Vector2f& GetPos();
+
+	// Вовзращает жизни игрока
+	int GetHealth();
+
+	// Возвращает скорость игрока
+	float GetSpeed();
 };
 

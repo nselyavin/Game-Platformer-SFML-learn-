@@ -4,6 +4,8 @@
 */
 
 #include "IMainMenu.h"
+#include "APlayerPawn.h"
+
 
 int main()
 {
@@ -21,20 +23,42 @@ int main()
 	window.setFramerateLimit(FrameRate);
 
 	// Инициализация класса меню.
-	IMainMenu MainMenu(ScrWidth, ScrHeight, FrameRate);
+	IMainMenu MainMenu;
 
 	bool bGameEnd = false;
-	int res = -1;
+	int res = EEndStatus::Begin;
 	// Родительский цикл игры, в нем происходит вызов основных этапов игры: меню, уровень и тд. — пока игра не закочнена
 	while (!bGameEnd)
 	{
-		if (res == EEndStatus::Exit) {
+		switch (res) {
+		case EEndStatus::Exit:
 			window.close();
 			bGameEnd = true;
-		}
+			break;
 
-		window.clear(); // ToDo на всякий случай потом убрать 
-		res = MainMenu.DrawCicle(window);
+		case EEndStatus::Begin:
+			res = MainMenu.BeginMenu(window, ScrWidth, ScrHeight, FrameRate);
+			break;
+
+		case EEndStatus::StartGame:
+			// ToDo Реализовать систему выбора уровня
+			printf("Sosi jepu");
+			res = EEndStatus::Begin;
+			break;
+
+		case EEndStatus::GameError:
+			printf("Game was failed with erroe: %d", res);
+			window.close();
+			system("pause");
+			break;
+
+		default:
+			printf("Game was crashed");
+			window.close();
+			system("pause");
+			break;
+		}
+		window.clear();
 		window.display();
 	}
 

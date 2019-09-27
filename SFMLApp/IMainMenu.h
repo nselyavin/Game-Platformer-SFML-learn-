@@ -31,9 +31,7 @@ private:
 	sf::Sprite Logo, BackMenu;
 
 public:
-
-	// Инициализация параметров меню. Создание кнопок меню.
-	IMainMenu(sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate);
+	int BeginMenu(sf::RenderWindow& window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate);
 
 	void Center(FText& ObjText);
 	// Создает текстовые пункты меню
