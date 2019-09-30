@@ -40,17 +40,14 @@ private:
 	
 
 public:
-	// Инициализация массива по позиции из игрока из класса мира.
-	APlayerPawn();
-
 	// Инициализация пешки игрока 
-	void BeginPawn(sf::RenderWindow &window, float x, float y);
+	int CreatePawn(float x, float y);
 
 	// Цикл отображения пешки
 	void DrawPawn(sf::RenderWindow &window);
 
 	// Метод смены спрайта в зависимости от направления
-	void SetPose(EActionList Action);
+	void SetStance(EActionList Action);
 
 	// Спрашивает жив ли игрок
 	bool isAlive();

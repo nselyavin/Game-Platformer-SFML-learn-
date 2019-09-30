@@ -1,7 +1,7 @@
 #include "APlayerPawn.h"
+#include "EEndStatus.h"
 
-
-void APlayerPawn::BeginPawn(sf::RenderWindow& window, float x, float y)
+int APlayerPawn::CreatePawn(float x, float y)
 {
 	// Инициализация основных параметров пешки
 	this->ASprite.setPosition(x, y);
@@ -11,14 +11,16 @@ void APlayerPawn::BeginPawn(sf::RenderWindow& window, float x, float y)
 	this->delay = 100;
 
 	// Загрузка текстуры спрайта
-	ATexture.loadFromFile("..\\Resource\\Boy_Sprites.png");
+	if (!ATexture.loadFromFile("..\\Resource\\Boy_Sprites.png"))
+		return EEndStatus::FileLoadFale;
+
 	ASprite.setTexture(ATexture);
 	// ToDo Перенести размер тайла в переменную, для гибкости настройки текстур
 	ASprite.setTextureRect(sf::IntRect(0, 0, 64, 64));
 
 	CurrPose = 0;
 
-	Clock.restart();
+	return EEndStatus::StartGame;
 }
 
 void APlayerPawn::DrawPawn(sf::RenderWindow& window)
@@ -27,7 +29,7 @@ void APlayerPawn::DrawPawn(sf::RenderWindow& window)
 	
 }
 
-void APlayerPawn::SetPose(EActionList Action)
+void APlayerPawn::SetStance(EActionList Action)
 {
 	// ToDo Алгоритм задачи позиции по действию игрока
 	switch (Action) {
@@ -68,6 +70,7 @@ void APlayerPawn::SetPose(EActionList Action)
 		CurrPose = 0;
 		break;
 	}
+	Clock.restart();
 }
 
 bool APlayerPawn::isAlive()
