@@ -8,11 +8,8 @@ using namespace std;
 
 int main()
 {
-
-	string LvlName = "Star_Ship";
+	string LvlName = "CheckLayer";
 	FParserXML ParserXML(LvlName);
-
-
 
 	return 0;
 }

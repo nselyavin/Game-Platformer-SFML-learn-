@@ -3,14 +3,15 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
-
+#include <vector>
 
 struct FVector2i {int x;	int y;};
 
 struct FLayer
 {
-	std::string name;
-	int** arr = new int*;
+	std::string name = "";
+	//int** arr;
+	std::vector <std::vector<int>> arr;
 };
 
 struct FLevelStruct
@@ -22,10 +23,7 @@ struct FLevelStruct
 	FVector2i LvlSizeTile;
 
 	//  оличество слоев на карте
-	int NumbLayer;
-
-	// ƒвумерный массив каждого сло€
-	FLayer* Layers = new FLayer;
+	int NumbLayer = 0;
 
 	// —тартова€ позици€ игрока
 	float StartPos;
@@ -37,6 +35,8 @@ class FParserXML
 private:
 	std::string LvlName;
 	FLevelStruct LevelStruct;
+	// ToDo переделать все относительно отдельной структуры, а не переменной LevelStruct
+	FLayer* Layers = new FLayer[0];
 	
 public:
 	FParserXML(std::string LvlName);
