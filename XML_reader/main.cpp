@@ -9,8 +9,10 @@ using namespace std;
 int main()
 {
 
-	string LvlName = "Star_Ship.tmx";
+	string LvlName = "Star_Ship";
 	FParserXML ParserXML(LvlName);
+
+
 
 	return 0;
 }

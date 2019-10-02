@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="30" height="12" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="3">
  <tileset firstgid="1" source="Star_Ship_Tiles.tsx"/>
- <layer id="4" name="Корпус коробля" width="30" height="12">
+ <layer id="2" name="Decor" width="30" height="12">
   <data>
    <tile/>
    <tile/>
@@ -365,7 +365,7 @@
    <tile/>
   </data>
  </layer>
- <layer id="6" name="Декор корабля" width="30" height="12">
+ <layer id="1" name="Декор корабля" width="30" height="12">
   <data>
    <tile/>
    <tile/>

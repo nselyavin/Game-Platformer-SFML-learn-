@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 
+
 struct FVector2i {int x;	int y;};
 
 struct FLayer
@@ -40,8 +41,10 @@ private:
 public:
 	FParserXML(std::string LvlName);
 
-	template<class T>
-	T ValueByTag(const std::string& tag);
+	~FParserXML() {};
+
+	
+	std::string ValueByTag(std::string& line, const char* tag);
 
 	// ¬озращает количество клеток не уровне
 	FVector2i getLvlTiles();
