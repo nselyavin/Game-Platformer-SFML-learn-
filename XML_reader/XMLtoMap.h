@@ -23,7 +23,7 @@ struct FLevelStruct
 	FVector2i LvlSizeTile;
 
 	// Количество слоев на карте
-	int NumbLayer = 0;
+	int AmountLayer = 0;
 
 	// Стартовая позиция игрока
 	float StartPos;
@@ -36,7 +36,12 @@ private:
 	std::string LvlName;
 	FLevelStruct LevelStruct;
 	// ToDo переделать все относительно отдельной структуры, а не переменной LevelStruct
-	FLayer* Layers = new FLayer[0];
+	FLayer* Layers = new FLayer[LevelStruct.AmountLayer];
+	int* Arr = new int[3];
+	// Текущий слой для заполнения
+	int CurrLayer = -1;
+	// Индексы текующей клетки для заполнения
+	int i = 0, j = 0;
 	
 public:
 	FParserXML(std::string LvlName);
@@ -46,6 +51,9 @@ public:
 	
 	std::string ValueByTag(std::string& line, const char* tag);
 
+	// Увеличение обзего количества слоев на уровне
+	FLayer* AddLayer(FLayer *Layer, const int Amount);
+
 	// Возращает количество клеток не уровне
 	FVector2i getLvlTiles();
 
@@ -54,6 +62,9 @@ public:
 
 	// Вовзращает структура слоя по id
 	const FLayer& getLayer(int idLayer);
+
+	// Возвращает количество слоев на уровне
+	const int getAmountLayer();
 
 	// Возращает клетку карты по индексам в указанном слое
 	const int getLayerElement(int idLayer, int i, int j);

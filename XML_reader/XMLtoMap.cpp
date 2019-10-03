@@ -4,9 +4,11 @@
 FParserXML::FParserXML(std::string LvlName)
 {
 	std::ifstream ifsLvl;
+	std::string line;
+
 	ifsLvl.open(LvlName + ".tmx");
 
-	std::string line;
+	this->LvlName = LvlName;
 
 	if (!ifsLvl.is_open())
 		printf("File opening faled");
@@ -28,51 +30,28 @@ FParserXML::FParserXML(std::string LvlName)
 			LevelStruct.LvlSizeTile.y = std::stoi(ValueByTag(line, "tileheight"));
 		}	
 
-		FindRes = std::string::npos;
-
 		FindRes = line.find("<layer");
 		if (FindRes != std::string::npos) {
-			// Увеличение обзего количества слоев на уровне
-			LevelStruct.NumbLayer++;
-			int CurrLayer = LevelStruct.NumbLayer - 1;
-			std::string LayerName = ValueByTag(line, "name");
+			Layers = AddLayer(Layers, LevelStruct.AmountLayer);
+			LevelStruct.AmountLayer++;		
+			CurrLayer++;								  
+			i = 0;										  
+			j = 0;										  
+		}
 
-			// Временный динамический массив с размером на 1 больше, для сохранения элементов при ресайзе
-			FLayer* tmp = new FLayer[LevelStruct.NumbLayer];
-
-			for (int i = 0; i < LevelStruct.NumbLayer - 1; i++) {
-				tmp[i] = LevelStruct.Layers[i];
-			}
-
-			delete[] LevelStruct.Layers;
-
-			LevelStruct.Layers = new FLayer[LevelStruct.NumbLayer];
-			LevelStruct.Layers = tmp;
-			//LevelStruct.Layers[CurrLayer].name = LayerName;
-
-			delete[] tmp;
-
-			std::cout << LevelStruct.Layers[CurrLayer].name;
-
-			// САНЯ ХУЙ САСИ
-			// i - линия, j - столбец 
-			int i = 0, j = 0;
-			for (int count = 0; count < LevelStruct.LvlTiles.y; count++) {
-				// Считывание из файла
-				getline(ifsLvl, line);
-				LevelStruct.Layers[CurrLayer].arr[i].push_back(stoi(ValueByTag(line, "gid")));
+		FindRes = line.find("<tile");
+		if (FindRes != std::string::npos) {
+			FindRes = line.find("<tileset");
+			if (FindRes == std::string::npos) {
+				Layers[CurrLayer].arr[i][j] = std::stoi(ValueByTag(line, "gid"));
 				i = i + ((j + 1) / LevelStruct.LvlTiles.x);
 				j = (j + 1) % LevelStruct.LvlTiles.x;
 			}
-
-			for (int i = 0; i < LevelStruct.LvlTiles.y; i++) {
-				for (int j = 0; j < LevelStruct.LvlTiles.x; j++) {
-					printf("%d ", LevelStruct.Layers[CurrLayer].arr[i][j]);
-				}
-				printf("\n");
-			}
 		}
-	}
+
+		// ToDo Парсер для объектов
+
+	} 
 
 	ifsLvl.close();	
 }
@@ -80,7 +59,6 @@ FParserXML::FParserXML(std::string LvlName)
 
 std::string FParserXML::ValueByTag(std::string& line, const char* tag)
 {
-	// ToDo Написать реализацию поиска значения по тегу
 	std::string Value = "";
 	std::string::size_type res = std::string::npos;
 
@@ -97,6 +75,34 @@ std::string FParserXML::ValueByTag(std::string& line, const char* tag)
 	return Value;
 }
 
+FLayer* FParserXML::AddLayer(FLayer* Layer, const int Amount)
+{
+	
+	if (Amount == 0) {
+		Layer = new FLayer[Amount + 1];
+	}
+	else {
+		FLayer* tmp = new FLayer[Amount + 1];
+
+
+		for (int i = 0; i < Amount; i++) {
+			tmp[i] = Layer[i];
+		}
+
+		delete[] Layer;
+
+		Layer = tmp;
+	}
+	
+	Layer[Amount].arr.resize(LevelStruct.LvlTiles.y);
+
+	for (int i = 0; i < LevelStruct.LvlTiles.y; i++) {
+		Layer[Amount].arr[i].resize(LevelStruct.LvlTiles.x);
+	}
+
+	return Layer;
+}
+
 FVector2i FParserXML::getLvlTiles()
 {
 	return LevelStruct.LvlTiles;
@@ -109,10 +115,14 @@ FVector2i FParserXML::getSizeTile()
 
 const FLayer& FParserXML::getLayer(int idLayer)
 {
-	return LevelStruct.Layers[idLayer];
+	return Layers[idLayer];
+}
+
+const int FParserXML::getAmountLayer() {
+	return LevelStruct.AmountLayer;
 }
 
 const int FParserXML::getLayerElement(int idLayer, int i, int j)
 {
-	return LevelStruct.Layers[idLayer].arr[i][j];
+	return Layers[idLayer].arr[i][j];
 }
