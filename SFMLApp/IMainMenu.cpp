@@ -8,7 +8,10 @@ int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint
 	this->FrameRate = FrameRate;
 
 	// Задаем тексутры, рект и позицию для логотипа
-	LogoTexture.loadFromFile("..\\Resource\\Logo.png");
+	if (!LogoTexture.loadFromFile("..\\Resource\\Logo.png")) {
+		printf("Menu:\nLogo img: ");
+		return EEndStatus::FileLoadFaled;
+	}
 
 	Logo.setTexture(LogoTexture);
 	sf::FloatRect LogoRect = Logo.getLocalBounds();
@@ -17,11 +20,16 @@ int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint
 	Logo.setPosition(ScrWidth / 2, 130);
 
 	// Задний фон игры
-	BackMenuText.loadFromFile("..\\Resource\\MenuBack.png");
+	if (!BackMenuText.loadFromFile("..\\Resource\\MenuBack.png")) {
+		printf("Menu:\nBackground img: ");
+		return EEndStatus::FileLoadFaled;
+	}
 	BackMenu.setTexture(BackMenuText);
 
-	// ToDo реализовать ошибку при не подключении шрифта
-	Font.loadFromFile("..\\Resource\\MenuFont.ttf");
+	if (!Font.loadFromFile("..\\Resource\\MenuFont.ttf")) {
+		printf("Menu:\nFont: ");
+		return EEndStatus::FileLoadFaled;
+	}
 
 	StartBtn.setString("Start Game");
 	StartBtn.setFont(Font);
@@ -53,9 +61,6 @@ void IMainMenu::Center(FText &ObjText)
 
 int IMainMenu::DrawCicle(sf::RenderWindow& window)
 {
-	// ToDo Перенсти действия из конструктора в функцию
-	// Конструкток оставить пустой
-
 	// Инициализация ректов кнопок меню
 	sf::FloatRect StartBtnRect = StartBtn.getLocalBounds();
 	sf::FloatRect SettingBtnRect= SettingBtn.getLocalBounds();

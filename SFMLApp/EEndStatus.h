@@ -2,9 +2,9 @@
 
 enum EEndStatus
 {
-	Begin,
+	Menu,
 	Exit,
 	StartGame,		// Или выбор уровня
-	FileLoadFale,
+	FileLoadFaled,
 	GameError,
 };

@@ -3,19 +3,21 @@
 
 int APlayerPawn::CreatePawn(float x, float y)
 {
+	// Сделать, что бы коллизия игрока была 32 на 64 пикселей. И соотвестующая моделька.
+
 	// Инициализация основных параметров пешки
 	this->ASprite.setPosition(x, y);
 	this->Health = 3;
 	this->bAlive = true;
-	this->Speed = 3;
+	this->SpeedX = 8;
+	this->SpeedY = 0;
 	this->delay = 100;
 
 	// Загрузка текстуры спрайта
 	if (!ATexture.loadFromFile("..\\Resource\\Boy_Sprites.png"))
-		return EEndStatus::FileLoadFale;
+		return EEndStatus::FileLoadFaled;
 
 	ASprite.setTexture(ATexture);
-	// ToDo Перенести размер тайла в переменную, для гибкости настройки текстур
 	ASprite.setTextureRect(sf::IntRect(0, 0, 64, 64));
 
 	CurrPose = 0;
@@ -25,30 +27,32 @@ int APlayerPawn::CreatePawn(float x, float y)
 
 void APlayerPawn::DrawPawn(sf::RenderWindow& window)
 {
-	window.draw(ASprite);  // ToDo Основная отрисовка и смена кадров происходит в классе уровня
+	window.draw(ASprite); 
 	
+}
+
+void APlayerPawn::MovePawn()
+{
+	// ToDo Сделать движение плавный и затухающим
+	ASprite.move(SpeedX * XDirection, SpeedY * YDirection);
 }
 
 void APlayerPawn::SetStance(EActionList Action)
 {
-	// ToDo Алгоритм задачи позиции по действию игрока
+	// ToDo Реализовать зедержку анимации
 	switch (Action) {
 	case EActionList::Move_Left:
+		// Смена направления
+		XDirection = -1;
 		// Смена текущего кадра в зависимости от времени
-		if (Clock.getElapsedTime().asMilliseconds() > delay) {
-			Clock.restart();
-		}
-
+		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
 		ASprite.setTextureRect(sf::IntRect(64 * CurrPose, 64 * 2, 64, 64));
 		break;
 
 	case EActionList::Move_Right:
+		XDirection = 1;
 		// Смена текущего кадра в зависимости от времени
-		if (Clock.getElapsedTime().asMilliseconds() > delay) {
-			CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
-			Clock.restart();
-		}
-
+		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
 		ASprite.setTextureRect(sf::IntRect(64 * CurrPose, 64 * 1, 64, 64));
 		break;
 
@@ -80,6 +84,7 @@ bool APlayerPawn::isAlive()
 	return false;
 }
 
+
 const sf::Sprite& APlayerPawn::GetSprite()
 {
 	return ASprite;
@@ -95,12 +100,20 @@ const sf::Vector2f& APlayerPawn::GetPos()
 	return ASprite.getPosition();
 }
 
-int APlayerPawn::GetHealth()
+const int APlayerPawn::GetHealth()
 {
 	return Health;
 }
 
-float APlayerPawn::GetSpeed()
+const sf::Int8 APlayerPawn::GetXDirection()
 {
+	return XDirection;
+}
+
+const sf::Vector2f APlayerPawn::GetSpeed()
+{
+	sf::Vector2f Speed;
+	Speed.x = SpeedX;
+	Speed.y = SpeedY;
 	return Speed;
 }

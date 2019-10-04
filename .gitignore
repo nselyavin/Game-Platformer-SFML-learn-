@@ -12,6 +12,15 @@
 .exe
 .sln
 .dll
+.sln
+
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+!SFMLApp.vcxproj
+!SFMLApp.vcxproj.filters
+!SFMLApp.vcxproj.user
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

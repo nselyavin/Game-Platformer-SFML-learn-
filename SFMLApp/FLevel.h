@@ -12,22 +12,23 @@
 #include "APlayerPawn.h"
 #include "UWorld.h"
 
-class ULevelStarter
+class FLevel
 {
 private:
 	// Объект игрока и мира
 	APlayerPawn PlayerPawn;
 	// Позиция спавна игрока
 	sf::Vector2f StartPos;
+	float LocalTime;
 	// Результаты\миссии игры. Проверка пройден или закончен ли уровен.
 	bool bGameEnd, bGameWon;
 public:
 	// Иницализация класса, считывание файла по переданному названия. Задача спавна игрока и всех объектов
-	// ToDo Поменять параметр представления уровня, на тот который будет читаться из файла. Или нет.
+	// ToDo Поменять параметр представления уровня, на тот который будет читаться из файла. Если понадобится.
 	int StartLevel(sf::RenderWindow& window, int ChoosenLvl);
 
 	// Функция отрисовки игры
-	void DrawLevel(sf::RenderWindow& window);
+	int DrawCicle(sf::RenderWindow& window);
 
 	// Показывается результаты урованя в зависимости от bGameWon
 	void GameSummar(sf::RenderWindow& window);

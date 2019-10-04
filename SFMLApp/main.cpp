@@ -4,13 +4,13 @@
 */
 
 #include "IMainMenu.h"
-#include "APlayerPawn.h"
+#include "FLevel.h"
 
 
 int main()
 {
 
-	//TODO Реализовать чтение настроек из файла////////
+	//TODO Реализовать чтение настроек из файла конфига
 	sf::Uint32 ScrWidth, ScrHeight;
 	sf::Uint32 FrameRate;
 	ScrWidth = 800;
@@ -24,43 +24,55 @@ int main()
 
 	// Инициализация класса меню.
 	IMainMenu MainMenu;
+	FLevel Level;
 
 	bool bGameEnd = false;
-	int res = EEndStatus::Begin;
+	int res = EEndStatus::Menu;
 	// Родительский цикл игры, в нем происходит вызов основных этапов игры: меню, уровень и тд. — пока игра не закочнена
 	while (!bGameEnd)
 	{
 		switch (res) {
-		case EEndStatus::Exit:
-			window.close();
-			bGameEnd = true;
-			break;
-
-		case EEndStatus::Begin:
+		// Результирующие
+		case EEndStatus::Menu:
 			res = MainMenu.BeginMenu(window, ScrWidth, ScrHeight, FrameRate);
 			break;
 
 		case EEndStatus::StartGame:
 			// ToDo Реализовать систему выбора уровня
-			printf("Sosi jepu");
-			res = EEndStatus::Begin;
+			res = Level.StartLevel(window, 0);
 			break;
+
+		// Завершающие
+		case EEndStatus::Exit:
+			bGameEnd = true;
+			window.close();
+			break;
+
+		// Ошибки игры 
 
 		case EEndStatus::GameError:
 			printf("Game was failed with erroe: %d", res);
 			window.close();
+			bGameEnd = true;
+			system("pause");
+			break;
+
+		case EEndStatus::FileLoadFaled:
+			printf("File load failed");
+			window.close();
+			bGameEnd = true;
 			system("pause");
 			break;
 
 		default:
 			printf("Game was crashed");
 			window.close();
+			bGameEnd = true;
 			system("pause");
 			break;
 		}
 		window.clear();
 		window.display();
 	}
-
 	return 0;
 }

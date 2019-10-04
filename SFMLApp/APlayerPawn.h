@@ -32,9 +32,11 @@ private:
 	int delay;
 	bool bAlive;
 	int Health;
-	float Speed;
-	// Направление персонажа по X, 0 - влево, 1 - вправо
+	float SpeedX, SpeedY;
+	// Направление персонажа по X, -1 - влево, 1 - вправо
 	sf::Int8 XDirection = 1;
+	// Направление персонажа по Y, -1 - вверх, 1 - вниз
+	sf::Int8 YDirection = -1;
 	// Текущая поза игрока при воспроизведении анимации
 	int CurrPose;
 	
@@ -52,6 +54,9 @@ public:
 	// Спрашивает жив ли игрок
 	bool isAlive();
 
+	// Функция движения персонажа
+	void MovePawn();
+
 	// Возвращает ссылку объект спрайта игрока
 	const sf::Sprite& GetSprite();
 
@@ -61,10 +66,13 @@ public:
 	// Возвращает позицию игрока
 	const sf::Vector2f& GetPos();
 
-	// Вовзращает жизни игрока
-	int GetHealth();
-
 	// Возвращает скорость игрока
-	float GetSpeed();
+	const sf::Vector2f GetSpeed();
+
+	// Вовзращает жизни игрока
+	const int GetHealth();
+
+	// Возвращает направление игрока
+	const sf::Int8 GetXDirection();
 };
 
