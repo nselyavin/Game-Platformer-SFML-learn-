@@ -30,6 +30,12 @@
     <ClCompile Include="XMLtoMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IMainMenu.h">
@@ -44,15 +50,18 @@
     <ClInclude Include="UWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EEndStatus.h">
+    <ClInclude Include="XMLtoMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XMLtoMap.h">
+    <ClInclude Include="GameConst.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CheckLayer.tmx">
+    <None Include="..\Resource\Map\level_1.tmx">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

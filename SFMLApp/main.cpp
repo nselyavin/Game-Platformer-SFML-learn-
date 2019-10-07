@@ -5,10 +5,17 @@
 
 #include "IMainMenu.h"
 #include "FLevel.h"
-
+#include "XMLtoMap.h"
+// #include <windows.h> Нужня для сокрытия консоли
 
 int main()
 {
+	/* Код для сокрытия консоли, нужен для релизной сборки
+	HWND Hide;
+	AllocConsole();
+	Hide = FindWindowA("ConsoleWindowClass", NULL);
+	ShowWindow(Hide, 1);
+	*/ 
 
 	//TODO Реализовать чтение настроек из файла конфига
 	sf::Uint32 ScrWidth, ScrHeight;
@@ -17,14 +24,24 @@ int main()
 	ScrHeight = 600;
 	FrameRate = 30;
 
+	// Текущий уровень игры и всего уровней. ToDo реализовать изменения.
+	sf::Uint32 CurrLvl = 0;
+	sf::Uint32 TotalLvls = 1;
+
 	// Иницализации игрового пространства (окна, в котором происходит игра)
 	// Установка соотношения сторон и частоты кадров
 	sf::RenderWindow window(sf::VideoMode(ScrWidth, ScrHeight), "SFML works!");
 	window.setFramerateLimit(FrameRate);
 
-	// Инициализация класса меню.
+	// Инициализация класса меню, уровня и загрузочного экрана.
 	IMainMenu MainMenu;
 	FLevel Level;
+	sf::Texture LoadScrTex;
+	sf::Sprite LoadScr;
+
+	
+	LoadScrTex.loadFromFile(SpritePath + "LoadScreen.jpg");
+	LoadScr.setTexture(LoadScrTex);
 
 	bool bGameEnd = false;
 	int res = EEndStatus::Menu;
@@ -38,9 +55,26 @@ int main()
 			break;
 
 		case EEndStatus::StartGame:
-			// ToDo Реализовать систему выбора уровня
-			res = Level.StartLevel(window, 0);
+			// Запускает нужный уровень.
+			window.draw(LoadScr);
+			window.display();
+			CurrLvl = MainMenu.getSelectedLvl();
+			res = Level.StartLevel(window, CurrLvl);
 			break;
+
+		case EEndStatus::ReturnGame:
+			// Продолжать игру, не выкидывая в меню
+			window.draw(LoadScr);
+			window.display();
+			if ((CurrLvl + 1) < TotalLvls) {
+				CurrLvl++;
+				res = Level.StartLevel(window, CurrLvl);
+				break;
+			}
+			else {
+				// ToDo Игра пройдена. Запуск титров.
+				printf("The game is over");
+			}
 
 		// Завершающие
 		case EEndStatus::Exit:

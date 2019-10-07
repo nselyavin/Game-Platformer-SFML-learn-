@@ -1,18 +1,26 @@
 #include "FLevel.h"
-#include "EEndStatus.h"
+#include <windows.h>
 
-int FLevel::StartLevel(sf::RenderWindow& window, int ChoosenLvl)
+int FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 {
+	Camera.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
+
 	// ToDo сделать связь с парсером, который будет искать данные по выбранному уровню для построения уровня
+
+
 	// Установка статусов игры
 	bGameEnd = false;
 	bGameWon = false;
 
-	// Задача позиции игрока, пока вручную
+	// Стартовая позиция игрока
 	StartPos.x = window.getSize().x / 2;
 	StartPos.y = window.getSize().y / 2;
 
+	// Инициализации пешки и мира
 	PlayerPawn.CreatePawn(StartPos.x, StartPos.y);
+	World.CreateWorld(1);
+
+	Sleep(1000);
 
 	int EndStatus = EEndStatus::GameError;
 	EndStatus = DrawCicle(window);
@@ -27,11 +35,13 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 	while (!bGameEnd) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
+			// Выход из игры
 			if (event.type == sf::Event::Closed) {
 				bGameEnd = true;
 				return EEndStatus::Exit;
 			}
 			
+			// Выход в меню
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
 					bGameEnd = true;
@@ -43,7 +53,7 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 			// Ходьба вправо
 			PlayerPawn.SetStance(EActionList::Move_Right);
-			PlayerPawn.MovePawn();
+			PlayerPawn.MovePawn();	
 		} 
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))) {
 			// Ходьба влево
@@ -67,15 +77,27 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 				PlayerPawn.SetStance(EActionList::Idle_Right);
 			else
 				return EEndStatus::GameError;
-
 		}
+		// Изменение позиции камеры 
+		setView(PlayerPawn.GetPos());
 
-		window.clear(sf::Color::Yellow);
+		// Очистка экрана для отрисовки
+		window.setView(Camera);
+		window.clear();
+
+		// Основное тело отрисовки
+		World.DrawWorld(window);
 		PlayerPawn.DrawPawn(window);
-
+		
+		// Обновление экрана. Включает в себя задержку, зависящей от FrameRate
 		window.display();
 	}
 	return EEndStatus::Menu;
+}
+
+sf::View FLevel::setView(sf::Vector2f Pos) {
+	Camera.setCenter(Pos.x + 100, Pos.y);
+	return Camera;
 }
 
 void FLevel::GameSummar(sf::RenderWindow& window)

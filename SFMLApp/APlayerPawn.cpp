@@ -1,5 +1,5 @@
 #include "APlayerPawn.h"
-#include "EEndStatus.h"
+
 
 int APlayerPawn::CreatePawn(float x, float y)
 {
@@ -14,7 +14,7 @@ int APlayerPawn::CreatePawn(float x, float y)
 	this->delay = 100;
 
 	// Загрузка текстуры спрайта
-	if (!ATexture.loadFromFile("..\\Resource\\Boy_Sprites.png"))
+	if (!ATexture.loadFromFile(SpritePath + "Boy_Sprites.png"))
 		return EEndStatus::FileLoadFaled;
 
 	ASprite.setTexture(ATexture);

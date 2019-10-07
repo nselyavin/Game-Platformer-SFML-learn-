@@ -8,7 +8,7 @@ int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint
 	this->FrameRate = FrameRate;
 
 	// Задаем тексутры, рект и позицию для логотипа
-	if (!LogoTexture.loadFromFile("..\\Resource\\Logo.png")) {
+	if (!LogoTexture.loadFromFile(SpritePath + "Logo.png")) {
 		printf("Menu:\nLogo img: ");
 		return EEndStatus::FileLoadFaled;
 	}
@@ -20,13 +20,13 @@ int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint
 	Logo.setPosition(ScrWidth / 2, 130);
 
 	// Задний фон игры
-	if (!BackMenuText.loadFromFile("..\\Resource\\MenuBack.png")) {
+	if (!BackMenuText.loadFromFile(SpritePath + "MenuBack.png")) {
 		printf("Menu:\nBackground img: ");
 		return EEndStatus::FileLoadFaled;
 	}
 	BackMenu.setTexture(BackMenuText);
 
-	if (!Font.loadFromFile("..\\Resource\\MenuFont.ttf")) {
+	if (!Font.loadFromFile(FontPath + "MenuFont.ttf")) {
 		printf("Menu:\nFont: ");
 		return EEndStatus::FileLoadFaled;
 	}
@@ -61,6 +61,10 @@ void IMainMenu::Center(FText &ObjText)
 
 int IMainMenu::DrawCicle(sf::RenderWindow& window)
 {
+	sf::View Camera;
+	Camera.reset()
+
+	int delay = 0;
 	// Инициализация ректов кнопок меню
 	sf::FloatRect StartBtnRect = StartBtn.getLocalBounds();
 	sf::FloatRect SettingBtnRect= SettingBtn.getLocalBounds();
@@ -92,13 +96,22 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 				}
 			}
 
+			// Проверки для нажатия кнопок
 			if (event.type == sf::Event::MouseButtonPressed){
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					// Координаты кнопки старта.
 					if (event.mouseButton.x > StartBtn.getGlobalBounds().left && event.mouseButton.x < (StartBtn.getGlobalBounds().left + StartBtnRect.width)) {
 						if (event.mouseButton.y > StartBtn.getGlobalBounds().top && event.mouseButton.y < (StartBtn.getGlobalBounds().top + StartBtnRect.height)) {
+							SelectedLvl = 1;
 							bMenuClosed = true;
 							return EEndStatus::StartGame;
+						}
+					}
+
+					// Координаты кнопки настроек.
+					if (event.mouseButton.x > SettingBtn.getGlobalBounds().left && event.mouseButton.x < (SettingBtn.getGlobalBounds().left + SettingBtnRect.width)) {
+						if (event.mouseButton.y > SettingBtn.getGlobalBounds().top && event.mouseButton.y < (SettingBtn.getGlobalBounds().top + SettingBtnRect.height)) {
+							printf("Nothing");
 						}
 					}
 
@@ -111,26 +124,45 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 					}
 				}
 			}
+
+			StartBtn.setFillColor(sf::Color::White);
+			SettingBtn.setFillColor(sf::Color::White);
+			EndBtn.setFillColor(sf::Color::White);
+			// Проверка для покраски кнопок
 			if (event.type == sf::Event::MouseMoved) {
 				// Координаты кнопки старта.
 				if (event.mouseMove.x > StartBtn.getGlobalBounds().left && event.mouseMove.x < (StartBtn.getGlobalBounds().left + StartBtnRect.width)) {
 					if (event.mouseMove.y > StartBtn.getGlobalBounds().top && event.mouseMove.y < (StartBtn.getGlobalBounds().top + StartBtnRect.height)) {
-						StartBtn.setFillColor(Reds);
+						StartBtn.setFillColor(sf::Color::Color(0, 255, 255));
 					}
-					else
-						StartBtn.setFillColor(sf::Color::White);
+				}
+
+				// Координаты кнопки настроек.
+				if (event.mouseMove.x > SettingBtn.getGlobalBounds().left && event.mouseMove.x < (SettingBtn.getGlobalBounds().left + SettingBtnRect.width)) {
+					if (event.mouseMove.y > SettingBtn.getGlobalBounds().top && event.mouseMove.y < (SettingBtn.getGlobalBounds().top + SettingBtnRect.height)) {
+						SettingBtn.setFillColor(sf::Color::Color(0, 255, 255));
+					}
 				}
 
 				// Координаты кнопки выхода.
 				if (event.mouseMove.x > EndBtn.getGlobalBounds().left && event.mouseMove.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
 					if (event.mouseMove.y > EndBtn.getGlobalBounds().top && event.mouseMove.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
-						EndBtn.setFillColor(Reds);
-					}
-					else
-						EndBtn.setFillColor(sf::Color::White);
+						EndBtn.setFillColor(sf::Color::Color(0, 255, 255));
+					}	
+
 				}
 			}
 		}
+
+		if (delay > 10) {
+			delay = 0;
+			CurrLvl = (CurrLvl + 1) % (BackMenuText.getSize().x / ScrWidth);
+			BackMenu.setTextureRect(sf::IntRect(ScrWidth * CurrLvl, 0, 800, 600));
+		}
+		else
+			delay++;
+
+
 
 		window.clear();
 
@@ -143,4 +175,9 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 		window.display();
 	}
 	return EEndStatus::GameError;
+}
+
+const int IMainMenu::getSelectedLvl()
+{
+	return SelectedLvl;
 }

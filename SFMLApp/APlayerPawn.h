@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
+#include "GameConst.h"
 
 using FClock = sf::Clock;
 

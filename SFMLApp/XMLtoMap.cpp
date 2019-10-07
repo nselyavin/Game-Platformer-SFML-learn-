@@ -6,12 +6,13 @@ FParserXML::FParserXML(std::string LvlName)
 	std::ifstream ifsLvl;
 	std::string line;
 
-	ifsLvl.open(LvlName + ".tmx");
+	std::string LvlPath = LevelPath;
+	ifsLvl.open(LvlPath + "level_" + LvlName + ".tmx");
 
 	this->LvlName = LvlName;
 
 	if (!ifsLvl.is_open())
-		printf("File opening faled");
+		printf("XML Parser: \nFile opening faled");
 
 	while (!ifsLvl.eof()) {
 		// Считывание из файла
@@ -19,31 +20,35 @@ FParserXML::FParserXML(std::string LvlName)
 
 		std::string::size_type FindRes = std::string::npos;
 
+		// Поиск карты
 		FindRes = line.find("<map");
 		if (FindRes != std::string::npos) {
 			// Получаем по тегу размеры карты
-			LevelStruct.LvlTiles.x = std::stoi(ValueByTag(line, "width"));
-			LevelStruct.LvlTiles.y = std::stoi(ValueByTag(line, "height"));
+			LevelStruct.LvlTiles.x = std::stoi(getValueByTag(line, "width"));
+			LevelStruct.LvlTiles.y = std::stoi(getValueByTag(line, "height"));
 			
 			// Получаем по тегу размер тайла
-			LevelStruct.LvlSizeTile.x = std::stoi(ValueByTag(line, "tilewidth"));
-			LevelStruct.LvlSizeTile.y = std::stoi(ValueByTag(line, "tileheight"));
+			LevelStruct.LvlSizeTile.x = std::stoi(getValueByTag(line, "tilewidth"));
+			LevelStruct.LvlSizeTile.y = std::stoi(getValueByTag(line, "tileheight"));
 		}	
 
+		// Поиск слоев
 		FindRes = line.find("<layer");
 		if (FindRes != std::string::npos) {
 			Layers = AddLayer(Layers, LevelStruct.AmountLayer);
+			Layers[LevelStruct.AmountLayer].name = getValueByTag(line, "name");
 			LevelStruct.AmountLayer++;		
 			CurrLayer++;								  
 			i = 0;										  
 			j = 0;										  
 		}
 
+		// Поиск тайлов
 		FindRes = line.find("<tile");
 		if (FindRes != std::string::npos) {
 			FindRes = line.find("<tileset");
 			if (FindRes == std::string::npos) {
-				Layers[CurrLayer].arr[i][j] = std::stoi(ValueByTag(line, "gid"));
+				Layers[CurrLayer].arr[i][j] = std::stoi(getValueByTag(line, "gid"));
 				i = i + ((j + 1) / LevelStruct.LvlTiles.x);
 				j = (j + 1) % LevelStruct.LvlTiles.x;
 			}
@@ -56,9 +61,16 @@ FParserXML::FParserXML(std::string LvlName)
 	ifsLvl.close();	
 }
 
-
-std::string FParserXML::ValueByTag(std::string& line, const char* tag)
+FParserXML::~FParserXML()
 {
+	delete[] Layers;
+	delete[] Arr;
+}
+
+
+std::string FParserXML::getValueByTag(std::string& line, const char* tag)
+{
+	// Возвращает значение по тегу в формате строк. Ищет вхождение данного тега в подстроке, а потом первое вхождение 
 	std::string Value = "";
 	std::string::size_type res = std::string::npos;
 

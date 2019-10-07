@@ -10,29 +10,30 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include "GameConst.h"
 
 struct FVector2i {int x;	int y;};
 
 struct FLayer
 {
 	std::string name = "";
-	//int** arr;
 	std::vector <std::vector<int>> arr;
 };
 
 struct FLevelStruct
 {
-	// Êîëè÷åñòâî êëåòîê íà óðîâíå
+	// Размер карты в тайлах
 	FVector2i LvlTiles;		
 
-	// Ðàçìåð â ïèêñåëÿõ îäíîé êëåòêè
+	// Рразмер одного тайла в пикселях
 	FVector2i LvlSizeTile;
 
-	// Êîëè÷åñòâî ñëîåâ íà êàðòå
+	// Количество Слоев
 	int AmountLayer = 0;
 
-	// Ñòàðòîâàÿ ïîçèöèÿ èãðîêà
+	// Стартовая точка игрока
 	float StartPos;
+	float FinishPos;
 };
 
 
@@ -40,39 +41,38 @@ class FParserXML
 {
 private:
 	std::string LvlName;
-	FLevelStruct LevelStruct;
-	// ToDo ïåðåäåëàòü âñå îòíîñèòåëüíî îòäåëüíîé ñòðóêòóðû, à íå ïåðåìåííîé LevelStruct
+	FLevelStruct LevelStruct; 
 	FLayer* Layers = new FLayer[LevelStruct.AmountLayer];
 	int* Arr = new int[3];
-	// Òåêóùèé ñëîé äëÿ çàïîëíåíèÿ
+	// Текущий слой для заполнения
 	int CurrLayer = -1;
-	// Èíäåêñû òåêóþùåé êëåòêè äëÿ çàïîëíåíèÿ
+	// Индексы текующей клетки для заполнения
 	int i = 0, j = 0;
 	
 public:
 	FParserXML(std::string LvlName);
 
-	~FParserXML() {};
-
+	~FParserXML();
 	
-	std::string ValueByTag(std::string& line, const char* tag);
+	// Возвращает значение в строке по тегу
+	std::string getValueByTag(std::string& line, const char* tag);
 
-	// Óâåëè÷åíèå îáçåãî êîëè÷åñòâà ñëîåâ íà óðîâíå
+	// Увеличение общего количества слоев на уровне
 	FLayer* AddLayer(FLayer *Layer, const int Amount);
 
-	// Âîçðàùàåò êîëè÷åñòâî êëåòîê íå óðîâíå
+	// Возращает количество клеток не уровне
 	FVector2i getLvlTiles();
 
-	// Âîçâðàùàåò ðàçìåð îäíîé êëåòêè
+	// Возвращает размер одной клетки
 	FVector2i getSizeTile();
 
-	// Âîâçðàùàåò ñòðóêòóðà ñëîÿ ïî id
+	// Вовзращает структура слоя по id
 	const FLayer& getLayer(int idLayer);
 
-	// Âîçâðàùàåò êîëè÷åñòâî ñëîåâ íà óðîâíå
+	// Возвращает количество слоев на уровне
 	const int getAmountLayer();
 
-	// Âîçðàùàåò êëåòêó êàðòû ïî èíäåêñàì â óêàçàííîì ñëîå
+	// озращает клетку карты по индексам в указанном слоев
 	const int getLayerElement(int idLayer, int i, int j);
 };
 
