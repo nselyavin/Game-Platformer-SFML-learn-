@@ -14,7 +14,6 @@
 #include "APlayerPawn.h"
 #include "UWorld.h"
 #include "GameConst.h"
-#include "UCamera.h"
 
 class FLevel
 {

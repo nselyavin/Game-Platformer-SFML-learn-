@@ -21,10 +21,23 @@ namespace self {
 class UWorld
 {
 private:
-	// Двумерный массив с объектами карты
+	// Размеры карты
+	sf::Vector2i LvlSize;
+	// Размер одного тайла
+	sf::Vector2i TileSize;
+	// Размер тайл сета
+	sf::Vector2i TileSetSize;
+	// Объекты заднего фона карты
 	sf::Texture BackgrTex;
 	sf::Sprite Backgr;
+	// Объект тайлсета
+	sf::Texture TileSetTex;
+	// Количевство слоев
+	int AmountLayers = 0;
+	// Массив слоев
 	self::FLayer* Layers = new self::FLayer;
+	// Массив коллизии. ToDo массив коллизии убрать если не поадоиться 
+	std::vector <std::vector <bool>> CollsMap;
 	// * Информация о карте 
 
 public:

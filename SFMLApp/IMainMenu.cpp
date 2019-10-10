@@ -62,7 +62,7 @@ void IMainMenu::Center(FText &ObjText)
 int IMainMenu::DrawCicle(sf::RenderWindow& window)
 {
 	sf::View Camera;
-	Camera.reset()
+	Camera.reset(sf::FloatRect(0, 0, ScrWidth, ScrHeight));
 
 	int delay = 0;
 	// Инициализация ректов кнопок меню
@@ -163,7 +163,7 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 			delay++;
 
 
-
+		window.setView(Camera);
 		window.clear();
 
 		window.draw(BackMenu);

@@ -43,4 +43,3 @@ public:
 	// ¬овзращает последний выбранный уровень
 	const int getSelectedLvl();
 };
-

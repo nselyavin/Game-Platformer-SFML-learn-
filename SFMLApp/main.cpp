@@ -6,16 +6,16 @@
 #include "IMainMenu.h"
 #include "FLevel.h"
 #include "XMLtoMap.h"
-// #include <windows.h> Нужня для сокрытия консоли
+#include <windows.h> Нужня для сокрытия консоли
 
 int main()
 {
-	/* Код для сокрытия консоли, нужен для релизной сборки
+	// Код для сокрытия консоли, нужен для релизной сборки
 	HWND Hide;
 	AllocConsole();
 	Hide = FindWindowA("ConsoleWindowClass", NULL);
 	ShowWindow(Hide, 1);
-	*/ 
+	//  fdsf
 
 	//TODO Реализовать чтение настроек из файла конфига
 	sf::Uint32 ScrWidth, ScrHeight;

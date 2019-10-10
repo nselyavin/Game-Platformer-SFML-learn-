@@ -22,11 +22,17 @@ struct FLayer
 
 struct FLevelStruct
 {
+	// Размер ТайлСета
+	FVector2i TileSetSize;
+
 	// Размер карты в тайлах
-	FVector2i LvlTiles;		
+	FVector2i LvlSize;		
 
 	// Рразмер одного тайла в пикселях
-	FVector2i LvlSizeTile;
+	FVector2i TileSize;
+
+	// Количество тайлов в тайлсете
+	int AmountTiles = 0;
 
 	// Количество Слоев
 	int AmountLayer = 0;
@@ -40,10 +46,12 @@ struct FLevelStruct
 class FParserXML
 {
 private:
+	// Название уровня
 	std::string LvlName;
+	// Объявление структуры уровня, содержащая параметры уровня
 	FLevelStruct LevelStruct; 
+	// Массив слове уровня
 	FLayer* Layers = new FLayer[LevelStruct.AmountLayer];
-	int* Arr = new int[3];
 	// Текущий слой для заполнения
 	int CurrLayer = -1;
 	// Индексы текующей клетки для заполнения
@@ -61,10 +69,13 @@ public:
 	FLayer* AddLayer(FLayer *Layer, const int Amount);
 
 	// Возращает количество клеток не уровне
-	FVector2i getLvlTiles();
+	FVector2i getLvlSize();
 
 	// Возвращает размер одной клетки
-	FVector2i getSizeTile();
+	FVector2i getTileSize();
+
+	// Возвращает размер тайлсета в тайлах
+	FVector2i getTileSetSize();
 
 	// Вовзращает структура слоя по id
 	const FLayer& getLayer(int idLayer);
