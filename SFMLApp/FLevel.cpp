@@ -31,8 +31,26 @@ int FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 
 int FLevel::DrawCicle(sf::RenderWindow& window)
 {
-	// Здесь происходит главная отрисовка уровня, и считывание клавишь 
+	sf::Clock clock;
+	float LastTime = 0;
+	int delay = 0;
+
+	// Здесь происходит главная отрисовка уровня, и считывание действий игрока
 	while (!bGameEnd) {
+		float currentTime = clock.restart().asSeconds();
+		float fps = 1.f / currentTime;
+		LastTime = currentTime;
+
+		if (delay < 1000) {
+			system("cls");
+			printf("fps: %d", (int)fps);
+			delay = 0;
+		}
+		else {
+			delay++;
+		}
+
+		// Проверка событий в игре
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			// Выход из игры
@@ -50,6 +68,7 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 			}
 		}
 
+		// Проверяет зажата ли клавиша
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 			// Ходьба вправо
 			PlayerPawn.SetStance(EActionList::Move_Right);

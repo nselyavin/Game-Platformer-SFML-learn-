@@ -41,6 +41,9 @@ private:
 	// * Информация о карте 
 
 public:
+	
+	~UWorld();
+
 	// Инициализация уровня. Чтение мира из файлов и занос его в массив.
 	void CreateWorld(sf::Uint32 LvlName);
 

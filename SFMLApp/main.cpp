@@ -10,19 +10,19 @@
 
 int main()
 {
-	// Код для сокрытия консоли, нужен для релизной сборки
+	/* // Код для сокрытия консоли, нужен для релизной сборки
 	HWND Hide;
 	AllocConsole();
 	Hide = FindWindowA("ConsoleWindowClass", NULL);
 	ShowWindow(Hide, 1);
-	//  fdsf
+	*/
 
 	//TODO Реализовать чтение настроек из файла конфига
 	sf::Uint32 ScrWidth, ScrHeight;
 	sf::Uint32 FrameRate;
 	ScrWidth = 800;
 	ScrHeight = 600;
-	FrameRate = 30;
+	FrameRate = 64;
 
 	// Текущий уровень игры и всего уровней. ToDo реализовать изменения.
 	sf::Uint32 CurrLvl = 0;
@@ -30,7 +30,7 @@ int main()
 
 	// Иницализации игрового пространства (окна, в котором происходит игра)
 	// Установка соотношения сторон и частоты кадров
-	sf::RenderWindow window(sf::VideoMode(ScrWidth, ScrHeight), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(ScrWidth, ScrHeight, 64), "SFML works!");
 	window.setFramerateLimit(FrameRate);
 
 	// Инициализация класса меню, уровня и загрузочного экрана.
@@ -39,7 +39,6 @@ int main()
 	sf::Texture LoadScrTex;
 	sf::Sprite LoadScr;
 
-	
 	LoadScrTex.loadFromFile(SpritePath + "LoadScreen.jpg");
 	LoadScr.setTexture(LoadScrTex);
 
