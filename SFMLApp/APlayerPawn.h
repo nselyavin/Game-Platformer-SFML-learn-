@@ -58,6 +58,9 @@ public:
 	// Функция движения персонажа
 	void MovePawn();
 
+	// Задает текущую позицию. Влияние внешних сил
+	void setPosition(sf::Vector2f Pos);
+
 	// Возвращает ссылку объект спрайта игрока
 	const sf::Sprite& GetSprite();
 

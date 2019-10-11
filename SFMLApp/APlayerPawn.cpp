@@ -37,6 +37,11 @@ void APlayerPawn::MovePawn()
 	ASprite.move(SpeedX * XDirection, SpeedY * YDirection);
 }
 
+void APlayerPawn::setPosition(sf::Vector2f Pos)
+{
+	ASprite.setPosition(Pos);
+}
+
 void APlayerPawn::SetStance(EActionList Action)
 {
 	// ToDo Реализовать зедержку анимации

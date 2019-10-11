@@ -12,13 +12,12 @@ int FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 	bGameEnd = false;
 	bGameWon = false;
 
-	// Стартовая позиция игрока
-	StartPos.x = window.getSize().x / 2;
-	StartPos.y = window.getSize().y / 2;
-
 	// Инициализации пешки и мира
 	PlayerPawn.CreatePawn(StartPos.x, StartPos.y);
 	World.CreateWorld(1);
+
+	// Стартовая позиция игрока
+	PlayerPawn.setPosition(World.getStartPos());
 
 	Sleep(1000);
 
@@ -37,18 +36,19 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 
 	// Здесь происходит главная отрисовка уровня, и считывание действий игрока
 	while (!bGameEnd) {
+		
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1.f / currentTime;
 		LastTime = currentTime;
 
 		if (delay < 1000) {
-			system("cls");
 			printf("fps: %d", (int)fps);
 			delay = 0;
 		}
 		else {
 			delay++;
 		}
+		
 
 		// Проверка событий в игре
 		sf::Event event;

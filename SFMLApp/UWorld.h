@@ -32,6 +32,8 @@ private:
 	sf::Sprite Backgr;
 	// Объект тайлсета
 	sf::Texture TileSetTex;
+	// Стартовая позиция игрока
+	sf::Vector2f StartPos;
 	// Количевство слоев
 	int AmountLayers = 0;
 	// Массив слоев
@@ -50,10 +52,7 @@ public:
 	// Функция отрисовки
 	void DrawWorld(sf::RenderWindow& window);
 
-	// Функция движения мира по позиции пешки.
-	void MoveWorld();
-	
-	//
+	// Возвращает стартовую позицию игрока
 	sf::Vector2f getStartPos();
 
 	

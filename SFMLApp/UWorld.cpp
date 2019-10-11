@@ -21,6 +21,10 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 	TileSetSize.x = ParserXML.getTileSetSize().x;
 	TileSetSize.y = ParserXML.getTileSetSize().y;
 
+	// ToDo считывать стартовую позицию из парсера
+	StartPos.x = 384.f;
+	StartPos.y = 160.f;
+
 	// Задаем задний фон уровня
 	// ToDo переместить название в переменную, и вызывать под нужды уровня
 	BackgrTex.loadFromFile(SpritePath + "SpaceBack.jpg");
@@ -80,5 +84,10 @@ void UWorld::DrawWorld(sf::RenderWindow& window)
 			}
 		}
 	}
+}
+
+sf::Vector2f UWorld::getStartPos()
+{
+	return StartPos;
 }
 
