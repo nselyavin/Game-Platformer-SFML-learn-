@@ -691,6 +691,11 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
     if (!layer.name().isEmpty())
         w.writeAttribute(QLatin1String("name"), layer.name());
 
+    if (!layer.isCollision())
+        w.writeAttribute(QLatin1String("collision"), QString::fromStdString("false"));
+    else
+        w.writeAttribute(QLatin1String("collision"), QString::fromStdString("true"));
+
     const int x = layer.x();
     const int y = layer.y();
     const qreal opacity = layer.opacity();

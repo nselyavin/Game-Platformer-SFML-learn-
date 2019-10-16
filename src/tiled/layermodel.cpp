@@ -133,6 +133,8 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
             return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
         if (index.column() == 2)
             return layer->isLocked() ? Qt::Checked : Qt::Unchecked;
+        if (index.column() == 3)
+            return layer->isCollision() ? Qt::Checked : Qt::Unchecked;
         break;
     case OpacityRole:
         return layer->opacity();
@@ -174,6 +176,17 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
                                                            locked);
                 mMapDocument->undoStack()->push(command);
             }
+          }
+        if (index.column() == 3) {
+               Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
+               const bool collision = (c == Qt::Checked);
+               if (collision != layer->isCollision()) {
+                   QUndoCommand *command = new SetLayerCollision(mMapDocument,
+                                                              layer,
+                                                              collision);
+                   mMapDocument->undoStack()->push(command);
+         }
+
         }
         return true;
     } else if (role == OpacityRole) {
@@ -208,7 +221,7 @@ Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractItemModel::flags(index);
 
-    if (index.column() == 1 || index.column() == 2)
+    if (index.column() == 1 || index.column() == 2 || index.column() == 3)
         rc |= Qt::ItemIsUserCheckable;
 
     if (index.column() == 0)
@@ -236,6 +249,7 @@ QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
         case 0: return tr("Layer");
         case 1: return tr("Visible");
         case 2: return tr("Locked");
+        case 3: return tr("Collision");
         }
     }
     return QVariant();
@@ -491,6 +505,9 @@ void LayerModel::toggleLockLayers(const QList<Layer *> &layers)
  */
 void LayerModel::toggleCollisionLayers(const QList<Layer *> &layers)
 {
+    if (layers.isEmpty())
+        return;
+
     bool collision = std::any_of(layers.begin(), layers.end(),
                               [] (Layer *layer) { return !layer->isCollision(); });
 
@@ -605,6 +622,7 @@ void LayerModel::documentChanged(const ChangeEvent &change)
     case ChangeEvent::LayerChanged: {
         const auto &layerChange = static_cast<const LayerChangeEvent&>(change);
 
+        // ToDo Fix out of range trouble
         QVarLengthArray<int, 3> columns;
         if (layerChange.properties & LayerChangeEvent::NameProperty)
             columns.append(0);
@@ -612,6 +630,8 @@ void LayerModel::documentChanged(const ChangeEvent &change)
             columns.append(1);
         if (layerChange.properties & LayerChangeEvent::LockedProperty)
             columns.append(2);
+        //if (layerChange.properties & LayerChangeEvent::CollisionProperty)
+         //   columns.append(3);
 
         if (!columns.isEmpty()) {
             auto minMaxPair = std::minmax_element(columns.begin(), columns.end());

@@ -142,11 +142,14 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
         mLayerView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
         mLayerView->header()->setSectionResizeMode(1, QHeaderView::Fixed);
         mLayerView->header()->setSectionResizeMode(2, QHeaderView::Fixed);
+        //mLayerView->header()->setSectionResizeMode(3, QHeaderView::Fixed);
 
         const int iconSectionWidth = IconCheckDelegate::exclusiveSectionWidth();
         mLayerView->header()->setMinimumSectionSize(iconSectionWidth);
         mLayerView->header()->resizeSection(1, iconSectionWidth);
         mLayerView->header()->resizeSection(2, iconSectionWidth);
+        //mLayerView->header()->resizeSection(3, iconSectionWidth);
+
     }
 
     updateOpacitySlider();
@@ -283,8 +286,8 @@ LayerView::LayerView(QWidget *parent)
     setModel(mProxyModel);
     setItemDelegateForColumn(0, new BoldCurrentItemDelegate(selectionModel(), this));
     setItemDelegateForColumn(1, new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, true, this));
-    //setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, true, this));
-    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::CollisionIcon, true, this));
+    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, true, this));
+    setItemDelegateForColumn(3, new IconCheckDelegate(IconCheckDelegate::CollisionIcon, true, this));
 
     header()->setStretchLastSection(false);
 
@@ -461,7 +464,7 @@ void LayerView::keyPressEvent(QKeyEvent *event)
             if (event->modifiers() & Qt::ControlModifier)
                 command = new SetLayerLocked(mMapDocument, layer, !layer->isLocked());
             else
-                command = new SetLayerVisible(mMapDocument, layer, !layer->isVisible());
+                command = new SetLayerCollision(mMapDocument, layer, !layer->isCollision());
             mMapDocument->undoStack()->push(command);
             return;
         }

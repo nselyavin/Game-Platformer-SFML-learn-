@@ -35,6 +35,14 @@ IconCheckDelegate::IconCheckDelegate(IconType icon,
     , mExclusive(exclusive)
 {
     switch (icon) {
+    case CollisionIcon:
+        mCheckedIcon.addFile(QLatin1String(":/images/14/Collision.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/16/Collision.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/24/Collision.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/14/UnCollision.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/16/UnCollision.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/24/UnCollision.png"));
+        break;
     case LockedIcon:
         mCheckedIcon.addFile(QLatin1String(":/images/14/locked.png"));
         mCheckedIcon.addFile(QLatin1String(":/images/16/locked.png"));
@@ -50,14 +58,6 @@ IconCheckDelegate::IconCheckDelegate(IconType icon,
         mUncheckedIcon.addFile(QLatin1String(":/images/14/hidden.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/16/hidden.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/24/hidden.png"));
-        break;
-    case CollisionIcon:
-        mCheckedIcon.addFile(QLatin1String(":/images/14/Collision.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/16/Collision.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/24/Collision.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/14/UnCollision.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/16/UnCollision.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/24/UnCollision.png"));
         break;
     }
 
