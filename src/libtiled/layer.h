@@ -119,10 +119,10 @@ public:
      */
     bool isLocked() const { return mLocked; }
 
-	/**
-	*  Returns the collision status of this layer
-	*/
-	bool isCollis() const { return mCollis; }
+    /**
+     * Returns the collision status of current layer.
+     */
+    bool isCollision() const { return mCollision; }
 
     /**
      * Returns the lock status of layer including parent layers.
@@ -131,14 +131,16 @@ public:
 
     bool isHidden() const;
 
+    bool isUnCollision() const;
+
     /**
      * Sets the visibility of this layer.
      */
     void setVisible(bool visible) { mVisible = visible; }
-	
+
     void setLocked(bool locked) { mLocked = locked; }
 
-	void setCollis(bool collis) { mCollis = collis; }
+    void setCollision(bool collis) { mCollision = collis; }
 
     /**
      * Returns the map this layer is part of.
@@ -266,7 +268,7 @@ protected:
     Map *mMap;
     GroupLayer *mParentLayer;
     bool mLocked;
-	bool mCollis;
+    bool mCollision;
 
     friend class Map;
     friend class GroupLayer;

@@ -34,7 +34,8 @@ class IconCheckDelegate : public QItemDelegate
 public:
     enum IconType {
         VisibilityIcon,
-        LockedIcon
+        LockedIcon,
+        CollisionIcon
     };
 
     explicit IconCheckDelegate(IconType icon,

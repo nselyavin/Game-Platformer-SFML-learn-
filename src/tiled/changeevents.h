@@ -59,7 +59,7 @@ public:
         VisibleProperty         = 1 << 2,
         LockedProperty          = 1 << 3,
         OffsetProperty          = 1 << 4,
-		CollisPropertu			= 1 << 5,
+        CollisionProperty		= 1 << 5,
         AllProperties           = 0xFF
     };
 

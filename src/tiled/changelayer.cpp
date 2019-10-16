@@ -109,24 +109,24 @@ void SetLayerLocked::swap()
     emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::LockedProperty));
 }
 
-SetLayerCollis::SetLayerCollis(Document* document, Layer* layer, bool collis)
+SetLayerCollision::SetLayerCollision(Document* document, Layer* layer, bool collis)
 	: mDocument(document)
 	, mLayer(layer)
 	, mCollis(collis)
 {
 	if (collis)
-		setText(QCoreApplication::tranclate("Undo Commands", "Collis Layer"));
+        setText(QCoreApplication::translate("Undo Commands", "Collis Layer"));
 	else
-		setText(QCoreApplication::tranclate("Undo Commands", "Uncollis Layer"));
+        setText(QCoreApplication::translate("Undo Commands", "Uncollis Layer"));
 }
 
-void SetLayerCollis::swap()
+void SetLayerCollision::swap()
 {
-	const bool previousCollis = mLayer->isCollis();
-	mLayer->setCollis(collis);
+    const bool previousCollis = mLayer->isCollision();
+    mLayer->setCollision(mCollis);
 	mCollis = previousCollis;
 
-	emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::CollisProperty));
+    emit mDocument->changed(LayerChangeEvent(mLayer, LayerChangeEvent::CollisionProperty));
 }
 
 SetLayerOpacity::SetLayerOpacity(Document *document,

@@ -283,8 +283,8 @@ LayerView::LayerView(QWidget *parent)
     setModel(mProxyModel);
     setItemDelegateForColumn(0, new BoldCurrentItemDelegate(selectionModel(), this));
     setItemDelegateForColumn(1, new IconCheckDelegate(IconCheckDelegate::VisibilityIcon, true, this));
-    //setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, true, this));
-    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::CollisionIcon, true, this));
+    setItemDelegateForColumn(2, new IconCheckDelegate(IconCheckDelegate::LockedIcon, true, this));
+    setItemDelegateForColumn(3, new IconCheckDelegate(IconCheckDelegate::CollisionIcon, true, this));
 
     header()->setStretchLastSection(false);
 

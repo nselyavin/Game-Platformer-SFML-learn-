@@ -81,6 +81,7 @@ public slots:
     void setOpacity(qreal opacity);
     void setVisible(bool visible);
     void setLocked(bool locked);
+    void setCollision(bool collision);
     void setOffset(QPointF offset);
     void setSelected(bool selected);
 
@@ -114,7 +115,7 @@ inline bool EditableLayer::isLocked() const
 
 inline bool EditableLayer::isCollis() const
 {
-	return layer()->isCollis();
+	return layer()->isCollision();
 }
 
 inline QPointF EditableLayer::offset() const

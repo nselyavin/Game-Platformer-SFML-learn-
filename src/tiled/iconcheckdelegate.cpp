@@ -1,4 +1,4 @@
-/*
+п»ї/*
  * iconcheckdelegate.cpp
  * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
  *
@@ -51,16 +51,15 @@ IconCheckDelegate::IconCheckDelegate(IconType icon,
         mUncheckedIcon.addFile(QLatin1String(":/images/16/hidden.png"));
         mUncheckedIcon.addFile(QLatin1String(":/images/24/hidden.png"));
         break;
-	case CollisIcon:
-		//ToDo поменят на свои иконки
-		mCheckedIcon.addFile(QLatin1String(":/images/16/Collision.png"));
-		mCheckedIcon.addFile(QLatin1String(":/images/14/Collision.png"));
-		mCheckedIcon.addFile(QLatin1String(":/images/24/Collision.png"));
-		mUncheckedIcon.addFile(QLatin1String(":/images/14/UnCollision.png"));
-		mUncheckedIcon.addFile(QLatin1String(":/images/16/UnCollision.png"));
-		mUncheckedIcon.addFile(QLatin1String(":/images/24/UnCollision.png"));
-		break;
-	}
+    case CollisionIcon:
+        mCheckedIcon.addFile(QLatin1String(":/images/14/Collision.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/16/Collision.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/24/Collision.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/14/UnCollision.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/16/UnCollision.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/24/UnCollision.png"));
+        break;
+    }
 
     setClipping(false);
 }

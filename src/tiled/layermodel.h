@@ -87,6 +87,7 @@ public:
 
     void toggleLayers(const QList<Layer *> &layers);
     void toggleLockLayers(const QList<Layer *> &layers);
+    void toggleCollisionLayers(const QList<Layer *> &layers);
     void toggleOtherLayers(const QList<Layer *> &layers);
     void toggleLockOtherLayers(const QList<Layer *> &layers);
 

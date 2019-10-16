@@ -138,6 +138,14 @@ void EditableLayer::setLocked(bool locked)
         layer()->setLocked(locked);
 }
 
+void EditableLayer::setCollision(bool collision)
+{
+    if (auto doc = document())
+        asset()->push(new SetLayerCollision(doc, layer(), collision));
+    else if (!checkReadOnly())
+        layer()->setCollision(collision);
+}
+
 void EditableLayer::setOffset(QPointF offset)
 {
     if (auto doc = document())

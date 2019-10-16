@@ -790,6 +790,11 @@ void MapDocument::toggleLockLayers(const QList<Layer *> &layers)
     mLayerModel->toggleLockLayers(layers);
 }
 
+void MapDocument::toggleCollisionLayers(const QList<Layer *> &layers)
+{
+    mLayerModel->toggleCollisionLayers(layers);
+}
+
 /**
  * \see LayerModel::toggleOtherLayers
  */

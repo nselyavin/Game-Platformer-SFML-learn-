@@ -48,7 +48,8 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
     mVisible(true),
     mMap(nullptr),
     mParentLayer(nullptr),
-    mLocked(false)
+    mLocked(false),
+    mCollision(false)
 {
 }
 
@@ -98,6 +99,14 @@ bool Layer::isUnlocked() const
 {
     const Layer *layer = this;
     while (layer && !layer->isLocked())
+        layer = layer->parentLayer();
+    return !layer;
+}
+
+bool Layer::isUnCollision() const
+{
+    const Layer *layer = this;
+    while (layer && !layer->isCollision())
         layer = layer->parentLayer();
     return !layer;
 }

@@ -106,6 +106,7 @@ private:
         RotationProperty,
         VisibleProperty,
         LockedProperty,
+        CollisionProperty,
         OpacityProperty,
         TextProperty,
         TextAlignmentProperty,

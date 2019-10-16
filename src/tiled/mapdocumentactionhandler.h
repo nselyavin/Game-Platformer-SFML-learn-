@@ -82,6 +82,7 @@ public:
     QAction *actionMoveLayersDown() const { return mActionMoveLayersDown; }
     QAction *actionToggleSelectedLayers() const { return mActionToggleSelectedLayers; }
     QAction *actionToggleLockSelectedLayers() const { return mActionToggleLockSelectedLayers; }
+    QAction *ActionToggleCollisionSelectedLayers() const { return mActionToggleCollisionSelectedLayers; }
     QAction *actionToggleOtherLayers() const { return mActionToggleOtherLayers; }
     QAction *actionToggleLockOtherLayers() const { return mActionToggleLockOtherLayers; }
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
@@ -125,6 +126,7 @@ public slots:
     void removeLayers();
     void toggleSelectedLayers();
     void toggleLockSelectedLayers();
+    void toggleCollisionSelectedLayers();
     void toggleOtherLayers();
     void toggleLockOtherLayers();
     void layerProperties();
@@ -164,6 +166,7 @@ private:
     QAction *mActionMoveLayersDown;
     QAction *mActionToggleSelectedLayers;
     QAction *mActionToggleLockSelectedLayers;
+    QAction *mActionToggleCollisionSelectedLayers;
     QAction *mActionToggleOtherLayers;
     QAction *mActionToggleLockOtherLayers;
     QAction *mActionLayerProperties;

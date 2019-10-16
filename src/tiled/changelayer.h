@@ -92,10 +92,10 @@ private:
 };
 
 
-class SetLayerCollis : public QUndoCommand
+class SetLayerCollision : public QUndoCommand
 {
 public:
-	SetLayerCollis(Document* document,
+    SetLayerCollision(Document* document,
 		           Layer* layer,
 				   bool collis);
 	void undo() override { swap(); }

@@ -151,6 +151,17 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionToggleLockOtherLayers->setShortcut(tr("Ctrl+Shift+L"));
     mActionToggleLockOtherLayers->setIcon(lockedIcon);
 
+
+    QIcon collisionIcon;
+    collisionIcon.addFile(QLatin1String(":/images/14/UnCollision.png"));
+    collisionIcon.addFile(QLatin1String(":/images/16/UnCollision.png"));
+    collisionIcon.addFile(QLatin1String(":/images/24/UnCollision.png"));
+
+    mActionToggleCollisionSelectedLayers = new QAction(this);
+    mActionToggleCollisionSelectedLayers->setShortcut(tr("Ctrl+K"));
+    mActionToggleCollisionSelectedLayers->setIcon(collisionIcon);
+
+
     mActionLayerProperties = new QAction(this);
     mActionLayerProperties->setIcon(
             QIcon(QLatin1String(":images/16/document-properties.png")));
@@ -190,6 +201,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionMoveLayersDown, &QAction::triggered, this, &MapDocumentActionHandler::moveLayersDown);
     connect(mActionToggleSelectedLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleSelectedLayers);
     connect(mActionToggleLockSelectedLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleLockSelectedLayers);
+    connect(mActionToggleCollisionSelectedLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleCollisionSelectedLayers);
     connect(mActionToggleOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleOtherLayers);
     connect(mActionToggleLockOtherLayers, &QAction::triggered, this, &MapDocumentActionHandler::toggleLockOtherLayers);
     connect(mActionLayerProperties, &QAction::triggered, this, &MapDocumentActionHandler::layerProperties);
@@ -220,6 +232,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     ActionManager::registerAction(mActionMoveLayersDown, "MoveLayersDown");
     ActionManager::registerAction(mActionToggleSelectedLayers, "ToggleSelectedLayers");
     ActionManager::registerAction(mActionToggleLockSelectedLayers, "ToggleLockSelectedLayers");
+    ActionManager::registerAction(mActionToggleCollisionSelectedLayers, "ToggleCollisionLayers");
     ActionManager::registerAction(mActionToggleOtherLayers, "ToggleOtherLayers");
     ActionManager::registerAction(mActionToggleLockOtherLayers, "ToggleLockOtherLayers");
     ActionManager::registerAction(mActionLayerProperties, "LayerProperties");
@@ -262,6 +275,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionMoveLayersDown->setText(tr("&Lower Layers"));
     mActionToggleSelectedLayers->setText(tr("Show/&Hide Layers"));
     mActionToggleLockSelectedLayers->setText(tr("Lock/&Unlock Layers"));
+    mActionToggleCollisionSelectedLayers->setText(tr("Collision/&UnCollision Layers"));
     mActionToggleOtherLayers->setText(tr("Show/&Hide Other Layers"));
     mActionToggleLockOtherLayers->setText(tr("Lock/&Unlock Other Layers"));
     mActionLayerProperties->setText(tr("Layer &Properties..."));
@@ -731,6 +745,13 @@ void MapDocumentActionHandler::toggleLockSelectedLayers()
         mMapDocument->toggleLockLayers(mMapDocument->selectedLayers());
 }
 
+void MapDocumentActionHandler::toggleCollisionSelectedLayers()
+{
+    if (mMapDocument)
+        mMapDocument->toggleCollisionLayers(mMapDocument->selectedLayers());
+}
+
+
 void MapDocumentActionHandler::toggleOtherLayers()
 {
     if (mMapDocument)
@@ -828,6 +849,7 @@ void MapDocumentActionHandler::updateActions()
     mActionMoveLayersDown->setEnabled(canMoveLayersDown);
     mActionToggleSelectedLayers->setEnabled(!selectedLayers.isEmpty());
     mActionToggleLockSelectedLayers->setEnabled(!selectedLayers.isEmpty());
+    mActionToggleCollisionSelectedLayers->setEnabled(!selectedLayers.isEmpty());
     mActionToggleOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionToggleLockOtherLayers->setEnabled(currentLayer && (hasNextLayer || hasPreviousLayer));
     mActionRemoveLayers->setEnabled(!selectedLayers.isEmpty());

@@ -726,6 +726,7 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     addProperty(NameProperty, QVariant::String, tr("Name"), parent);
     addProperty(VisibleProperty, QVariant::Bool, tr("Visible"), parent);
     addProperty(LockedProperty, QVariant::Bool, tr("Locked"), parent);
+    addProperty(CollisionProperty, QVariant::Bool, tr("Collision"), parent);
 
     QtVariantProperty *opacityProperty =
             addProperty(OpacityProperty, QVariant::Double, tr("Opacity"), parent);
@@ -1168,6 +1169,9 @@ QUndoCommand *PropertyBrowser::applyLayerValueTo(PropertyBrowser::PropertyId id,
         break;
     case LockedProperty:
         command = new SetLayerLocked(mMapDocument, layer, val.toBool());
+        break;
+    case CollisionProperty:
+        command = new SetLayerCollision(mMapDocument, layer, val.toBool());
         break;
     case OpacityProperty:
         command = new SetLayerOpacity(mMapDocument, layer, val.toDouble());
@@ -1693,6 +1697,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(layer->name());
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[LockedProperty]->setValue(layer->isLocked());
+        mIdToProperty[CollisionProperty]->setValue(layer->isCollision());
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
         mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
         mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());

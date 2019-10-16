@@ -273,7 +273,7 @@ Qt::DropActions LayerModel::supportedDropActions() const
 bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                               int row, int column, const QModelIndex &parent)
 {
-    Q_UNUSED(column);
+    Q_UNUSED(column)
 
     if (!data || action != Qt::MoveAction)
         return false;
@@ -482,6 +482,27 @@ void LayerModel::toggleLockLayers(const QList<Layer *> &layers)
     for (Layer *l : layers)
         if (locked != l->isLocked())
             undoStack->push(new SetLayerLocked(mMapDocument, l, locked));
+
+    undoStack->endMacro();
+}
+
+/**
+ * Set collision layers when any are UnCollision, UnCollision otherwise.
+ */
+void LayerModel::toggleCollisionLayers(const QList<Layer *> &layers)
+{
+    bool collision = std::any_of(layers.begin(), layers.end(),
+                              [] (Layer *layer) { return !layer->isCollision(); });
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (collision)
+        undoStack->beginMacro(tr("Collision Layers"));
+    else
+        undoStack->beginMacro(tr("UnCollision Layers"));
+
+    for (Layer *l : layers)
+        if (collision != l->isCollision())
+            undoStack->push(new SetLayerCollision(mMapDocument, l, collision));
 
     undoStack->endMacro();
 }
