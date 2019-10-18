@@ -23,14 +23,18 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 
 	// ToDo считывать стартовую позицию из парсера
 	StartPos.x = 384.f;
-	StartPos.y = 160.f;
+	StartPos.y = 100.f;
 
 	// Задаем задний фон уровня
 	// ToDo переместить название в переменную, и вызывать под нужды уровня
 	BackgrTex.loadFromFile(SpritePath + "SpaceBack.jpg");
 	Backgr.setTexture(BackgrTex);
 
-	TileSetTex.loadFromFile(SpritePath + "StarShipTiles.png");
+	sf::String PathToSet;
+	PathToSet = ParserXML.getPathToSet();
+
+	PathToSet.erase(0, 2);
+	TileSetTex.loadFromFile("..\/Resource" + PathToSet);
 
 	this->AmountLayers = ParserXML.getAmountLayer();
 

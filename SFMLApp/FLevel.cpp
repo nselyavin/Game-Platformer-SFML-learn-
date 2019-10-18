@@ -37,6 +37,7 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 	// «десь происходит главна€ отрисовка уровн€, и считывание действий игрока
 	while (!bGameEnd) {
 		
+		/*
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1.f / currentTime;
 		LastTime = currentTime;
@@ -48,6 +49,7 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 		else {
 			delay++;
 		}
+		*/
 		
 
 		// ѕроверка событий в игре

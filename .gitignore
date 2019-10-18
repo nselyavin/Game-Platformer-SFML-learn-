@@ -13,6 +13,7 @@
 .sln
 .dll
 .sln
+SFML-2.5.1/
 
 *.vcxproj
 *.vcxproj.filters

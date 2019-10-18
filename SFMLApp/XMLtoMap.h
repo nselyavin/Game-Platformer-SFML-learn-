@@ -20,8 +20,16 @@ struct FLayer
 	std::vector <std::vector<int>> arr;
 };
 
+struct FCollisMap
+{
+	bool** CollisArr = new bool*;
+};
+
 struct FLevelStruct
 {
+	// Путь к тайлсету
+	std::string PathToSet;
+
 	// Размер ТайлСета
 	FVector2i TileSetSize;
 
@@ -50,6 +58,8 @@ private:
 	std::string LvlName;
 	// Объявление структуры уровня, содержащая параметры уровня
 	FLevelStruct LevelStruct; 
+	// Карта колизии уровня
+	FCollisMap CollisMap;
 	// Массив слове уровня
 	FLayer* Layers = new FLayer[LevelStruct.AmountLayer];
 	// Текущий слой для заполнения
@@ -68,6 +78,9 @@ public:
 	// Увеличение общего количества слоев на уровне
 	FLayer* AddLayer(FLayer *Layer, const int Amount);
 
+	// Возвращает путь до картинки тайлсета
+	const std::string getPathToSet();
+
 	// Возращает количество клеток не уровне
 	FVector2i getLvlSize();
 
@@ -79,6 +92,9 @@ public:
 
 	// Вовзращает структура слоя по id
 	const FLayer& getLayer(int idLayer);
+
+	// Возвращает объект коллизии
+	const FCollisMap getCollisMap();
 
 	// Возвращает количество слоев на уровне
 	const int getAmountLayer();

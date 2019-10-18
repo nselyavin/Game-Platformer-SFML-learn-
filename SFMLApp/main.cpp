@@ -6,7 +6,7 @@
 #include "IMainMenu.h"
 #include "FLevel.h"
 #include "XMLtoMap.h"
-#include <windows.h> Нужня для сокрытия консоли
+// #include <windows.h> Нужня для сокрытия консоли
 
 int main()
 {
@@ -77,6 +77,7 @@ int main()
 
 		// Завершающие
 		case EEndStatus::Exit:
+			// ToDo пофиксить краш при выходе из игры
 			bGameEnd = true;
 			window.close();
 			break;

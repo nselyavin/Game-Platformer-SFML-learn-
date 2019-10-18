@@ -3,11 +3,15 @@
 
 FParserXML::FParserXML(std::string LvlName)
 {
+	// Файл
 	std::ifstream ifsLvl;
+	// Строка читающая файл
 	std::string line;
-
+	// Путь к файлу уровня
 	std::string LvlPath = LevelPath;
+	bool bCollis = false;
 
+	/*
 	///////// Парсинг файла тайлсетов  \\\\\\\\
 
 	ifsLvl.open(LvlPath + "StarShipTiles" + ".tsx");
@@ -33,12 +37,14 @@ FParserXML::FParserXML(std::string LvlName)
 		// Поиск размера тайлсета
 		FindRes = line.find("<image");
 		if (FindRes != std::string::npos) {
+
 				LevelStruct.TileSetSize.x = std::stoi(getValueByTag(line, "width")) / LevelStruct.TileSize.x;
 				LevelStruct.TileSetSize.y = std::stoi(getValueByTag(line, "height")) / LevelStruct.TileSize.y;
 		}
 	}
 
 	ifsLvl.close();
+	*/
 
 	///////// Парсинг файла уровня \\\\\\\\\\\
 
@@ -61,13 +67,43 @@ FParserXML::FParserXML(std::string LvlName)
 			// Получаем по тегу размеры карты
 			LevelStruct.LvlSize.x = std::stoi(getValueByTag(line, "width"));
 			LevelStruct.LvlSize.y = std::stoi(getValueByTag(line, "height"));
+
+			CollisMap.CollisArr = new bool*[LevelStruct.LvlSize.y];
+			for (int i = 0; i < LevelStruct.LvlSize.y; i++) {
+				CollisMap.CollisArr[i] = new bool[LevelStruct.LvlSize.x];
+				for (int j = 0; j < LevelStruct.LvlSize.x; j++) {
+					CollisMap.CollisArr[i][j] = false;
+				}
+			}
 		}	
+
+		// Поиск таййлесета
+		FindRes = line.find("<tileset");
+		if (FindRes != std::string::npos) {
+			LevelStruct.TileSize.x = std::stoi(getValueByTag(line, "tilewidth"));
+			LevelStruct.TileSize.y = std::stoi(getValueByTag(line, "tileheight"));
+			LevelStruct.AmountTiles = std::stoi(getValueByTag(line, "tilecount"));
+		}
+
+		// Поиск изображение тайлсета
+		FindRes = line.find("<image");
+		if (FindRes != std::string::npos) {
+			LevelStruct.PathToSet = (getValueByTag(line, "source"));
+			LevelStruct.TileSetSize.x = std::stoi(getValueByTag(line, "width")) / LevelStruct.TileSize.x;
+			LevelStruct.TileSetSize.y = std::stoi(getValueByTag(line, "height")) / LevelStruct.TileSize.y;
+		}
 
 		// Поиск слоев
 		FindRes = line.find("<layer");
 		if (FindRes != std::string::npos) {
 			Layers = AddLayer(Layers, LevelStruct.AmountLayer);
 			Layers[LevelStruct.AmountLayer].name = getValueByTag(line, "name");
+
+			if (getValueByTag(line, "collision") == "true")
+				bCollis = true;
+			else
+				bCollis = false;
+
 			LevelStruct.AmountLayer++;		
 			CurrLayer++;								  
 			i = 0;										  
@@ -77,9 +113,17 @@ FParserXML::FParserXML(std::string LvlName)
 		// Поиск тайлов
 		FindRes = line.find("<tile");
 		if (FindRes != std::string::npos) {
-			FindRes = line.find("<tileset");
+			FindRes = line.find("<tileset");	
 			if (FindRes == std::string::npos) {
+
 				Layers[CurrLayer].arr[i][j] = std::stoi(getValueByTag(line, "gid"));
+
+				if (bCollis == true) {
+					if (Layers[CurrLayer].arr[i][j] != 0) {
+						CollisMap.CollisArr[i][j] = true;
+					}
+				}
+
 				i = i + ((j + 1) / LevelStruct.LvlSize.x);
 				j = (j + 1) % LevelStruct.LvlSize.x;
 			}
@@ -145,6 +189,11 @@ FLayer* FParserXML::AddLayer(FLayer* Layer, const int Amount)
 	return Layer;
 }
 
+const std::string FParserXML::getPathToSet()
+{
+	return LevelStruct.PathToSet;
+}
+
 FVector2i FParserXML::getLvlSize()
 {
 	return LevelStruct.LvlSize;
@@ -163,6 +212,11 @@ FVector2i FParserXML::getTileSetSize()
 const FLayer& FParserXML::getLayer(int idLayer)
 {
 	return Layers[idLayer];
+}
+
+const FCollisMap FParserXML::getCollisMap()
+{
+	return CollisMap;
 }
 
 const int FParserXML::getAmountLayer() {
