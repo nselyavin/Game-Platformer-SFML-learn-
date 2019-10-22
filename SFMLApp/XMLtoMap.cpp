@@ -9,42 +9,8 @@ FParserXML::FParserXML(std::string LvlName)
 	std::string line;
 	// Путь к файлу уровня
 	std::string LvlPath = LevelPath;
+	// Статус коллизии, если true - считывать коллизия со слоя, иначе не считывать
 	bool bCollis = false;
-
-	/*
-	///////// Парсинг файла тайлсетов  \\\\\\\\
-
-	ifsLvl.open(LvlPath + "StarShipTiles" + ".tsx");
-
-	if (!ifsLvl.is_open())
-		printf("XML Parser >> TileSet: \nFile opening faled");
-
-	while (!ifsLvl.eof()) {
-		// Считывание из файла
-		getline(ifsLvl, line);
-
-		std::string::size_type FindRes = std::string::npos;
-
-		// Поиск тайлов
-		FindRes = line.find("<tileset");
-		if (FindRes != std::string::npos) {
-			// Получаем по тегу размер тайла
-			LevelStruct.TileSize.x = std::stoi(getValueByTag(line, "tilewidth"));
-			LevelStruct.TileSize.y = std::stoi(getValueByTag(line, "tileheight"));
-			LevelStruct.AmountTiles = std::stoi(getValueByTag(line, "tilecount"));
-		}
-
-		// Поиск размера тайлсета
-		FindRes = line.find("<image");
-		if (FindRes != std::string::npos) {
-
-				LevelStruct.TileSetSize.x = std::stoi(getValueByTag(line, "width")) / LevelStruct.TileSize.x;
-				LevelStruct.TileSetSize.y = std::stoi(getValueByTag(line, "height")) / LevelStruct.TileSize.y;
-		}
-	}
-
-	ifsLvl.close();
-	*/
 
 	///////// Парсинг файла уровня \\\\\\\\\\\
 
@@ -99,11 +65,13 @@ FParserXML::FParserXML(std::string LvlName)
 			Layers = AddLayer(Layers, LevelStruct.AmountLayer);
 			Layers[LevelStruct.AmountLayer].name = getValueByTag(line, "name");
 
+			// Изменение статуса коллизии в зависимости от параметра слоя 
 			if (getValueByTag(line, "collision") == "true")
 				bCollis = true;
 			else
 				bCollis = false;
 
+			// Инкремент количества слоев. Сброс индексов для заполнения массива карты
 			LevelStruct.AmountLayer++;		
 			CurrLayer++;								  
 			i = 0;										  
@@ -139,6 +107,7 @@ FParserXML::FParserXML(std::string LvlName)
 FParserXML::~FParserXML()
 {
 	delete[] Layers;
+	//delete[] CollisMap.CollisArr;
 }
 
 

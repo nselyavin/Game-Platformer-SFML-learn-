@@ -76,11 +76,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programs\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>D:\Programs\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -136,6 +136,7 @@
     <ClCompile Include="FLevel.cpp" />
     <ClCompile Include="IMainMenu.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="USpell.cpp" />
     <ClCompile Include="UWorld.cpp" />
     <ClCompile Include="XMLtoMap.cpp" />
   </ItemGroup>
@@ -144,6 +145,7 @@
     <ClInclude Include="IMainMenu.h" />
     <ClInclude Include="GameConst.h" />
     <ClInclude Include="FLevel.h" />
+    <ClInclude Include="USpell.h" />
     <ClInclude Include="UWorld.h" />
     <ClInclude Include="XMLtoMap.h" />
   </ItemGroup>

@@ -1,11 +1,34 @@
 #include "IMainMenu.h"
 #include <iostream>;
 
+IMainMenu::IMainMenu()
+{
+	SelectedLvl = 0;
+	CurrBackSlide = 0;
+	bMenuClosed = 0;
+
+}
+
 int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate)
 {
+	// Сбрасывает позицию камеры до нулевой, чтобы меню не съезжало
+	sf::View Camera;
+	Camera.reset(sf::FloatRect(0, 0, ScrWidth, ScrHeight));
+	window.setView(Camera);
+
+	// Сохранение параметров экрана
 	this->ScrWidth = ScrWidth;
 	this->ScrHeight = ScrHeight;
 	this->FrameRate = FrameRate;
+
+	// Инициализация последней позиции мыши
+	LastMousePos.x = 0;
+	LastMousePos.y = 0;
+
+	MenuStatus = EEndStatus::Menu;
+
+	// Статус закрытия меню
+	bMenuClosed = false;
 
 	// Задаем тексутры, рект и позицию для логотипа
 	if (!LogoTexture.loadFromFile(SpritePath + "Logo.png")) {
@@ -26,11 +49,12 @@ int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint
 	}
 	BackMenu.setTexture(BackMenuText);
 
-	if (!Font.loadFromFile(FontPath + "MenuFont.ttf")) {
+	if (!Font.loadFromFile(FontPath + MenuFont)) {
 		printf("Menu:\nFont: ");
 		return EEndStatus::FileLoadFaled;
 	}
 
+	// Задает текст, шрифт, размер кнопок меню
 	StartBtn.setString("Start Game");
 	StartBtn.setFont(Font);
 	StartBtn.setCharacterSize(45);
@@ -42,6 +66,10 @@ int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint
 	EndBtn.setString("End Game");
 	EndBtn.setFont(Font);
 	EndBtn.setCharacterSize(45);
+
+
+
+
 
 	int EndStatus = EEndStatus::GameError;
 	EndStatus = DrawCicle(window);
@@ -59,18 +87,61 @@ void IMainMenu::Center(FText &ObjText)
 
 }
 
+int IMainMenu::BtnActivate(int CurrBtn)
+{
+	// Активирует действие в зависимости от кнопки 
+	switch (CurrBtn) {
+	case(0):
+		SelectedLvl = 1;
+		bMenuClosed = true;
+		return EEndStatus::StartGame; 
+		break;
+	case(1):
+		printf("Nothing");
+		return EEndStatus::Menu;
+		break;
+	case(2):
+		bMenuClosed = true;
+		return EEndStatus::Exit;
+		break;
+	default:
+		return EEndStatus::Menu;
+	}
+}
+
+void IMainMenu::BtnFill(int CurrBtn)
+{
+	// Сбросс цвета выбранной кнопки
+	StartBtn.setFillColor(sf::Color::Color(255, 255, 255));
+	SettingBtn.setFillColor(sf::Color::Color(255, 255, 255));
+	EndBtn.setFillColor(sf::Color::Color(255, 255, 255));
+
+	// Покрасс текущей кнопки
+	switch (CurrBtn) {
+	case(0):
+		StartBtn.setFillColor(sf::Color::Color(0, 255, 255));
+		break;
+	case(1):
+		SettingBtn.setFillColor(sf::Color::Color(0, 255, 255));
+		break;
+	case(2):
+		EndBtn.setFillColor(sf::Color::Color(0, 255, 255));
+		break;
+	}
+}
+
 int IMainMenu::DrawCicle(sf::RenderWindow& window)
 {
-	sf::View Camera;
-	Camera.reset(sf::FloatRect(0, 0, ScrWidth, ScrHeight));
+	// Текущий выбранный пункт меню
+	int CurrBtn = -1;
 
-	int delay = 0;
-	// Инициализация ректов кнопок меню
+
+	// Получение ректов кнопок
 	sf::FloatRect StartBtnRect = StartBtn.getLocalBounds();
-	sf::FloatRect SettingBtnRect= SettingBtn.getLocalBounds();
+	sf::FloatRect SettingBtnRect = SettingBtn.getLocalBounds();
 	sf::FloatRect EndBtnRect = EndBtn.getLocalBounds();
 
-	// Задача положений кнопок меню
+	// Центрирование кнопок по середине экрана
 	Center(StartBtn);
 	StartBtn.setPosition(ScrWidth / 2, 260);
 	Center(SettingBtn);
@@ -78,7 +149,6 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 	Center(EndBtn);
 	EndBtn.setPosition(ScrWidth / 2, 420);
 
-	bMenuClosed = false;
 	// Здесь можно ретюрнить все ошибки через код, следовательно делать проверки.  
 	while (!bMenuClosed) {
 		sf::Event event;
@@ -89,81 +159,92 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 				return EEndStatus::Exit;
 			}
 			
+			// Проверка нажатий клавиш
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
 					bMenuClosed = true;
 					return EEndStatus::Exit;
 				}
-			}
 
-			// Проверки для нажатия кнопок
+				// Изменять выбранную кнопку если нажимаются стрелки
+				if (event.key.code == sf::Keyboard::Down) {
+					if (CurrBtn < 0)
+						CurrBtn = 0;
+
+					CurrBtn = (CurrBtn + 1) % 3;
+
+					// Вызов функции покраски кнопок в зависимости от текущей выбранной кнопки
+					BtnFill(CurrBtn);
+				}
+				else if (event.key.code == sf::Keyboard::Up) {
+					CurrBtn = CurrBtn - 1;
+
+					if (CurrBtn < 0)
+						CurrBtn = 2;
+
+					// Вызов функции покраски кнопок в зависимости от текущей выбранной кнопки
+					BtnFill(CurrBtn);
+				}
+
+				// Активировать текущую кнопку 
+				if (event.key.code == sf::Keyboard::Enter) {
+					MenuStatus = BtnActivate(CurrBtn);
+				}
+			}
+			
+			// Активировать текущую кнопку 
 			if (event.type == sf::Event::MouseButtonPressed){
 				if (event.mouseButton.button == sf::Mouse::Left) {
+					printf("%d", CurrBtn);
+					MenuStatus = BtnActivate(CurrBtn);
+				}
+			}
+			
+			// Проверка для покраски кнопок
+			if (event.type == sf::Event::MouseMoved) {
+				if (LastMousePos.x != event.mouseMove.x && LastMousePos.y != event.mouseMove.y) {
+					CurrBtn = -1;
+
 					// Координаты кнопки старта.
-					if (event.mouseButton.x > StartBtn.getGlobalBounds().left && event.mouseButton.x < (StartBtn.getGlobalBounds().left + StartBtnRect.width)) {
-						if (event.mouseButton.y > StartBtn.getGlobalBounds().top && event.mouseButton.y < (StartBtn.getGlobalBounds().top + StartBtnRect.height)) {
-							SelectedLvl = 1;
-							bMenuClosed = true;
-							return EEndStatus::StartGame;
+					if (event.mouseMove.x > StartBtn.getGlobalBounds().left&& event.mouseMove.x < (StartBtn.getGlobalBounds().left + StartBtnRect.width)) {
+						if (event.mouseMove.y > StartBtn.getGlobalBounds().top&& event.mouseMove.y < (StartBtn.getGlobalBounds().top + StartBtnRect.height)) {
+							CurrBtn = 0;	
 						}
 					}
 
 					// Координаты кнопки настроек.
-					if (event.mouseButton.x > SettingBtn.getGlobalBounds().left && event.mouseButton.x < (SettingBtn.getGlobalBounds().left + SettingBtnRect.width)) {
-						if (event.mouseButton.y > SettingBtn.getGlobalBounds().top && event.mouseButton.y < (SettingBtn.getGlobalBounds().top + SettingBtnRect.height)) {
-							printf("Nothing");
+					if (event.mouseMove.x > SettingBtn.getGlobalBounds().left&& event.mouseMove.x < (SettingBtn.getGlobalBounds().left + SettingBtnRect.width)) {
+						if (event.mouseMove.y > SettingBtn.getGlobalBounds().top&& event.mouseMove.y < (SettingBtn.getGlobalBounds().top + SettingBtnRect.height)) {
+							CurrBtn = 1;
 						}
 					}
 
 					// Координаты кнопки выхода.
-					if (event.mouseButton.x > EndBtn.getGlobalBounds().left &&	event.mouseButton.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
-						if (event.mouseButton.y > EndBtn.getGlobalBounds().top && event.mouseButton.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
-							bMenuClosed = true;
-							return EEndStatus::Exit;
+					if (event.mouseMove.x > EndBtn.getGlobalBounds().left&& event.mouseMove.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
+						if (event.mouseMove.y > EndBtn.getGlobalBounds().top&& event.mouseMove.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
+							CurrBtn = 2;
 						}
+
 					}
-				}
+
+					// Запомоминание последней позиции мыши 
+					LastMousePos.x = event.mouseMove.x;
+					LastMousePos.y = event.mouseMove.y;
+
+					// Вызов функции покраски кнопок в зависимости от текущей выбранной кнопки
+					BtnFill(CurrBtn);	
+				} 
 			}
+			
 
-			StartBtn.setFillColor(sf::Color::White);
-			SettingBtn.setFillColor(sf::Color::White);
-			EndBtn.setFillColor(sf::Color::White);
-			// Проверка для покраски кнопок
-			if (event.type == sf::Event::MouseMoved) {
-				// Координаты кнопки старта.
-				if (event.mouseMove.x > StartBtn.getGlobalBounds().left && event.mouseMove.x < (StartBtn.getGlobalBounds().left + StartBtnRect.width)) {
-					if (event.mouseMove.y > StartBtn.getGlobalBounds().top && event.mouseMove.y < (StartBtn.getGlobalBounds().top + StartBtnRect.height)) {
-						StartBtn.setFillColor(sf::Color::Color(0, 255, 255));
-					}
-				}
-
-				// Координаты кнопки настроек.
-				if (event.mouseMove.x > SettingBtn.getGlobalBounds().left && event.mouseMove.x < (SettingBtn.getGlobalBounds().left + SettingBtnRect.width)) {
-					if (event.mouseMove.y > SettingBtn.getGlobalBounds().top && event.mouseMove.y < (SettingBtn.getGlobalBounds().top + SettingBtnRect.height)) {
-						SettingBtn.setFillColor(sf::Color::Color(0, 255, 255));
-					}
-				}
-
-				// Координаты кнопки выхода.
-				if (event.mouseMove.x > EndBtn.getGlobalBounds().left && event.mouseMove.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
-					if (event.mouseMove.y > EndBtn.getGlobalBounds().top && event.mouseMove.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
-						EndBtn.setFillColor(sf::Color::Color(0, 255, 255));
-					}	
-
-				}
-			}
 		}
 
-		if (delay > 10) {
-			delay = 0;
-			CurrLvl = (CurrLvl + 1) % (BackMenuText.getSize().x / ScrWidth);
-			BackMenu.setTextureRect(sf::IntRect(ScrWidth * CurrLvl, 0, 800, 600));
+		if (MenuStatus != EEndStatus::Menu) {
+			return MenuStatus;
 		}
-		else
-			delay++;
 
 
-		window.setView(Camera);
+
 		window.clear();
 
 		window.draw(BackMenu);

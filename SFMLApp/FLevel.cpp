@@ -1,6 +1,13 @@
 #include "FLevel.h"
 #include <windows.h>
 
+FLevel::FLevel()
+{
+	LocalTime = 0;
+	bGameEnd = true;
+	bGameWon = false;
+}
+
 int FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 {
 	Camera.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
@@ -14,7 +21,7 @@ int FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 
 	// Инициализации пешки и мира
 	PlayerPawn.CreatePawn(StartPos.x, StartPos.y);
-	World.CreateWorld(1);
+	World.CreateWorld(ChoosenLvl);
 
 	// Стартовая позиция игрока
 	PlayerPawn.setPosition(World.getStartPos());
@@ -51,6 +58,8 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 		}
 		*/
 		
+		World.getCollisDirect(PlayerPawn.GetPawnRect(), PlayerPawn.getMoveDeny().Top, PlayerPawn.getMoveDeny().Down, PlayerPawn.getMoveDeny().Left, PlayerPawn.getMoveDeny().Right);
+		
 
 		// Проверка событий в игре
 		sf::Event event;
@@ -70,35 +79,37 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 			}
 		}
 
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
+			// Прыжок в зависимости от направления
+			if (PlayerPawn.GetXDirection() == -1)
+				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Left);
+			else if (PlayerPawn.GetXDirection() == 1)
+				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Right);
+			else
+				return EEndStatus::GameError;
+		}
+
 		// Проверяет зажата ли клавиша
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 			// Ходьба вправо
-			PlayerPawn.SetStance(EActionList::Move_Right);
-			PlayerPawn.MovePawn();	
-		} 
+			PlayerPawn.ChangeSelfSpeed(EActionList::Move_Right);
+		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))) {
 			// Ходьба влево
-			PlayerPawn.SetStance(EActionList::Move_Left);
-			PlayerPawn.MovePawn();
-		}
-		else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
-			// Прыжок в зависимости от направления
-			if (PlayerPawn.GetXDirection() == -1)
-				PlayerPawn.SetStance(EActionList::Jump_Left);
-			else if (PlayerPawn.GetXDirection() == 1)
-				PlayerPawn.SetStance(EActionList::Jump_Right);
-			else
-				return EEndStatus::GameError;
+			PlayerPawn.ChangeSelfSpeed(EActionList::Move_Left);
 		}
 		else {
 			// Простаивание в зависимости от направления
 			if (PlayerPawn.GetXDirection() == -1)
-				PlayerPawn.SetStance(EActionList::Idle_Left);
+				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Left);
 			else if (PlayerPawn.GetXDirection() == 1)
-				PlayerPawn.SetStance(EActionList::Idle_Right);
+				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Right);
 			else
 				return EEndStatus::GameError;
 		}
+
+		PlayerPawn.MovePawn();
+
 		// Изменение позиции камеры 
 		setView(PlayerPawn.GetPos());
 
@@ -110,6 +121,8 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 		World.DrawWorld(window);
 		PlayerPawn.DrawPawn(window);
 		
+		
+
 		// Обновление экрана. Включает в себя задержку, зависящей от FrameRate
 		window.display();
 	}

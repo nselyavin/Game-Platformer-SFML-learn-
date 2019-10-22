@@ -5,7 +5,6 @@
 
 #include "IMainMenu.h"
 #include "FLevel.h"
-#include "XMLtoMap.h"
 // #include <windows.h> Нужня для сокрытия консоли
 
 int main()
@@ -22,7 +21,7 @@ int main()
 	sf::Uint32 FrameRate;
 	ScrWidth = 800;
 	ScrHeight = 600;
-	FrameRate = 64;
+	FrameRate = 32;
 
 	// Текущий уровень игры и всего уровней. ToDo реализовать изменения.
 	sf::Uint32 CurrLvl = 0;
@@ -82,8 +81,7 @@ int main()
 			window.close();
 			break;
 
-		// Ошибки игры 
-
+		///// Ошибки игры
 		case EEndStatus::GameError:
 			printf("Game was failed with erroe: %d", res);
 			window.close();

@@ -19,23 +19,40 @@ const sf::Color Gray(90, 105, 136);
 class IMainMenu
 {
 private:
-	int SelectedLvl = 0;
-	int CurrLvl = 0;
+	// Результат активации кнопок
+	int MenuStatus;
+	// Вабранный уровень
+	int SelectedLvl;
+	// Текущий тайл задней анимации
+	int CurrBackSlide;
 	bool bMenuClosed;
-	FFont MenuFont;
+	// Характеристики window
 	sf::Uint32 ScrWidth, ScrHeight;
 	sf::Uint32 FrameRate;
+	// Последняя позиция мыши, чтобы проверить сдвигалась ли она
+	sf::Vector2f LastMousePos;
+	// Шрифт кнопок
 	FFont Font;
+	// Спрайты кнопок в виде текста
 	FText StartBtn, SettingBtn, EndBtn;
+	// Текстуры и спрайты логотипа и заднего фона меню
 	sf::Texture LogoTexture, BackMenuText;
 	sf::Sprite Logo, BackMenu;
 
 public:
+	IMainMenu();
+
 	// Создает меню, находит файлы игры, создает объекты
 	int BeginMenu(sf::RenderWindow& window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate);
 	
 	// Центрирование текста на экране
 	void Center(FText& ObjText);
+
+	// Функция активации кнопки 
+	int BtnActivate(int CurrBtn);
+
+	//Функция изменения цвета кнопки 
+	void BtnFill(int CurrBtn);
 
 	// Рисует текстовые пункты меню
 	int DrawCicle(sf::RenderWindow& window);
