@@ -17,6 +17,7 @@ struct FVector2i {int x;	int y;};
 struct FLayer
 {
 	std::string name = "";
+	bool Collision = false;
 	std::vector <std::vector<int>> arr;
 };
 
@@ -101,6 +102,9 @@ public:
 
 	// озращает клетку карты по индексам в указанном слоев
 	const int getLayerElement(int idLayer, int i, int j);
+
+	// Возвращает статус коллизии слоя по id
+	const bool getLayerCollis(int idLayer);
 };
 
 

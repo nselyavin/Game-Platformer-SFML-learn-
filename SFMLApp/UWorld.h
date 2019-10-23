@@ -53,7 +53,7 @@ public:
 	void getCollisDirect(sf::FloatRect PawnRect, bool& bUp, bool& bDown, bool& bLeft, bool& bRight);
 
 	// Функция отрисовки
-	void DrawWorld(sf::RenderWindow& window);
+	void DrawWorld(sf::RenderWindow& window, sf::Vector2f ViewCenter, sf::Vector2f ViewSize);
 
 	// Возвращает стартовую позицию игрока
 	sf::Vector2f getStartPos();

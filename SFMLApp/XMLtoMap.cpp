@@ -64,12 +64,11 @@ FParserXML::FParserXML(std::string LvlName)
 		if (FindRes != std::string::npos) {
 			Layers = AddLayer(Layers, LevelStruct.AmountLayer);
 			Layers[LevelStruct.AmountLayer].name = getValueByTag(line, "name");
-
 			// Изменение статуса коллизии в зависимости от параметра слоя 
 			if (getValueByTag(line, "collision") == "true")
-				bCollis = true;
+				Layers[LevelStruct.AmountLayer].Collision = true;
 			else
-				bCollis = false;
+				Layers[LevelStruct.AmountLayer].Collision = false;
 
 			// Инкремент количества слоев. Сброс индексов для заполнения массива карты
 			LevelStruct.AmountLayer++;		
@@ -86,12 +85,6 @@ FParserXML::FParserXML(std::string LvlName)
 
 				Layers[CurrLayer].arr[i][j] = std::stoi(getValueByTag(line, "gid"));
 
-				if (bCollis == true) {
-					if (Layers[CurrLayer].arr[i][j] != 0) {
-						CollisMap.CollisArr[i][j] = true;
-					}
-				}
-
 				i = i + ((j + 1) / LevelStruct.LvlSize.x);
 				j = (j + 1) % LevelStruct.LvlSize.x;
 			}
@@ -107,7 +100,6 @@ FParserXML::FParserXML(std::string LvlName)
 FParserXML::~FParserXML()
 {
 	delete[] Layers;
-	//delete[] CollisMap.CollisArr;
 }
 
 
@@ -196,4 +188,11 @@ const int FParserXML::getLayerElement(int idLayer, int i, int j)
 {
 	return Layers[idLayer].arr[i][j];
 }
+
+const bool FParserXML::getLayerCollis(int idLayer)
+{
+	return Layers[idLayer].Collision;
+}
+
+
 

@@ -43,8 +43,8 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 
 	// Здесь происходит главная отрисовка уровня, и считывание действий игрока
 	while (!bGameEnd) {
-		
-		/*
+
+		/* // Количество кадров в секунду
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1.f / currentTime;
 		LastTime = currentTime;
@@ -58,7 +58,6 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 		}
 		*/
 		
-		World.getCollisDirect(PlayerPawn.GetPawnRect(), PlayerPawn.getMoveDeny().Top, PlayerPawn.getMoveDeny().Down, PlayerPawn.getMoveDeny().Left, PlayerPawn.getMoveDeny().Right);
 		
 
 		// Проверка событий в игре
@@ -69,7 +68,7 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 				bGameEnd = true;
 				return EEndStatus::Exit;
 			}
-			
+
 			// Выход в меню
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
@@ -78,7 +77,17 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 				}
 			}
 		}
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))) {
+			// Прыжок в зависимости от направления
+			PlayerPawn.setPosition(sf::Vector2f(PlayerPawn.GetPos().x, PlayerPawn.GetPos().y + 10));
 
+		}
+
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
+			// Прыжок в зависимости от направления
+			PlayerPawn.setPosition(sf::Vector2f(PlayerPawn.GetPos().x, PlayerPawn.GetPos().y - 10));
+		}
+		/*
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
 			// Прыжок в зависимости от направления
 			if (PlayerPawn.GetXDirection() == -1)
@@ -88,6 +97,7 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 			else
 				return EEndStatus::GameError;
 		}
+		*/
 
 		// Проверяет зажата ли клавиша
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
@@ -108,20 +118,25 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 				return EEndStatus::GameError;
 		}
 
+		// Общее движение пешки
 		PlayerPawn.MovePawn();
+
+		// Проверка пересекает ли персонаж коллизию
+		World.getCollisDirect(PlayerPawn.GetPawnRect(), PlayerPawn.getMoveDeny().Top, PlayerPawn.getMoveDeny().Down, PlayerPawn.getMoveDeny().Left, PlayerPawn.getMoveDeny().Right);
+
+		// ToDo Корректировка позиции пешки.
 
 		// Изменение позиции камеры 
 		setView(PlayerPawn.GetPos());
 
+		/// Часть отрисовки \\\
 		// Очистка экрана для отрисовки
 		window.setView(Camera);
 		window.clear();
 
 		// Основное тело отрисовки
-		World.DrawWorld(window);
+		World.DrawWorld(window, Camera.getCenter(),Camera.getSize());
 		PlayerPawn.DrawPawn(window);
-		
-		
 
 		// Обновление экрана. Включает в себя задержку, зависящей от FrameRate
 		window.display();
@@ -130,6 +145,7 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 }
 
 sf::View FLevel::setView(sf::Vector2f Pos) {
+	// ToDo когда в игре будет больше 2 пешек, доабвить динамичное изменение размеры камеры, по мере отдаления пешек друг от друга.
 	Camera.setCenter(Pos.x + 100, Pos.y);
 	return Camera;
 }
