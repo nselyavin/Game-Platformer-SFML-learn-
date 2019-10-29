@@ -1,5 +1,10 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
+
 const std::string SpritePath = "..\\Resource\\Sprites\\";
 const std::string LevelPath = "..\\Resource\\Levels\\";
 const std::string FontPath = "..\\Resource\\";
@@ -17,3 +22,10 @@ enum EEndStatus
 	Nothing,
 };
 
+enum EDirection {
+	left,
+	right,
+	top,
+	down,
+	nowhere
+};

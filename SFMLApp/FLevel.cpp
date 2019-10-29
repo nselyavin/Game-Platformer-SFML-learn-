@@ -1,5 +1,5 @@
-#include "FLevel.h"
-#include <windows.h>
+#include "Headers\FLevel.h"
+
 
 FLevel::FLevel()
 {
@@ -8,7 +8,7 @@ FLevel::FLevel()
 	bGameWon = false;
 }
 
-int FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
+sf::Int32 FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 {
 	Camera.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
 
@@ -24,42 +24,39 @@ int FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 	World.CreateWorld(ChoosenLvl);
 
 	// Стартовая позиция игрока
-	PlayerPawn.setPosition(World.getStartPos());
+	PlayerPawn.setPosition(World.GetStartPos());
 
 	Sleep(1000);
 
-	int EndStatus = EEndStatus::GameError;
+	sf::Int32 EndStatus = EEndStatus::GameError;
 	EndStatus = DrawCicle(window);
 
 	return EndStatus;
 }
 
 
-int FLevel::DrawCicle(sf::RenderWindow& window)
+sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 {
 	sf::Clock clock;
 	float LastTime = 0;
-	int delay = 0;
+	sf::Int32 delay = 0;
 
 	// Здесь происходит главная отрисовка уровня, и считывание действий игрока
-	while (!bGameEnd) {
+	while (!bGameEnd || !PlayerPawn.isAlive()) {
 
-		/* // Количество кадров в секунду
+		 // Количество кадров в секунду
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1.f / currentTime;
 		LastTime = currentTime;
 
 		if (delay < 1000) {
-			printf("fps: %d", (int)fps);
+			printf("fps: %d", (sf::Int32)fps);
 			delay = 0;
 		}
 		else {
 			delay++;
 		}
-		*/
 		
-		
-
 		// Проверка событий в игре
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -77,16 +74,7 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 				}
 			}
 		}
-		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))) {
-			// Прыжок в зависимости от направления
-			PlayerPawn.setPosition(sf::Vector2f(PlayerPawn.GetPos().x, PlayerPawn.GetPos().y + 10));
-
-		}
-
-		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
-			// Прыжок в зависимости от направления
-			PlayerPawn.setPosition(sf::Vector2f(PlayerPawn.GetPos().x, PlayerPawn.GetPos().y - 10));
-		}
+		
 		/*
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
 			// Прыжок в зависимости от направления
@@ -98,8 +86,23 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 				return EEndStatus::GameError;
 		}
 		*/
-
 		// Проверяет зажата ли клавиша
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))) {
+			// Прыжок в зависимости от направления
+			if (PlayerPawn.GetXDirection() == EDirection::left)
+				PlayerPawn.ChangeSelfSpeed(EActionList::Down_Left);
+			else if (PlayerPawn.GetXDirection() == EDirection::right)
+				PlayerPawn.ChangeSelfSpeed(EActionList::Down_Right);
+		}
+		else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
+			// Прыжок в зависимости от направления
+			if (PlayerPawn.GetXDirection() == EDirection::left)
+				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Left);
+			else if (PlayerPawn.GetXDirection() == EDirection::right)
+				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Right);
+		}
+		// ToDO Добавить условие для вертикального простаивания, аналогично горизонтальному. Иначе скорость не меняется 
+		
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 			// Ходьба вправо
 			PlayerPawn.ChangeSelfSpeed(EActionList::Move_Right);
@@ -110,21 +113,17 @@ int FLevel::DrawCicle(sf::RenderWindow& window)
 		}
 		else {
 			// Простаивание в зависимости от направления
-			if (PlayerPawn.GetXDirection() == -1)
+			if (PlayerPawn.GetXDirection() == EDirection::left)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Left);
-			else if (PlayerPawn.GetXDirection() == 1)
+			else if (PlayerPawn.GetXDirection() == EDirection::right)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Right);
-			else
-				return EEndStatus::GameError;
 		}
+
+		// Проверка пересекает ли персонаж коллизию // ToDo Корректировка позиции пешки.
+		PlayerPawn.setSpeed(World.GetCorrectSpeed(PlayerPawn.GetXDirection(), PlayerPawn.GetYDirection(), PlayerPawn.GetSpeed(), PlayerPawn.GetPawnRect()));
 
 		// Общее движение пешки
 		PlayerPawn.MovePawn();
-
-		// Проверка пересекает ли персонаж коллизию
-		World.getCollisDirect(PlayerPawn.GetPawnRect(), PlayerPawn.getMoveDeny().Top, PlayerPawn.getMoveDeny().Down, PlayerPawn.getMoveDeny().Left, PlayerPawn.getMoveDeny().Right);
-
-		// ToDo Корректировка позиции пешки.
 
 		// Изменение позиции камеры 
 		setView(PlayerPawn.GetPos());

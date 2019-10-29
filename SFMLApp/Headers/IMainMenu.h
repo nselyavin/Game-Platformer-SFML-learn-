@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include "GameConst.h"
 
 using FText = sf::Text;
@@ -20,11 +18,11 @@ class IMainMenu
 {
 private:
 	// Результат активации кнопок
-	int MenuStatus;
+	sf::Int32 MenuStatus;
 	// Вабранный уровень
-	int SelectedLvl;
+	sf::Int32 SelectedLvl;
 	// Текущий тайл задней анимации
-	int CurrBackSlide;
+	sf::Int32 CurrBackSlide;
 	bool bMenuClosed;
 	// Характеристики window
 	sf::Uint32 ScrWidth, ScrHeight;
@@ -43,20 +41,20 @@ public:
 	IMainMenu();
 
 	// Создает меню, находит файлы игры, создает объекты
-	int BeginMenu(sf::RenderWindow& window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate);
+	sf::Int32 BeginMenu(sf::RenderWindow& window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate);
 	
 	// Центрирование текста на экране
 	void Center(FText& ObjText);
 
 	// Функция активации кнопки 
-	int BtnActivate(int CurrBtn);
+	sf::Int32 BtnActivate(sf::Int32 CurrBtn);
 
 	//Функция изменения цвета кнопки 
-	void BtnFill(int CurrBtn);
+	void BtnFill(sf::Int32 CurrBtn);
 
 	// Рисует текстовые пункты меню
-	int DrawCicle(sf::RenderWindow& window);
+	sf::Int32 DrawCicle(sf::RenderWindow& window);
 
 	// Вовзращает последний выбранный уровень
-	const int getSelectedLvl();
+	const sf::Int32 getSelectedLvl();
 };

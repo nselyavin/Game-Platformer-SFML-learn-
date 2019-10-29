@@ -1,5 +1,4 @@
-#include "UWorld.h" 
-
+#include "Headers\UWorld.h" 
 
 void UWorld::CreateWorld(sf::Uint32 LvlName)
 {
@@ -71,21 +70,99 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 
 					tmpSprite.setTextureRect(sf::IntRect(XTileId * TileSize.x, YTileId * TileSize.y, TileSize.x, TileSize.y));
 					tmpSprite.setPosition(sf::Vector2f(j * TileSize.x, i * TileSize.y));
-
-					if (ParserXML.getLayerCollis(count) == true)
-						CollisMap[i][j] = true;
-					else
-						CollisMap[i][j] = false;
 				}
 				else {
 					tmpSprite.setTextureRect(sf::IntRect(-1, -1, 0, 0));
-					CollisMap[i][j] = false;
 				}
 				Layers[count].Blocks[i][j] = tmpSprite;
 			}
 		}
 	}
 
+	CollisMap = ParserXML.getCollisMap().CollisArr;
+
+	for (int i = 0; i < LvlSize.y; i++) {
+		for (int j = 0; j < LvlSize.x; j++) {
+			printf("%d", CollisMap[i][j]);
+		}
+		printf("\n");
+	}
+
+}	
+
+// Корректировка скоростей от наличия блока и расстояния до него
+void UWorld::LeftSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
+{
+	sf::Int32 y = YPointToTile(PawnRect.top);
+	for (sf::Int32 i = 0; i > Speed; i--) {
+		sf::Int32 x = XPointToTile(i + PawnRect.left);
+		if (CollisMap[y][x] == true) {
+			printf("Speed: %f \n", Speed);
+			Speed = i + 1;
+			break;
+		}
+	}
+	Check = true;
+}
+
+void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
+{
+	sf::Int32 y = YPointToTile(PawnRect.top);
+	for (sf::Int32 i = 0; i < Speed; i++) {
+		sf::Int32 x = XPointToTile(i + PawnRect.left + PawnRect.width);
+		if (CollisMap[y][x] == true) {
+			printf("Speed: %f \n", Speed);
+			Speed = i - 1;
+			break;
+		}
+	}
+	Check = true;
+}
+
+void UWorld::TopSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
+{
+	sf::Int32 x = XPointToTile(PawnRect.left);
+	for (sf::Int32 i = 0; i > Speed; i--) {
+		sf::Int32 y = YPointToTile(i + PawnRect.top);
+		if (CollisMap[y][x] == true) {
+			printf("Speed: %f \n", Speed);
+			Speed = i + 1;
+			break;
+		}
+	}
+	Check = true;
+}
+
+void UWorld::DownSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
+{
+	sf::Int32 x = XPointToTile(PawnRect.left);
+	for (sf::Int32 i = 0; i< Speed; i++) {
+		sf::Int32 y = YPointToTile(i + PawnRect.top);
+		if (CollisMap[y][x] == true) {
+			printf("Speed: %f \n", Speed);
+			Speed = i - 1;
+			break;
+		}
+	}
+	Check = true;
+}
+ 
+sf::Vector2f UWorld::GetCorrectSpeed(EDirection XDirect, EDirection YDirect, sf::Vector2f Speed, sf::FloatRect PawnRect)
+{
+	// ToDo реализовать параллельность выполняемых проверок.
+
+	bool bHoirizCheck = false, bVerticCheck = false;
+	if (XDirect == EDirection::left)
+		LeftSpeedLimmiter(Speed.x, bVerticCheck, PawnRect);
+	else if (XDirect == EDirection::right)
+		RightSpeedLimmiter(Speed.x, bVerticCheck, PawnRect);
+
+	if (YDirect == EDirection::top)
+		TopSpeedLimmiter(Speed.y, bHoirizCheck, PawnRect);
+	else if (YDirect == EDirection::down)
+		DownSpeedLimmiter(Speed.y, bHoirizCheck, PawnRect);
+
+	return Speed;
 }
 
 struct VerticalsPoint {
@@ -96,25 +173,34 @@ struct SidePoint {
 	sf::Vector2f Top, Middle, Bottom;
 };
 
-
 sf::Vector2i UWorld::PointToTile(sf::Vector2f PointCoord)
 {
-	int xTile, yTile;
+	sf::Int32 xTile, yTile;
 
 	xTile = PointCoord.x / TileSize.x;
 	yTile = PointCoord.y / TileSize.y;
 
+	if (xTile < 0) xTile = 0;
+	if (xTile > LvlSize.x) xTile = LvlSize.x - 1;
+	if (yTile < 0) yTile = 0;
+	if (yTile > LvlSize.y) yTile = LvlSize.y - 1;
+
 	return sf::Vector2i(xTile, yTile);
 }
 
-
-void UWorld::getCollisDirect(sf::FloatRect PawnRect, bool& bUp, bool& bDown, bool& bLeft, bool& bRight)
+sf::Int32 UWorld::XPointToTile(float x)
 {
-	bUp = false;
-	bDown = false;
-	bLeft = false;
-	bRight = false;
-	
+	x /= TileSize.x;
+	if (x < 0) x = 0;
+	if (x > LvlSize.x) x = LvlSize.x - 1;
+	return x;
+}
+
+sf::Int32 UWorld::YPointToTile(float y) {
+	y /= TileSize.y;
+	if (y < 0) y = 0;
+	if (y > LvlSize.y) y = LvlSize.y - 1;
+	return y;
 }
 
 void UWorld::DrawWorld(sf::RenderWindow& window, sf::Vector2f ViewCenter, sf::Vector2f ViewSize)
@@ -122,21 +208,21 @@ void UWorld::DrawWorld(sf::RenderWindow& window, sf::Vector2f ViewCenter, sf::Ve
 	window.draw(Backgr);
 
 	// Максимальная клетка, до которой может происходить отрисовка, чтобы избежать выхода из диапозона
-	int maxRight = (int(ViewCenter.x + ViewSize.x / 2) / TileSize.x), maxDown = (int(ViewCenter.y + ViewSize.y / 2) / TileSize.y);
+	sf::Int32 maxRight = (sf::Int32(ViewCenter.x + ViewSize.x / 2) / TileSize.x), maxDown = (sf::Int32(ViewCenter.y + ViewSize.y / 2) / TileSize.y);
 
-	for (int count = 0; count < AmountLayers; count++) {
+	for (sf::Int32 count = 0; count < AmountLayers; count++) {
 
-		maxDown = (int(ViewCenter.y + ViewSize.y / 2) / TileSize.y) + 1;
+		maxDown = (sf::Int32(ViewCenter.y + ViewSize.y / 2) / TileSize.y) + 1;
 		if (maxDown > LvlSize.y) maxDown = LvlSize.y;
 
-		for (int i = (int(ViewCenter.y - ViewSize.y / 2) / TileSize.y) % LvlSize.y; i < maxDown; i++) {
+		for (sf::Int32 i = (sf::Int32(ViewCenter.y - ViewSize.y / 2) / TileSize.y) % LvlSize.y; i < maxDown; i++) {
 			if (i < 0) i = 0;
 
 			// Блокирует выход правой границы за диапозон
-			maxRight = (int(ViewCenter.x + ViewSize.x / 2) / TileSize.x) + 1;
+			maxRight = (sf::Int32(ViewCenter.x + ViewSize.x / 2) / TileSize.x) + 1;
 			if (maxRight > LvlSize.x) maxRight = LvlSize.x;
 
-			for (int j = (int(ViewCenter.x - ViewSize.x / 2) / TileSize.y) % LvlSize.x; j < maxRight; j++) {
+			for (sf::Int32 j = (sf::Int32(ViewCenter.x - ViewSize.x / 2) / TileSize.y) % LvlSize.x; j < maxRight; j++) {
 				if (j < 0) j = 0;
 
 				// Если отрисовывать нечего, то не отрисовывать. Logic
@@ -147,8 +233,13 @@ void UWorld::DrawWorld(sf::RenderWindow& window, sf::Vector2f ViewCenter, sf::Ve
 	}
 }
 
-sf::Vector2f UWorld::getStartPos()
+sf::Vector2f UWorld::GetStartPos()
 {
 	return StartPos;
+}
+
+bool& UWorld::pBlockCollision(sf::Int32 i, sf::Int32 j)
+{
+	return CollisMap[i][j];
 }
 

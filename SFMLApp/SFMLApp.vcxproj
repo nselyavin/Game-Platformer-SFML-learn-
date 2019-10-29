@@ -141,16 +141,16 @@
     <ClCompile Include="XMLtoMap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="APlayerPawn.h" />
-    <ClInclude Include="IMainMenu.h" />
-    <ClInclude Include="GameConst.h" />
-    <ClInclude Include="FLevel.h" />
-    <ClInclude Include="USpell.h" />
-    <ClInclude Include="UWorld.h" />
-    <ClInclude Include="XMLtoMap.h" />
+    <None Include="..\Resource\Map\level_1.tmx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resource\Map\level_1.tmx" />
+    <ClInclude Include="Headers\APlayerPawn.h" />
+    <ClInclude Include="Headers\FLevel.h" />
+    <ClInclude Include="Headers\GameConst.h" />
+    <ClInclude Include="Headers\IMainMenu.h" />
+    <ClInclude Include="Headers\USpell.h" />
+    <ClInclude Include="Headers\UWorld.h" />
+    <ClInclude Include="Headers\XMLtoMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

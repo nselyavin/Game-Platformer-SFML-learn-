@@ -3,11 +3,11 @@
 	Цикл запускает главное меню, а затем уровни
 */
 
-#include "IMainMenu.h"
-#include "FLevel.h"
+#include "Headers\IMainMenu.h"
+#include "Headers\FLevel.h"
 // #include <windows.h> Нужня для сокрытия консоли
 
-int main()
+sf::Int32 main()
 {
 	/* // Код для сокрытия консоли, нужен для релизной сборки
 	HWND Hide;
@@ -21,7 +21,7 @@ int main()
 	sf::Uint32 FrameRate;
 	ScrWidth = 800;
 	ScrHeight = 600;
-	FrameRate = 32;
+	FrameRate = 64;
 
 	// Текущий уровень игры и всего уровней. ToDo реализовать изменения.
 	sf::Uint32 CurrLvl = 0;
@@ -42,7 +42,7 @@ int main()
 	LoadScr.setTexture(LoadScrTex);
 
 	bool bGameEnd = false;
-	int res = EEndStatus::Menu;
+	sf::Int32 res = EEndStatus::Menu;
 	// Родительский цикл игры, в нем происходит вызов основных этапов игры: меню, уровень и тд. — пока игра не закочнена
 	while (!bGameEnd)
 	{
@@ -83,7 +83,7 @@ int main()
 
 		///// Ошибки игры
 		case EEndStatus::GameError:
-			printf("Game was failed with erroe: %d", res);
+			printf("Game was failed with error: %d", res);
 			window.close();
 			bGameEnd = true;
 			system("pause");

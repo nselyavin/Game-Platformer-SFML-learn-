@@ -1,4 +1,4 @@
-#include "APlayerPawn.h"
+#include "Headers\APlayerPawn.h"
 
 
 APlayerPawn::APlayerPawn()
@@ -7,14 +7,16 @@ APlayerPawn::APlayerPawn()
 	this->Health = 3;
 	this->Mass = 44;
 	this->bAlive = true;
-	this->SpeedX = 0;
-	this->SpeedY = 0;
+	this->Speed.x = 0;
+	this->Speed.y = 0;
 	this->Gravity = 10;
 	this->delay = 100;
 	this->CurrPose = 0;
+	XDirection = EDirection::right;
+	YDirection = EDirection::left;
 }
 
-int APlayerPawn::CreatePawn(float x, float y)
+sf::Int32 APlayerPawn::CreatePawn(float x, float y)
 {
 	// Сделать, что бы коллизия игрока была 32 на 64 пикселей. И соотвестующая моделька.
 
@@ -23,8 +25,8 @@ int APlayerPawn::CreatePawn(float x, float y)
 	this->Health = 3;
 	this->Mass = 44;
 	this->bAlive = true;
-	this->SpeedX = 0;
-	this->SpeedY = 0;
+	this->Speed.x = 0;
+	this->Speed.y = 0;
 	this->Gravity = 10;
 	this->delay = 100;
 	this->CurrPose = 0;
@@ -35,6 +37,9 @@ int APlayerPawn::CreatePawn(float x, float y)
 
 	ASprite.setTexture(ATexture);
 	ASprite.setTextureRect(sf::IntRect(0, 0, 32, 64));
+
+	XDirection = EDirection::right;
+	YDirection = EDirection::left;
 
 	return EEndStatus::StartGame;
 }
@@ -48,18 +53,27 @@ void APlayerPawn::DrawPawn(sf::RenderWindow& window)
 void APlayerPawn::ChangeSelfSpeed(EActionList Action)
 {
 	if (Action == EActionList::Move_Left) {
-		SpeedX = -10;
+		Speed.x = -10;
+		XDirection = EDirection::left;
 	} 
 	else if (Action == EActionList::Move_Right) {
-		SpeedX = 10;
+		Speed.x = 10;
+		XDirection = EDirection::right;
 	}
 	else if (Action == EActionList::Jump_Left || Action == EActionList::Jump_Right) {
-		if (MoveDeny.Down)
-			SpeedY = -10;
+		Speed.y = -10;
+		YDirection = EDirection::top;
+	}
+	else if (Action == EActionList::Down_Left || Action == EActionList::Down_Right) {
+		Speed.y = 10;
+		YDirection = EDirection::down;
 	}
 	else if (Action == EActionList::Idle_Left || Action == EActionList::Idle_Right) {
-		SpeedX = 0;
+		Speed.x = 0;
+		Speed.y = 0;
 	}
+
+	//SpeedY += Mass * g;
 
 	SetStance(Action);
 }
@@ -68,31 +82,7 @@ void APlayerPawn::MovePawn()
 {
 	// ToDo Сделать движение плавным и затухающим
 
-	//SpeedY += Mass * g;
-	PawnRect = ASprite.getGlobalBounds();
-
-	if (MoveDeny.Left) {
-		if (SpeedX < 0) {
-			SpeedX = 0;
-		}
-		ASprite.setPosition((floor(ASprite.getPosition().x / 32) + 1) * 32, ASprite.getPosition().y);
-	}
-	if (MoveDeny.Right) {
-		if (SpeedX > 0) {
-			SpeedX = 0;
-		}
-	}
-	if (MoveDeny.Top) {
-		if (SpeedY < 0) {
-			SpeedY = 0;
-		}
-	}
-	if (MoveDeny.Down) {
-		if (SpeedY > 0) {
-			SpeedY = 0;
-		}
-	}
-	ASprite.move(SpeedX, SpeedY);
+	ASprite.move(Speed.x, Speed.y);
 }
 
 void APlayerPawn::setPosition(sf::Vector2f Pos)
@@ -100,21 +90,22 @@ void APlayerPawn::setPosition(sf::Vector2f Pos)
 	ASprite.setPosition(Pos);
 }
 
-
+void APlayerPawn::setSpeed(sf::Vector2f Speed)
+{
+	this->Speed.x = Speed.x;
+	this->Speed.y = Speed.y;
+}
 
 void APlayerPawn::SetStance(EActionList Action)
 {
 	// ToDo Реализовать зедержку анимации
 	switch (Action) {
 	case EActionList::Move_Left:	
-		XDirection = -1;
 		// Смена текущего кадра в зависимости от времени
 		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
 		ASprite.setTextureRect(sf::IntRect(32 * CurrPose, 64 * 2, 32, 64));
 		break;
-
 	case EActionList::Move_Right:
-		XDirection = 1;
 		// Смена текущего кадра в зависимости от времени
 		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
 		ASprite.setTextureRect(sf::IntRect(32 * CurrPose, 64 * 1, 32, 64));
@@ -141,55 +132,26 @@ void APlayerPawn::SetStance(EActionList Action)
 	Clock.restart();
 }
 
-const bool APlayerPawn::isAlive()
-{
-	if (Health > 0)
-		return true;
-	return false;
+
+
+const sf::FloatRect APlayerPawn::GetPawnRect()
+{	
+	PawnRect = ASprite.getGlobalBounds(); 
+	return PawnRect; 
 }
 
+bool APlayerPawn::isAlive() { return bAlive; }
 
-const sf::Sprite& APlayerPawn::GetSprite()
-{
-	return ASprite;
-}
+const sf::Sprite APlayerPawn::GetSprite() { return ASprite; }
 
-const sf::Texture& APlayerPawn::GetTexture()
-{
-	return ATexture;
-}
+const sf::Texture APlayerPawn::GetTexture() { return ATexture; }
 
-const sf::FloatRect& APlayerPawn::GetPawnRect()
-{
-	PawnRect = ASprite.getGlobalBounds();
+const sf::Vector2f APlayerPawn::GetPos(){ return ASprite.getPosition(); }
 
-	return PawnRect;
-}
+const sf::Int32 APlayerPawn::GetHealth(){ return Health; }
 
-const sf::Vector2f& APlayerPawn::GetPos()
-{
-	return ASprite.getPosition();
-}
+const EDirection APlayerPawn::GetXDirection(){ return XDirection; }
 
-const int APlayerPawn::GetHealth()
-{
-	return Health;
-}
+const sf::Vector2f APlayerPawn::GetSpeed(){	return Speed; }
 
-const sf::Int8 APlayerPawn::GetXDirection()
-{
-	return XDirection;
-}
-
-const sf::Vector2f APlayerPawn::GetSpeed()
-{
-	sf::Vector2f Speed;
-	Speed.x = SpeedX;
-	Speed.y = SpeedY;
-	return Speed;
-}
-
-FMoveDeny& APlayerPawn::getMoveDeny()
-{
-	return MoveDeny;
-}
+const EDirection APlayerPawn::GetYDirection(){ return YDirection; }

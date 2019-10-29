@@ -1,4 +1,4 @@
-#include "IMainMenu.h"
+#include "Headers\IMainMenu.h"
 #include <iostream>;
 
 IMainMenu::IMainMenu()
@@ -9,7 +9,7 @@ IMainMenu::IMainMenu()
 
 }
 
-int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate)
+sf::Int32 IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate)
 {
 	// Сбрасывает позицию камеры до нулевой, чтобы меню не съезжало
 	sf::View Camera;
@@ -71,7 +71,7 @@ int IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint
 
 
 
-	int EndStatus = EEndStatus::GameError;
+	sf::Int32 EndStatus = EEndStatus::GameError;
 	EndStatus = DrawCicle(window);
 
 	return EndStatus;
@@ -87,7 +87,7 @@ void IMainMenu::Center(FText &ObjText)
 
 }
 
-int IMainMenu::BtnActivate(int CurrBtn)
+sf::Int32 IMainMenu::BtnActivate(sf::Int32 CurrBtn)
 {
 	// Активирует действие в зависимости от кнопки 
 	switch (CurrBtn) {
@@ -109,7 +109,7 @@ int IMainMenu::BtnActivate(int CurrBtn)
 	}
 }
 
-void IMainMenu::BtnFill(int CurrBtn)
+void IMainMenu::BtnFill(sf::Int32 CurrBtn)
 {
 	// Сбросс цвета выбранной кнопки
 	StartBtn.setFillColor(sf::Color::Color(255, 255, 255));
@@ -130,11 +130,10 @@ void IMainMenu::BtnFill(int CurrBtn)
 	}
 }
 
-int IMainMenu::DrawCicle(sf::RenderWindow& window)
+sf::Int32 IMainMenu::DrawCicle(sf::RenderWindow& window)
 {
 	// Текущий выбранный пункт меню
-	int CurrBtn = -1;
-
+	sf::Int32 CurrBtn = -1;
 
 	// Получение ректов кнопок
 	sf::FloatRect StartBtnRect = StartBtn.getLocalBounds();
@@ -195,7 +194,6 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 			// Активировать текущую кнопку 
 			if (event.type == sf::Event::MouseButtonPressed){
 				if (event.mouseButton.button == sf::Mouse::Left) {
-					printf("%d", CurrBtn);
 					MenuStatus = BtnActivate(CurrBtn);
 				}
 			}
@@ -243,8 +241,6 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 			return MenuStatus;
 		}
 
-
-
 		window.clear();
 
 		window.draw(BackMenu);
@@ -258,7 +254,7 @@ int IMainMenu::DrawCicle(sf::RenderWindow& window)
 	return EEndStatus::GameError;
 }
 
-const int IMainMenu::getSelectedLvl()
+const sf::Int32 IMainMenu::getSelectedLvl()
 {
 	return SelectedLvl;
 }

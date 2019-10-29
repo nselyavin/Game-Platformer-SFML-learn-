@@ -4,11 +4,8 @@
 	Этот класс связан с классом пешки игрока и классом, и организует связанную работу между ними.
 	По завершению уровня или выхода с уровня, должен возвращать соотвествующую ошибку
 */
-
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
 #include <string>
 #include "XMLtoMap.h"
 #include "APlayerPawn.h"
@@ -32,11 +29,11 @@ public:
 
 	// Иницализация класса, считывание файла по переданному названия. Задача спавна игрока и всех объектов
 	// ToDo Поменять параметр представления уровня, на тот который будет читаться из файла. Если понадобится.
-	int StartLevel(sf::RenderWindow& window, sf::Uint32 SelectedLvl);
+	sf::Int32 StartLevel(sf::RenderWindow& window, sf::Uint32 SelectedLvl);
 
 
 	// Функция отрисовки игры
-	int DrawCicle(sf::RenderWindow& window);
+	sf::Int32 DrawCicle(sf::RenderWindow& window);
 
 	// Показывается результаты урованя в зависимости от bGameWon
 	void GameSummar(sf::RenderWindow& window);

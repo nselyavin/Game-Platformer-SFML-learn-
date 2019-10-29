@@ -1,4 +1,4 @@
-#include "XMLtoMap.h"
+#include "Headers\XMLtoMap.h"
 #include <iostream>
 
 FParserXML::FParserXML(std::string LvlName)
@@ -66,25 +66,28 @@ FParserXML::FParserXML(std::string LvlName)
 			Layers[LevelStruct.AmountLayer].name = getValueByTag(line, "name");
 			// Изменение статуса коллизии в зависимости от параметра слоя 
 			if (getValueByTag(line, "collision") == "true")
-				Layers[LevelStruct.AmountLayer].Collision = true;
+				bCollis = true;
 			else
-				Layers[LevelStruct.AmountLayer].Collision = false;
+				bCollis = false;
 
 			// Инкремент количества слоев. Сброс индексов для заполнения массива карты
-			LevelStruct.AmountLayer++;		
-			CurrLayer++;								  
-			i = 0;										  
-			j = 0;										  
+			LevelStruct.AmountLayer++;
+			CurrLayer++;
+			i = 0;
+			j = 0;
 		}
 
 		// Поиск тайлов
 		FindRes = line.find("<tile");
 		if (FindRes != std::string::npos) {
-			FindRes = line.find("<tileset");	
+			FindRes = line.find("<tileset");
 			if (FindRes == std::string::npos) {
 
 				Layers[CurrLayer].arr[i][j] = std::stoi(getValueByTag(line, "gid"));
 
+				if (bCollis == true && (std::stoi(getValueByTag(line, "gid")) != 0)) {
+					CollisMap.CollisArr[i][j] = true;
+				}
 				i = i + ((j + 1) / LevelStruct.LvlSize.x);
 				j = (j + 1) % LevelStruct.LvlSize.x;
 			}
