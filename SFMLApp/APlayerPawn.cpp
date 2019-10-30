@@ -70,6 +70,9 @@ void APlayerPawn::ChangeSelfSpeed(EActionList Action)
 	}
 	else if (Action == EActionList::Idle_Left || Action == EActionList::Idle_Right) {
 		Speed.x = 0;
+	}
+	// ToDo при реализации прыжка убрать вертикальное простаивание 
+	else if (Action == EActionList::Idle_Vertical){
 		Speed.y = 0;
 	}
 

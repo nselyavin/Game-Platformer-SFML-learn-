@@ -17,7 +17,8 @@ enum EActionList
 	Move_Left,
 	Move_Right,
 	Down_Left,
-	Down_Right
+	Down_Right,
+	Idle_Vertical // ToDo Убрать после реализации прыжка 
 };
 
 struct FMoveDeny {

@@ -101,7 +101,10 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 			else if (PlayerPawn.GetXDirection() == EDirection::right)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Right);
 		}
-		// ToDO Добавить условие для вертикального простаивания, аналогично горизонтальному. Иначе скорость не меняется 
+		else {
+			// Простаивание в зависимости от направления
+			PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Vertical);
+		}
 		
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 			// Ходьба вправо

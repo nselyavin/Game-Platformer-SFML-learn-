@@ -94,9 +94,11 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 void UWorld::LeftSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
 	sf::Int32 y = YPointToTile(PawnRect.top);
+	sf::Int32 y2 = YPointToTile(PawnRect.top + PawnRect.height / 2);
+	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height - 1);
 	for (sf::Int32 i = 0; i > Speed; i--) {
 		sf::Int32 x = XPointToTile(i + PawnRect.left);
-		if (CollisMap[y][x] == true) {
+		if (CollisMap[y][x] == true || CollisMap[y2][x] == true || CollisMap[y3][x] == true) {
 			printf("Speed: %f \n", Speed);
 			Speed = i + 1;
 			break;
@@ -108,9 +110,11 @@ void UWorld::LeftSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect
 void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
 	sf::Int32 y = YPointToTile(PawnRect.top);
+	sf::Int32 y2 = YPointToTile(PawnRect.top + PawnRect.height / 2);
+	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height - 1);
 	for (sf::Int32 i = 0; i < Speed; i++) {
 		sf::Int32 x = XPointToTile(i + PawnRect.left + PawnRect.width);
-		if (CollisMap[y][x] == true) {
+		if (CollisMap[y][x] == true || CollisMap[y2][x] == true || CollisMap[y3][x] == true) {
 			printf("Speed: %f \n", Speed);
 			Speed = i - 1;
 			break;
@@ -122,9 +126,10 @@ void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRec
 void UWorld::TopSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
 	sf::Int32 x = XPointToTile(PawnRect.left);
+	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width);
 	for (sf::Int32 i = 0; i > Speed; i--) {
 		sf::Int32 y = YPointToTile(i + PawnRect.top);
-		if (CollisMap[y][x] == true) {
+		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
 			printf("Speed: %f \n", Speed);
 			Speed = i + 1;
 			break;
@@ -136,9 +141,10 @@ void UWorld::TopSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 void UWorld::DownSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
 	sf::Int32 x = XPointToTile(PawnRect.left);
-	for (sf::Int32 i = 0; i< Speed; i++) {
-		sf::Int32 y = YPointToTile(i + PawnRect.top);
-		if (CollisMap[y][x] == true) {
+	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width);
+	for (sf::Int32 i = 0; i < Speed; i++) {
+		sf::Int32 y = YPointToTile(i + PawnRect.top + PawnRect.height);
+		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
 			printf("Speed: %f \n", Speed);
 			Speed = i - 1;
 			break;
