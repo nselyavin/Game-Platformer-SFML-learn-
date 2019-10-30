@@ -1,9 +1,9 @@
-#include "Headers\APlayerPawn.h"
+п»ї#include "Headers\APlayerPawn.h"
 
 
 APlayerPawn::APlayerPawn()
 {
-	// Инициализация основных параметров пешки
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РїРµС€РєРё
 	this->Health = 3;
 	this->Mass = 44;
 	this->bAlive = true;
@@ -19,9 +19,9 @@ APlayerPawn::APlayerPawn()
 
 sf::Int32 APlayerPawn::CreatePawn(float x, float y)
 {
-	// Сделать, что бы коллизия игрока была 32 на 64 пикселей. И соотвестующая моделька.
+	// РЎРґРµР»Р°С‚СЊ, С‡С‚Рѕ Р±С‹ РєРѕР»Р»РёР·РёСЏ РёРіСЂРѕРєР° Р±С‹Р»Р° 32 РЅР° 64 РїРёРєСЃРµР»РµР№. Р СЃРѕРѕС‚РІРµСЃС‚СѓСЋС‰Р°СЏ РјРѕРґРµР»СЊРєР°.
 
-	// Инициализация основных параметров пешки
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РїРµС€РєРё
 	this->ASprite.setPosition(x, y);
 	this->Health = 3;
 	this->Mass = 50;
@@ -33,7 +33,7 @@ sf::Int32 APlayerPawn::CreatePawn(float x, float y)
 	this->delay = 100;
 	this->CurrPose = 0;
 
-	// Загрузка текстуры спрайта
+	// Р—Р°РіСЂСѓР·РєР° С‚РµРєСЃС‚СѓСЂС‹ СЃРїСЂР°Р№С‚Р°
 	if (!ATexture.loadFromFile(SpritePath + "DbgDed.png"))
 		return EEndStatus::FileLoadFaled;
 
@@ -54,7 +54,7 @@ void APlayerPawn::DrawPawn(sf::RenderWindow& window)
 
 void APlayerPawn::ChangeSelfSpeed(EActionList Action)
 {
-	// ToDo Сделать движение плавным и затухающим
+	// ToDo РЎРґРµР»Р°С‚СЊ РґРІРёР¶РµРЅРёРµ РїР»Р°РІРЅС‹Рј Рё Р·Р°С‚СѓС…Р°СЋС‰РёРј
 
 	if (Action == EActionList::Move_Left) {
 		Speed.x = -10;
@@ -104,15 +104,15 @@ void APlayerPawn::setSpeed(sf::Vector2f Speed)
 
 void APlayerPawn::SetStance(EActionList Action)
 {
-	// ToDo Реализовать зедержку анимации
+	// ToDo Р РµР°Р»РёР·РѕРІР°С‚СЊ Р·РµРґРµСЂР¶РєСѓ Р°РЅРёРјР°С†РёРё
 	switch (Action) {
 	case EActionList::Move_Left:	
-		// Смена текущего кадра в зависимости от времени
+		// РЎРјРµРЅР° С‚РµРєСѓС‰РµРіРѕ РєР°РґСЂР° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РІСЂРµРјРµРЅРё
 		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
 		ASprite.setTextureRect(sf::IntRect(32 * CurrPose, 64 * 2, 32, 64));
 		break;
 	case EActionList::Move_Right:
-		// Смена текущего кадра в зависимости от времени
+		// РЎРјРµРЅР° С‚РµРєСѓС‰РµРіРѕ РєР°РґСЂР° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РІСЂРµРјРµРЅРё
 		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
 		ASprite.setTextureRect(sf::IntRect(32 * CurrPose, 64 * 1, 32, 64));
 		break;

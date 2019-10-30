@@ -1,4 +1,4 @@
-#include "Headers\FLevel.h"
+п»ї#include "Headers\FLevel.h"
 
 
 FLevel::FLevel()
@@ -12,15 +12,15 @@ sf::Int32 FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 {
 	Camera.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
 
-	// Установка статусов игры
+	// РЈСЃС‚Р°РЅРѕРІРєР° СЃС‚Р°С‚СѓСЃРѕРІ РёРіСЂС‹
 	bGameEnd = false;
 	bGameWon = false;
 
-	// Инициализации пешки и мира
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёРё РїРµС€РєРё Рё РјРёСЂР°
 	PlayerPawn.CreatePawn(StartPos.x, StartPos.y);
 	World.CreateWorld(ChoosenLvl);
 
-	// Стартовая позиция игрока
+	// РЎС‚Р°СЂС‚РѕРІР°СЏ РїРѕР·РёС†РёСЏ РёРіСЂРѕРєР°
 	PlayerPawn.setPosition(World.GetStartPos());
 
 	Sleep(1000);
@@ -38,10 +38,10 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 	float LastTime = 0;
 	sf::Int32 delay = 0;
 
-	// Здесь происходит главная отрисовка уровня, и считывание действий игрока
+	// Р—РґРµСЃСЊ РїСЂРѕРёСЃС…РѕРґРёС‚ РіР»Р°РІРЅР°СЏ РѕС‚СЂРёСЃРѕРІРєР° СѓСЂРѕРІРЅСЏ, Рё СЃС‡РёС‚С‹РІР°РЅРёРµ РґРµР№СЃС‚РІРёР№ РёРіСЂРѕРєР°
 	while (!bGameEnd || !PlayerPawn.isAlive()) {
 
-		/* // Количество кадров в секунду
+		/* // РљРѕР»РёС‡РµСЃС‚РІРѕ РєР°РґСЂРѕРІ РІ СЃРµРєСѓРЅРґСѓ
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1.f / currentTime;
 		LastTime = currentTime;
@@ -55,16 +55,16 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 		}
 		*/
 		
-		// Проверка событий в игре
+		// РџСЂРѕРІРµСЂРєР° СЃРѕР±С‹С‚РёР№ РІ РёРіСЂРµ
 		sf::Event event;
 		while (window.pollEvent(event)) {
-			// Выход из игры
+			// Р’С‹С…РѕРґ РёР· РёРіСЂС‹
 			if (event.type == sf::Event::Closed) {
 				bGameEnd = true;
 				return EEndStatus::Exit;
 			}
 
-			// Выход в меню
+			// Р’С‹С…РѕРґ РІ РјРµРЅСЋ
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
 					bGameEnd = true;
@@ -73,64 +73,62 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 			}
 		}
 
-		// Проверка есть ли под ногами земля
+		// РџСЂРѕРІРµСЂРєР° РµСЃС‚СЊ Р»Рё РїРѕРґ РЅРѕРіР°РјРё Р·РµРјР»СЏ
 		PlayerPawn.pOnEarthStatus() = World.isEarth(PlayerPawn.GetPos(), PlayerPawn.GetPawnRect());
 
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
-			// Прыжок в зависимости от направления
+			// РџСЂС‹Р¶РѕРє РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РЅР°РїСЂР°РІР»РµРЅРёСЏ
 			if (PlayerPawn.GetXDirection() == EDirection::Left)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Left);
 			else if (PlayerPawn.GetXDirection() == EDirection::Right)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Right);
-			else
-				return EEndStatus::GameError;
 		}
 
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
-			// Ходьба вправо
+			// РҐРѕРґСЊР±Р° РІРїСЂР°РІРѕ
 			PlayerPawn.ChangeSelfSpeed(EActionList::Move_Right);
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))) {
-			// Ходьба влево
+			// РҐРѕРґСЊР±Р° РІР»РµРІРѕ
 			PlayerPawn.ChangeSelfSpeed(EActionList::Move_Left);
 		}
 		else {
-			// Простаивание в зависимости от направления
+			// РџСЂРѕСЃС‚Р°РёРІР°РЅРёРµ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РЅР°РїСЂР°РІР»РµРЅРёСЏ
 			if (PlayerPawn.GetXDirection() == EDirection::Left)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Left);
 			else if (PlayerPawn.GetXDirection() == EDirection::Right)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Right);
 		}
 
-		// Применение модифиации скорости
+		// РџСЂРёРјРµРЅРµРЅРёРµ РјРѕРґРёС„РёР°С†РёРё СЃРєРѕСЂРѕСЃС‚Рё
 		PlayerPawn.MoveModificators();
 
-		// Проверка пересекает ли персонаж коллизию
+		// РџСЂРѕРІРµСЂРєР° РїРµСЂРµСЃРµРєР°РµС‚ Р»Рё РїРµСЂСЃРѕРЅР°Р¶ РєРѕР»Р»РёР·РёСЋ
 		PlayerPawn.setSpeed(World.GetCorrectSpeed(PlayerPawn.GetXDirection(), PlayerPawn.GetYDirection(), PlayerPawn.GetSpeed(), PlayerPawn.GetPawnRect()));
 		
-		// Общее движение пешки
+		// РћР±С‰РµРµ РґРІРёР¶РµРЅРёРµ РїРµС€РєРё
 		PlayerPawn.MovePawn();
 
-		// Изменение позиции камеры 
+		// РР·РјРµРЅРµРЅРёРµ РїРѕР·РёС†РёРё РєР°РјРµСЂС‹ 
 		setView(PlayerPawn.GetPos());
 
-		/// Часть отрисовки \\\
-		// Очистка экрана для отрисовки
+		/// Р§Р°СЃС‚СЊ РѕС‚СЂРёСЃРѕРІРєРё \\\
+		// РћС‡РёСЃС‚РєР° СЌРєСЂР°РЅР° РґР»СЏ РѕС‚СЂРёСЃРѕРІРєРё
 		window.setView(Camera);
 		window.clear();
 
-		// Основное тело отрисовки
+		// РћСЃРЅРѕРІРЅРѕРµ С‚РµР»Рѕ РѕС‚СЂРёСЃРѕРІРєРё
 		World.DrawWorld(window, Camera.getCenter(),Camera.getSize());
 		PlayerPawn.DrawPawn(window);
 
-		// Обновление экрана. Включает в себя задержку, зависящей от FrameRate
+		// РћР±РЅРѕРІР»РµРЅРёРµ СЌРєСЂР°РЅР°. Р’РєР»СЋС‡Р°РµС‚ РІ СЃРµР±СЏ Р·Р°РґРµСЂР¶РєСѓ, Р·Р°РІРёСЃСЏС‰РµР№ РѕС‚ FrameRate
 		window.display();
 	}
 	return EEndStatus::Menu;
 }
 
 sf::View FLevel::setView(sf::Vector2f Pos) {
-	// ToDo когда в игре будет больше 2 пешек, доабвить динамичное изменение размеры камеры, по мере отдаления пешек друг от друга.
+	// ToDo РєРѕРіРґР° РІ РёРіСЂРµ Р±СѓРґРµС‚ Р±РѕР»СЊС€Рµ 2 РїРµС€РµРє, РґРѕР°Р±РІРёС‚СЊ РґРёРЅР°РјРёС‡РЅРѕРµ РёР·РјРµРЅРµРЅРёРµ СЂР°Р·РјРµСЂС‹ РєР°РјРµСЂС‹, РїРѕ РјРµСЂРµ РѕС‚РґР°Р»РµРЅРёСЏ РїРµС€РµРє РґСЂСѓРі РѕС‚ РґСЂСѓРіР°.
 	Camera.setCenter(Pos.x + 100, Pos.y);
 	return Camera;
 }
@@ -138,8 +136,8 @@ sf::View FLevel::setView(sf::Vector2f Pos) {
 void FLevel::GameSummar(sf::RenderWindow& window)
 {
 	if (bGameWon)
-		printf("Победа");
+		printf("РџРѕР±РµРґР°");
 	else
-		printf("Соси вторую жепу");
+		printf("РЎРѕСЃРё РІС‚РѕСЂСѓСЋ Р¶РµРїСѓ");
 }
 

@@ -1,41 +1,41 @@
-#include "Headers\UWorld.h" 
+п»ї#include "Headers\UWorld.h" 
 
 void UWorld::CreateWorld(sf::Uint32 LvlName)
 {
 	FParserXML ParserXML(std::to_string(LvlName));
 
-	// Задаем размер уровня
+	// Р—Р°РґР°РµРј СЂР°Р·РјРµСЂ СѓСЂРѕРІРЅСЏ
 	LvlSize.x = ParserXML.getLvlSize().x;
 	LvlSize.y = ParserXML.getLvlSize().y;
 
-	// Задаем размер тайла
+	// Р—Р°РґР°РµРј СЂР°Р·РјРµСЂ С‚Р°Р№Р»Р°
 	TileSize.x = ParserXML.getTileSize().x;
 	TileSize.y = ParserXML.getTileSize().y;
 
-	// Задаем размет тайлсета
+	// Р—Р°РґР°РµРј СЂР°Р·РјРµС‚ С‚Р°Р№Р»СЃРµС‚Р°
 	TileSetSize.x = ParserXML.getTileSetSize().x;
 	TileSetSize.y = ParserXML.getTileSetSize().y;
 
-	// ToDo считывать стартовую позицию из парсера
+	// ToDo СЃС‡РёС‚С‹РІР°С‚СЊ СЃС‚Р°СЂС‚РѕРІСѓСЋ РїРѕР·РёС†РёСЋ РёР· РїР°СЂСЃРµСЂР°
 	StartPos.x = 384.f;
 	StartPos.y = 96.f;
 
-	// Задаем задний фон уровня
-	// ToDo переместить название в переменную, и вызывать под нужды уровня
+	// Р—Р°РґР°РµРј Р·Р°РґРЅРёР№ С„РѕРЅ СѓСЂРѕРІРЅСЏ
+	// ToDo РїРµСЂРµРјРµСЃС‚РёС‚СЊ РЅР°Р·РІР°РЅРёРµ РІ РїРµСЂРµРјРµРЅРЅСѓСЋ, Рё РІС‹Р·С‹РІР°С‚СЊ РїРѕРґ РЅСѓР¶РґС‹ СѓСЂРѕРІРЅСЏ
 	BackgrTex.loadFromFile(SpritePath + "SpaceBack.jpg");
 	Backgr.setTexture(BackgrTex);
 
-	// Задаем путь к тайлсету
+	// Р—Р°РґР°РµРј РїСѓС‚СЊ Рє С‚Р°Р№Р»СЃРµС‚Сѓ
 	sf::String PathToSet;
 	PathToSet = ParserXML.getPathToSet();
 
 	PathToSet.erase(0, 2);
 	TileSetTex.loadFromFile("..\/Resource" + PathToSet);
 
-	// Задаем количество слоев
+	// Р—Р°РґР°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕРµРІ
 	this->AmountLayers = ParserXML.getAmountLayer();
 
-	// Задаем размеры массива спарйтов и карты коллизии 
+	// Р—Р°РґР°РµРј СЂР°Р·РјРµСЂС‹ РјР°СЃСЃРёРІР° СЃРїР°СЂР№С‚РѕРІ Рё РєР°СЂС‚С‹ РєРѕР»Р»РёР·РёРё 
 	Layers = new world::FLayer[AmountLayers];
 	for (int count = 0; count < AmountLayers; count++) {
 		Layers[count].Blocks.resize(LvlSize.y);
@@ -51,17 +51,17 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 		}
 	}
 
-	// Цикл заполнения слоев текстурами
+	// Р¦РёРєР» Р·Р°РїРѕР»РЅРµРЅРёСЏ СЃР»РѕРµРІ С‚РµРєСЃС‚СѓСЂР°РјРё
 	for (int count = 0; count < AmountLayers; count++) {
 		for (int i = 0; i < LvlSize.y; i++) {
 			for (int j = 0; j < LvlSize.x; j++) {
-				// Айди тайла из тайлесета, для координат ректа 
+				// РђР№РґРё С‚Р°Р№Р»Р° РёР· С‚Р°Р№Р»РµСЃРµС‚Р°, РґР»СЏ РєРѕРѕСЂРґРёРЅР°С‚ СЂРµРєС‚Р° 
 				int TileId = ParserXML.getLayerElement(count, i, j);
 				sf::Sprite tmpSprite;
 
 				tmpSprite.setTexture(TileSetTex);
 
-				// Проверка пустая ли клетка 
+				// РџСЂРѕРІРµСЂРєР° РїСѓСЃС‚Р°СЏ Р»Рё РєР»РµС‚РєР° 
 				if (TileId != 0) {
 					TileId--;
 					int XTileId, YTileId;
@@ -82,7 +82,7 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 	CollisMap = ParserXML.getCollisMap().CollisArr;
 }	
 
-// Корректировка скоростей от наличия блока и расстояния до него
+// РљРѕСЂСЂРµРєС‚РёСЂРѕРІРєР° СЃРєРѕСЂРѕСЃС‚РµР№ РѕС‚ РЅР°Р»РёС‡РёСЏ Р±Р»РѕРєР° Рё СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РґРѕ РЅРµРіРѕ
 void UWorld::LeftSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
 	sf::Int32 y = YPointToTile(PawnRect.top);
@@ -143,7 +143,7 @@ void UWorld::DownSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect
  
 sf::Vector2f UWorld::GetCorrectSpeed(EDirection XDirect, EDirection YDirect, sf::Vector2f Speed, sf::FloatRect PawnRect)
 {
-	// ToDo реализовать параллельность выполняемых проверок.
+	// ToDo СЂРµР°Р»РёР·РѕРІР°С‚СЊ РїР°СЂР°Р»Р»РµР»СЊРЅРѕСЃС‚СЊ РІС‹РїРѕР»РЅСЏРµРјС‹С… РїСЂРѕРІРµСЂРѕРє.
 
 	bool bHoirizCheck = false, bVerticCheck = false;
 	if (XDirect == EDirection::Left)
@@ -201,7 +201,7 @@ void UWorld::DrawWorld(sf::RenderWindow& window, sf::Vector2f ViewCenter, sf::Ve
 {
 	window.draw(Backgr);
 
-	// Максимальная клетка, до которой может происходить отрисовка, чтобы избежать выхода из диапозона
+	// РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РєР»РµС‚РєР°, РґРѕ РєРѕС‚РѕСЂРѕР№ РјРѕР¶РµС‚ РїСЂРѕРёСЃС…РѕРґРёС‚СЊ РѕС‚СЂРёСЃРѕРІРєР°, С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ РІС‹С…РѕРґР° РёР· РґРёР°РїРѕР·РѕРЅР°
 	sf::Int32 maxRight = (sf::Int32(ViewCenter.x + ViewSize.x / 2) / TileSize.x), maxDown = (sf::Int32(ViewCenter.y + ViewSize.y / 2) / TileSize.y);
 
 	for (sf::Int32 count = 0; count < AmountLayers; count++) {
@@ -212,14 +212,14 @@ void UWorld::DrawWorld(sf::RenderWindow& window, sf::Vector2f ViewCenter, sf::Ve
 		for (sf::Int32 i = (sf::Int32(ViewCenter.y - ViewSize.y / 2) / TileSize.y) % LvlSize.y; i < maxDown; i++) {
 			if (i < 0) i = 0;
 
-			// Блокирует выход правой границы за диапозон
+			// Р‘Р»РѕРєРёСЂСѓРµС‚ РІС‹С…РѕРґ РїСЂР°РІРѕР№ РіСЂР°РЅРёС†С‹ Р·Р° РґРёР°РїРѕР·РѕРЅ
 			maxRight = (sf::Int32(ViewCenter.x + ViewSize.x / 2) / TileSize.x) + 1;
 			if (maxRight > LvlSize.x) maxRight = LvlSize.x;
 
 			for (sf::Int32 j = (sf::Int32(ViewCenter.x - ViewSize.x / 2) / TileSize.y) % LvlSize.x; j < maxRight; j++) {
 				if (j < 0) j = 0;
 
-				// Если отрисовывать нечего, то не отрисовывать. Logic
+				// Р•СЃР»Рё РѕС‚СЂРёСЃРѕРІС‹РІР°С‚СЊ РЅРµС‡РµРіРѕ, С‚Рѕ РЅРµ РѕС‚СЂРёСЃРѕРІС‹РІР°С‚СЊ. Logic
 				if (Layers[count].Blocks[i][j].getPosition().y != -1)
 					window.draw(Layers[count].Blocks[i][j]);
 			}

@@ -1,18 +1,18 @@
-#include "Headers\XMLtoMap.h"
+п»ї#include "Headers\XMLtoMap.h"
 #include <iostream>
 
 FParserXML::FParserXML(std::string LvlName)
 {
-	// Файл
+	// Р¤Р°Р№Р»
 	std::ifstream ifsLvl;
-	// Строка читающая файл
+	// РЎС‚СЂРѕРєР° С‡РёС‚Р°СЋС‰Р°СЏ С„Р°Р№Р»
 	std::string line;
-	// Путь к файлу уровня
+	// РџСѓС‚СЊ Рє С„Р°Р№Р»Сѓ СѓСЂРѕРІРЅСЏ
 	std::string LvlPath = LevelPath;
-	// Статус коллизии, если true - считывать коллизия со слоя, иначе не считывать
+	// РЎС‚Р°С‚СѓСЃ РєРѕР»Р»РёР·РёРё, РµСЃР»Рё true - СЃС‡РёС‚С‹РІР°С‚СЊ РєРѕР»Р»РёР·РёСЏ СЃРѕ СЃР»РѕСЏ, РёРЅР°С‡Рµ РЅРµ СЃС‡РёС‚С‹РІР°С‚СЊ
 	bool bCollis = false;
 
-	///////// Парсинг файла уровня \\\\\\\\\\\
+	///////// РџР°СЂСЃРёРЅРі С„Р°Р№Р»Р° СѓСЂРѕРІРЅСЏ \\\\\\\\\\\
 
 	ifsLvl.open(LvlPath + "level_" + LvlName + ".tmx");
 
@@ -22,15 +22,15 @@ FParserXML::FParserXML(std::string LvlName)
 	this->LvlName = LvlName;
 
 	while (!ifsLvl.eof()) {
-		// Считывание из файла
+		// РЎС‡РёС‚С‹РІР°РЅРёРµ РёР· С„Р°Р№Р»Р°
 		getline(ifsLvl, line);
 
 		std::string::size_type FindRes = std::string::npos;
 
-		// Поиск карты
+		// РџРѕРёСЃРє РєР°СЂС‚С‹
 		FindRes = line.find("<map");
 		if (FindRes != std::string::npos) {
-			// Получаем по тегу размеры карты
+			// РџРѕР»СѓС‡Р°РµРј РїРѕ С‚РµРіСѓ СЂР°Р·РјРµСЂС‹ РєР°СЂС‚С‹
 			LevelStruct.LvlSize.x = std::stoi(getValueByTag(line, "width"));
 			LevelStruct.LvlSize.y = std::stoi(getValueByTag(line, "height"));
 
@@ -43,7 +43,7 @@ FParserXML::FParserXML(std::string LvlName)
 			}
 		}	
 
-		// Поиск таййлесета
+		// РџРѕРёСЃРє С‚Р°Р№Р№Р»РµСЃРµС‚Р°
 		FindRes = line.find("<tileset");
 		if (FindRes != std::string::npos) {
 			LevelStruct.TileSize.x = std::stoi(getValueByTag(line, "tilewidth"));
@@ -51,7 +51,7 @@ FParserXML::FParserXML(std::string LvlName)
 			LevelStruct.AmountTiles = std::stoi(getValueByTag(line, "tilecount"));
 		}
 
-		// Поиск изображение тайлсета
+		// РџРѕРёСЃРє РёР·РѕР±СЂР°Р¶РµРЅРёРµ С‚Р°Р№Р»СЃРµС‚Р°
 		FindRes = line.find("<image");
 		if (FindRes != std::string::npos) {
 			LevelStruct.PathToSet = (getValueByTag(line, "source"));
@@ -59,25 +59,25 @@ FParserXML::FParserXML(std::string LvlName)
 			LevelStruct.TileSetSize.y = std::stoi(getValueByTag(line, "height")) / LevelStruct.TileSize.y;
 		}
 
-		// Поиск слоев
+		// РџРѕРёСЃРє СЃР»РѕРµРІ
 		FindRes = line.find("<layer");
 		if (FindRes != std::string::npos) {
 			Layers = AddLayer(Layers, LevelStruct.AmountLayer);
 			Layers[LevelStruct.AmountLayer].name = getValueByTag(line, "name");
-			// Изменение статуса коллизии в зависимости от параметра слоя 
+			// РР·РјРµРЅРµРЅРёРµ СЃС‚Р°С‚СѓСЃР° РєРѕР»Р»РёР·РёРё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РїР°СЂР°РјРµС‚СЂР° СЃР»РѕСЏ 
 			if (getValueByTag(line, "collision") == "true")
 				bCollis = true;
 			else
 				bCollis = false;
 
-			// Инкремент количества слоев. Сброс индексов для заполнения массива карты
+			// РРЅРєСЂРµРјРµРЅС‚ РєРѕР»РёС‡РµСЃС‚РІР° СЃР»РѕРµРІ. РЎР±СЂРѕСЃ РёРЅРґРµРєСЃРѕРІ РґР»СЏ Р·Р°РїРѕР»РЅРµРЅРёСЏ РјР°СЃСЃРёРІР° РєР°СЂС‚С‹
 			LevelStruct.AmountLayer++;
 			CurrLayer++;
 			i = 0;
 			j = 0;
 		}
 
-		// Поиск тайлов
+		// РџРѕРёСЃРє С‚Р°Р№Р»РѕРІ
 		FindRes = line.find("<tile");
 		if (FindRes != std::string::npos) {
 			FindRes = line.find("<tileset");
@@ -93,7 +93,7 @@ FParserXML::FParserXML(std::string LvlName)
 			}
 		}
 
-		// ToDo Парсер для объектов
+		// ToDo РџР°СЂСЃРµСЂ РґР»СЏ РѕР±СЉРµРєС‚РѕРІ
 
 	} 
 
@@ -108,7 +108,7 @@ FParserXML::~FParserXML()
 
 std::string FParserXML::getValueByTag(std::string& line, const char* tag)
 {
-	// Возвращает значение по тегу в формате строк. Ищет вхождение данного тега в подстроке, а потом первое вхождение 
+	// Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ РїРѕ С‚РµРіСѓ РІ С„РѕСЂРјР°С‚Рµ СЃС‚СЂРѕРє. РС‰РµС‚ РІС…РѕР¶РґРµРЅРёРµ РґР°РЅРЅРѕРіРѕ С‚РµРіР° РІ РїРѕРґСЃС‚СЂРѕРєРµ, Р° РїРѕС‚РѕРј РїРµСЂРІРѕРµ РІС…РѕР¶РґРµРЅРёРµ 
 	std::string Value = "";
 	std::string::size_type res = std::string::npos;
 

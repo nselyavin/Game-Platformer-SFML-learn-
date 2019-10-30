@@ -1,4 +1,4 @@
-#include "Headers\IMainMenu.h"
+п»ї#include "Headers\IMainMenu.h"
 #include <iostream>;
 
 IMainMenu::IMainMenu()
@@ -11,26 +11,26 @@ IMainMenu::IMainMenu()
 
 sf::Int32 IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf::Uint32 ScrHeight, sf::Uint32 FrameRate)
 {
-	// Сбрасывает позицию камеры до нулевой, чтобы меню не съезжало
+	// РЎР±СЂР°СЃС‹РІР°РµС‚ РїРѕР·РёС†РёСЋ РєР°РјРµСЂС‹ РґРѕ РЅСѓР»РµРІРѕР№, С‡С‚РѕР±С‹ РјРµРЅСЋ РЅРµ СЃСЉРµР·Р¶Р°Р»Рѕ
 	sf::View Camera;
 	Camera.reset(sf::FloatRect(0, 0, ScrWidth, ScrHeight));
 	window.setView(Camera);
 
-	// Сохранение параметров экрана
+	// РЎРѕС…СЂР°РЅРµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ СЌРєСЂР°РЅР°
 	this->ScrWidth = ScrWidth;
 	this->ScrHeight = ScrHeight;
 	this->FrameRate = FrameRate;
 
-	// Инициализация последней позиции мыши
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРѕСЃР»РµРґРЅРµР№ РїРѕР·РёС†РёРё РјС‹С€Рё
 	LastMousePos.x = 0;
 	LastMousePos.y = 0;
 
 	MenuStatus = EEndStatus::Menu;
 
-	// Статус закрытия меню
+	// РЎС‚Р°С‚СѓСЃ Р·Р°РєСЂС‹С‚РёСЏ РјРµРЅСЋ
 	bMenuClosed = false;
 
-	// Задаем тексутры, рект и позицию для логотипа
+	// Р—Р°РґР°РµРј С‚РµРєСЃСѓС‚СЂС‹, СЂРµРєС‚ Рё РїРѕР·РёС†РёСЋ РґР»СЏ Р»РѕРіРѕС‚РёРїР°
 	if (!LogoTexture.loadFromFile(SpritePath + "Logo.png")) {
 		printf("Menu:\nLogo img: ");
 		return EEndStatus::FileLoadFaled;
@@ -42,7 +42,7 @@ sf::Int32 IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf
 		LogoRect.top + LogoRect.height / 2);
 	Logo.setPosition(ScrWidth / 2, 130);
 
-	// Задний фон игры
+	// Р—Р°РґРЅРёР№ С„РѕРЅ РёРіСЂС‹
 	if (!BackMenuText.loadFromFile(SpritePath + "MenuBack.png")) {
 		printf("Menu:\nBackground img: ");
 		return EEndStatus::FileLoadFaled;
@@ -54,7 +54,7 @@ sf::Int32 IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf
 		return EEndStatus::FileLoadFaled;
 	}
 
-	// Задает текст, шрифт, размер кнопок меню
+	// Р—Р°РґР°РµС‚ С‚РµРєСЃС‚, С€СЂРёС„С‚, СЂР°Р·РјРµСЂ РєРЅРѕРїРѕРє РјРµРЅСЋ
 	StartBtn.setString("Start Game");
 	StartBtn.setFont(Font);
 	StartBtn.setCharacterSize(45);
@@ -89,7 +89,7 @@ void IMainMenu::Center(FText &ObjText)
 
 sf::Int32 IMainMenu::BtnActivate(sf::Int32 CurrBtn)
 {
-	// Активирует действие в зависимости от кнопки 
+	// РђРєС‚РёРІРёСЂСѓРµС‚ РґРµР№СЃС‚РІРёРµ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РєРЅРѕРїРєРё 
 	switch (CurrBtn) {
 	case(0):
 		SelectedLvl = 1;
@@ -111,12 +111,12 @@ sf::Int32 IMainMenu::BtnActivate(sf::Int32 CurrBtn)
 
 void IMainMenu::BtnFill(sf::Int32 CurrBtn)
 {
-	// Сбросс цвета выбранной кнопки
+	// РЎР±СЂРѕСЃСЃ С†РІРµС‚Р° РІС‹Р±СЂР°РЅРЅРѕР№ РєРЅРѕРїРєРё
 	StartBtn.setFillColor(sf::Color::Color(255, 255, 255));
 	SettingBtn.setFillColor(sf::Color::Color(255, 255, 255));
 	EndBtn.setFillColor(sf::Color::Color(255, 255, 255));
 
-	// Покрасс текущей кнопки
+	// РџРѕРєСЂР°СЃСЃ С‚РµРєСѓС‰РµР№ РєРЅРѕРїРєРё
 	switch (CurrBtn) {
 	case(0):
 		StartBtn.setFillColor(sf::Color::Color(0, 255, 255));
@@ -132,15 +132,15 @@ void IMainMenu::BtnFill(sf::Int32 CurrBtn)
 
 sf::Int32 IMainMenu::DrawCicle(sf::RenderWindow& window)
 {
-	// Текущий выбранный пункт меню
+	// РўРµРєСѓС‰РёР№ РІС‹Р±СЂР°РЅРЅС‹Р№ РїСѓРЅРєС‚ РјРµРЅСЋ
 	sf::Int32 CurrBtn = -1;
 
-	// Получение ректов кнопок
+	// РџРѕР»СѓС‡РµРЅРёРµ СЂРµРєС‚РѕРІ РєРЅРѕРїРѕРє
 	sf::FloatRect StartBtnRect = StartBtn.getLocalBounds();
 	sf::FloatRect SettingBtnRect = SettingBtn.getLocalBounds();
 	sf::FloatRect EndBtnRect = EndBtn.getLocalBounds();
 
-	// Центрирование кнопок по середине экрана
+	// Р¦РµРЅС‚СЂРёСЂРѕРІР°РЅРёРµ РєРЅРѕРїРѕРє РїРѕ СЃРµСЂРµРґРёРЅРµ СЌРєСЂР°РЅР°
 	Center(StartBtn);
 	StartBtn.setPosition(ScrWidth / 2, 260);
 	Center(SettingBtn);
@@ -148,7 +148,7 @@ sf::Int32 IMainMenu::DrawCicle(sf::RenderWindow& window)
 	Center(EndBtn);
 	EndBtn.setPosition(ScrWidth / 2, 420);
 
-	// Здесь можно ретюрнить все ошибки через код, следовательно делать проверки.  
+	// Р—РґРµСЃСЊ РјРѕР¶РЅРѕ СЂРµС‚СЋСЂРЅРёС‚СЊ РІСЃРµ РѕС€РёР±РєРё С‡РµСЂРµР· РєРѕРґ, СЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕ РґРµР»Р°С‚СЊ РїСЂРѕРІРµСЂРєРё.  
 	while (!bMenuClosed) {
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -158,21 +158,21 @@ sf::Int32 IMainMenu::DrawCicle(sf::RenderWindow& window)
 				return EEndStatus::Exit;
 			}
 			
-			// Проверка нажатий клавиш
+			// РџСЂРѕРІРµСЂРєР° РЅР°Р¶Р°С‚РёР№ РєР»Р°РІРёС€
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape) {
 					bMenuClosed = true;
 					return EEndStatus::Exit;
 				}
 
-				// Изменять выбранную кнопку если нажимаются стрелки
+				// РР·РјРµРЅСЏС‚СЊ РІС‹Р±СЂР°РЅРЅСѓСЋ РєРЅРѕРїРєСѓ РµСЃР»Рё РЅР°Р¶РёРјР°СЋС‚СЃСЏ СЃС‚СЂРµР»РєРё
 				if (event.key.code == sf::Keyboard::Down) {
 					if (CurrBtn < 0)
 						CurrBtn = 0;
 
 					CurrBtn = (CurrBtn + 1) % 3;
 
-					// Вызов функции покраски кнопок в зависимости от текущей выбранной кнопки
+					// Р’С‹Р·РѕРІ С„СѓРЅРєС†РёРё РїРѕРєСЂР°СЃРєРё РєРЅРѕРїРѕРє РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РµРєСѓС‰РµР№ РІС‹Р±СЂР°РЅРЅРѕР№ РєРЅРѕРїРєРё
 					BtnFill(CurrBtn);
 				}
 				else if (event.key.code == sf::Keyboard::Up) {
@@ -181,43 +181,43 @@ sf::Int32 IMainMenu::DrawCicle(sf::RenderWindow& window)
 					if (CurrBtn < 0)
 						CurrBtn = 2;
 
-					// Вызов функции покраски кнопок в зависимости от текущей выбранной кнопки
+					// Р’С‹Р·РѕРІ С„СѓРЅРєС†РёРё РїРѕРєСЂР°СЃРєРё РєРЅРѕРїРѕРє РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РµРєСѓС‰РµР№ РІС‹Р±СЂР°РЅРЅРѕР№ РєРЅРѕРїРєРё
 					BtnFill(CurrBtn);
 				}
 
-				// Активировать текущую кнопку 
+				// РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ С‚РµРєСѓС‰СѓСЋ РєРЅРѕРїРєСѓ 
 				if (event.key.code == sf::Keyboard::Enter) {
 					MenuStatus = BtnActivate(CurrBtn);
 				}
 			}
 			
-			// Активировать текущую кнопку 
+			// РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ С‚РµРєСѓС‰СѓСЋ РєРЅРѕРїРєСѓ 
 			if (event.type == sf::Event::MouseButtonPressed){
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					MenuStatus = BtnActivate(CurrBtn);
 				}
 			}
 			
-			// Проверка для покраски кнопок
+			// РџСЂРѕРІРµСЂРєР° РґР»СЏ РїРѕРєСЂР°СЃРєРё РєРЅРѕРїРѕРє
 			if (event.type == sf::Event::MouseMoved) {
 				if (LastMousePos.x != event.mouseMove.x && LastMousePos.y != event.mouseMove.y) {
 					CurrBtn = -1;
 
-					// Координаты кнопки старта.
+					// РљРѕРѕСЂРґРёРЅР°С‚С‹ РєРЅРѕРїРєРё СЃС‚Р°СЂС‚Р°.
 					if (event.mouseMove.x > StartBtn.getGlobalBounds().left&& event.mouseMove.x < (StartBtn.getGlobalBounds().left + StartBtnRect.width)) {
 						if (event.mouseMove.y > StartBtn.getGlobalBounds().top&& event.mouseMove.y < (StartBtn.getGlobalBounds().top + StartBtnRect.height)) {
 							CurrBtn = 0;	
 						}
 					}
 
-					// Координаты кнопки настроек.
+					// РљРѕРѕСЂРґРёРЅР°С‚С‹ РєРЅРѕРїРєРё РЅР°СЃС‚СЂРѕРµРє.
 					if (event.mouseMove.x > SettingBtn.getGlobalBounds().left&& event.mouseMove.x < (SettingBtn.getGlobalBounds().left + SettingBtnRect.width)) {
 						if (event.mouseMove.y > SettingBtn.getGlobalBounds().top&& event.mouseMove.y < (SettingBtn.getGlobalBounds().top + SettingBtnRect.height)) {
 							CurrBtn = 1;
 						}
 					}
 
-					// Координаты кнопки выхода.
+					// РљРѕРѕСЂРґРёРЅР°С‚С‹ РєРЅРѕРїРєРё РІС‹С…РѕРґР°.
 					if (event.mouseMove.x > EndBtn.getGlobalBounds().left&& event.mouseMove.x < (EndBtn.getGlobalBounds().left + EndBtnRect.width)) {
 						if (event.mouseMove.y > EndBtn.getGlobalBounds().top&& event.mouseMove.y < (EndBtn.getGlobalBounds().top + EndBtnRect.height)) {
 							CurrBtn = 2;
@@ -225,11 +225,11 @@ sf::Int32 IMainMenu::DrawCicle(sf::RenderWindow& window)
 
 					}
 
-					// Запомоминание последней позиции мыши 
+					// Р—Р°РїРѕРјРѕРјРёРЅР°РЅРёРµ РїРѕСЃР»РµРґРЅРµР№ РїРѕР·РёС†РёРё РјС‹С€Рё 
 					LastMousePos.x = event.mouseMove.x;
 					LastMousePos.y = event.mouseMove.y;
 
-					// Вызов функции покраски кнопок в зависимости от текущей выбранной кнопки
+					// Р’С‹Р·РѕРІ С„СѓРЅРєС†РёРё РїРѕРєСЂР°СЃРєРё РєРЅРѕРїРѕРє РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РµРєСѓС‰РµР№ РІС‹Р±СЂР°РЅРЅРѕР№ РєРЅРѕРїРєРё
 					BtnFill(CurrBtn);	
 				} 
 			}
