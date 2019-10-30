@@ -69,7 +69,10 @@ public:
 	// Дает доступ к блоку карты колиззи
 	bool& pBlockCollision(sf::Int32 i, sf::Int32 j);	
 
-private:
+	// Проверяет есть ли под ногами земля
+	bool isEarth(sf::Vector2f PawnPos, sf::FloatRect PawnRect);
+
+	// Перевод из координат в тайлы 
 	sf::Vector2i PointToTile(sf::Vector2f PointCoord);
 	sf::Int32 XPointToTile(float x);
 	sf::Int32 YPointToTile(float y);

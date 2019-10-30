@@ -36,6 +36,8 @@ private:
 	FClock Clock;
 	// Задержка для смены кадров
 	sf::Int32 delay;
+	// Показывает на земле ли персонаж
+	bool bOnEarth;
 	// Статус жив ли персонаж
 	bool bAlive;
 	// Жизни персонажа
@@ -63,8 +65,11 @@ public:
 	// Метод смены спрайта в зависимости от направления
 	void SetStance(EActionList Action);
 
-	// 
+	// Влияние действий игрока на скорость персонажа
 	void ChangeSelfSpeed(EActionList Action);
+
+	// Модификаторы скорости. Следует вызывать всегда
+	void MoveModificators();
 
 	// Функция движения персонажа
 	void MovePawn();
@@ -77,6 +82,8 @@ public:
 
 	// Спрашивает жив ли игрок
 	bool isAlive();
+
+	bool& pOnEarthStatus();
 
 	// Возвращает ссылку объект спрайта игрока
 	const sf::Sprite GetSprite();

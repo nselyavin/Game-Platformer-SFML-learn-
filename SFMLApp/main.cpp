@@ -9,12 +9,11 @@
 
 sf::Int32 main()
 {
-	/* // Код для сокрытия консоли, нужен для релизной сборки
+	// Код для сокрытия консоли, нужен для релизной сборки
 	HWND Hide;
 	AllocConsole();
 	Hide = FindWindowA("ConsoleWindowClass", NULL);
-	ShowWindow(Hide, 1);
-	*/
+	ShowWindow(Hide, 0);
 
 	//TODO Реализовать чтение настроек из файла конфига
 	sf::Uint32 ScrWidth, ScrHeight;

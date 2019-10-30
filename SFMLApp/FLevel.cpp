@@ -41,7 +41,7 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 	// Здесь происходит главная отрисовка уровня, и считывание действий игрока
 	while (!bGameEnd || !PlayerPawn.isAlive()) {
 
-		 // Количество кадров в секунду
+		/* // Количество кадров в секунду
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1.f / currentTime;
 		LastTime = currentTime;
@@ -53,6 +53,7 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 		else {
 			delay++;
 		}
+		*/
 		
 		// Проверка событий в игре
 		sf::Event event;
@@ -71,7 +72,10 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 				}
 			}
 		}
-		
+
+		// Проверка есть ли под ногами земля
+		PlayerPawn.pOnEarthStatus() = World.isEarth(PlayerPawn.GetPos(), PlayerPawn.GetPawnRect());
+
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
 			// Прыжок в зависимости от направления
 			if (PlayerPawn.GetXDirection() == EDirection::Left)
@@ -98,9 +102,12 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Right);
 		}
 
-		// Проверка пересекает ли персонаж коллизию // ToDo Корректировка позиции пешки.
-		PlayerPawn.setSpeed(World.GetCorrectSpeed(PlayerPawn.GetXDirection(), PlayerPawn.GetYDirection(), PlayerPawn.GetSpeed(), PlayerPawn.GetPawnRect()));
+		// Применение модифиации скорости
+		PlayerPawn.MoveModificators();
 
+		// Проверка пересекает ли персонаж коллизию
+		PlayerPawn.setSpeed(World.GetCorrectSpeed(PlayerPawn.GetXDirection(), PlayerPawn.GetYDirection(), PlayerPawn.GetSpeed(), PlayerPawn.GetPawnRect()));
+		
 		// Общее движение пешки
 		PlayerPawn.MovePawn();
 

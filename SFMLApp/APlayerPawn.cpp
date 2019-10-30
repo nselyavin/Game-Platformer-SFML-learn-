@@ -7,6 +7,7 @@ APlayerPawn::APlayerPawn()
 	this->Health = 3;
 	this->Mass = 44;
 	this->bAlive = true;
+	this->bOnEarth = true;
 	this->Speed.x = 0;
 	this->Speed.y = 0;
 	this->Gravity = 10;
@@ -23,7 +24,8 @@ sf::Int32 APlayerPawn::CreatePawn(float x, float y)
 	// Инициализация основных параметров пешки
 	this->ASprite.setPosition(x, y);
 	this->Health = 3;
-	this->Mass = 44;
+	this->Mass = 50;
+	this->bOnEarth = true;
 	this->bAlive = true;
 	this->Speed.x = 0;
 	this->Speed.y = 0;
@@ -61,12 +63,18 @@ void APlayerPawn::ChangeSelfSpeed(EActionList Action)
 		Speed.x = 10;
 	}
 	else if (Action == EActionList::Jump_Left || Action == EActionList::Jump_Right) {
-		Speed.y = -10;
+		if (bOnEarth)
+			Speed.y = -20;
 	}
 	else if (Action == EActionList::Idle_Left || Action == EActionList::Idle_Right) {
 		Speed.x = 0;
 	} 
 
+	SetStance(Action);
+}
+
+void APlayerPawn::MoveModificators() 
+{
 	Speed.y += Mass * g;
 
 	if (Speed.x < 0) XDirection = EDirection::Left;
@@ -76,7 +84,6 @@ void APlayerPawn::ChangeSelfSpeed(EActionList Action)
 	else if (Speed.y > 0) YDirection = EDirection::Down;
 	else YDirection = EDirection::Nowhere;
 
-	SetStance(Action);
 }
 
 void APlayerPawn::MovePawn()
@@ -140,6 +147,11 @@ const sf::FloatRect APlayerPawn::GetPawnRect()
 }
 
 bool APlayerPawn::isAlive() { return bAlive; }
+
+bool& APlayerPawn::pOnEarthStatus()
+{
+	return bOnEarth;
+}
 
 const sf::Sprite APlayerPawn::GetSprite() { return ASprite; }
 
