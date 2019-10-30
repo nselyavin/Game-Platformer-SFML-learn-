@@ -1,66 +1,109 @@
-/*
-	Файл принимающий настройки игры и раскидывающий их по переменным для дальнейшего использования
-	Цикл запускает главное меню, а затем уровни
+п»ї/*
+	Р¤Р°Р№Р» РїСЂРёРЅРёРјР°СЋС‰РёР№ РЅР°СЃС‚СЂРѕР№РєРё РёРіСЂС‹ Рё СЂР°СЃРєРёРґС‹РІР°СЋС‰РёР№ РёС… РїРѕ РїРµСЂРµРјРµРЅРЅС‹Рј РґР»СЏ РґР°Р»СЊРЅРµР№С€РµРіРѕ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ
+	Р¦РёРєР» Р·Р°РїСѓСЃРєР°РµС‚ РіР»Р°РІРЅРѕРµ РјРµРЅСЋ, Р° Р·Р°С‚РµРј СѓСЂРѕРІРЅРё
 */
 
-#include "IMainMenu.h"
-#include "APlayerPawn.h"
+#include "Headers\IMainMenu.h"
+#include "Headers\FLevel.h"
+// #include <windows.h> РќСѓР¶РЅСЏ РґР»СЏ СЃРѕРєСЂС‹С‚РёСЏ РєРѕРЅСЃРѕР»Рё
 
-
-int main()
+sf::Int32 main()
 {
+	// РљРѕРґ РґР»СЏ СЃРѕРєСЂС‹С‚РёСЏ РєРѕРЅСЃРѕР»Рё, РЅСѓР¶РµРЅ РґР»СЏ СЂРµР»РёР·РЅРѕР№ СЃР±РѕСЂРєРё
+	HWND Hide;
+	AllocConsole();
+	Hide = FindWindowA("ConsoleWindowClass", NULL);
+	ShowWindow(Hide, 0);
 
-	//TODO Реализовать чтение настроек из файла////////
+	//TODO Р РµР°Р»РёР·РѕРІР°С‚СЊ С‡С‚РµРЅРёРµ РЅР°СЃС‚СЂРѕРµРє РёР· С„Р°Р№Р»Р° РєРѕРЅС„РёРіР°
 	sf::Uint32 ScrWidth, ScrHeight;
 	sf::Uint32 FrameRate;
 	ScrWidth = 800;
 	ScrHeight = 600;
-	FrameRate = 30;
+	FrameRate = 64;
 
-	// Иницализации игрового пространства (окна, в котором происходит игра)
-	// Установка соотношения сторон и частоты кадров
-	sf::RenderWindow window(sf::VideoMode(ScrWidth, ScrHeight), "SFML works!");
+	// РўРµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ РёРіСЂС‹ Рё РІСЃРµРіРѕ СѓСЂРѕРІРЅРµР№. ToDo СЂРµР°Р»РёР·РѕРІР°С‚СЊ РёР·РјРµРЅРµРЅРёСЏ.
+	sf::Uint32 CurrLvl = 0;
+	sf::Uint32 TotalLvls = 1;
+
+	// РРЅРёС†Р°Р»РёР·Р°С†РёРё РёРіСЂРѕРІРѕРіРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° (РѕРєРЅР°, РІ РєРѕС‚РѕСЂРѕРј РїСЂРѕРёСЃС…РѕРґРёС‚ РёРіСЂР°)
+	// РЈСЃС‚Р°РЅРѕРІРєР° СЃРѕРѕС‚РЅРѕС€РµРЅРёСЏ СЃС‚РѕСЂРѕРЅ Рё С‡Р°СЃС‚РѕС‚С‹ РєР°РґСЂРѕРІ
+	sf::RenderWindow window(sf::VideoMode(ScrWidth, ScrHeight, 64), "SFML works!");
 	window.setFramerateLimit(FrameRate);
 
-	// Инициализация класса меню.
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РєР»Р°СЃСЃР° РјРµРЅСЋ, СѓСЂРѕРІРЅСЏ Рё Р·Р°РіСЂСѓР·РѕС‡РЅРѕРіРѕ СЌРєСЂР°РЅР°.
 	IMainMenu MainMenu;
+	FLevel Level;
+	sf::Texture LoadScrTex;
+	sf::Sprite LoadScr;
+
+	LoadScrTex.loadFromFile(SpritePath + "LoadScreen.jpg");
+	LoadScr.setTexture(LoadScrTex);
 
 	bool bGameEnd = false;
-	int res = EEndStatus::Begin;
-	// Родительский цикл игры, в нем происходит вызов основных этапов игры: меню, уровень и тд. — пока игра не закочнена
+	sf::Int32 res = EEndStatus::Menu;
+	// Р РѕРґРёС‚РµР»СЊСЃРєРёР№ С†РёРєР» РёРіСЂС‹, РІ РЅРµРј РїСЂРѕРёСЃС…РѕРґРёС‚ РІС‹Р·РѕРІ РѕСЃРЅРѕРІРЅС‹С… СЌС‚Р°РїРѕРІ РёРіСЂС‹: РјРµРЅСЋ, СѓСЂРѕРІРµРЅСЊ Рё С‚Рґ. вЂ” РїРѕРєР° РёРіСЂР° РЅРµ Р·Р°РєРѕС‡РЅРµРЅР°
 	while (!bGameEnd)
 	{
 		switch (res) {
-		case EEndStatus::Exit:
-			window.close();
-			bGameEnd = true;
-			break;
-
-		case EEndStatus::Begin:
+		// Р РµР·СѓР»СЊС‚РёСЂСѓСЋС‰РёРµ
+		case EEndStatus::Menu:
 			res = MainMenu.BeginMenu(window, ScrWidth, ScrHeight, FrameRate);
 			break;
 
 		case EEndStatus::StartGame:
-			// ToDo Реализовать систему выбора уровня
-			printf("Sosi jepu");
-			res = EEndStatus::Begin;
+			// Р—Р°РїСѓСЃРєР°РµС‚ РЅСѓР¶РЅС‹Р№ СѓСЂРѕРІРµРЅСЊ.
+			window.draw(LoadScr);
+			window.display();
+			CurrLvl = MainMenu.getSelectedLvl();
+			res = Level.StartLevel(window, CurrLvl);
 			break;
 
-		case EEndStatus::GameError:
-			printf("Game was failed with erroe: %d", res);
+		case EEndStatus::ReturnGame:
+			// РџСЂРѕРґРѕР»Р¶Р°С‚СЊ РёРіСЂСѓ, РЅРµ РІС‹РєРёРґС‹РІР°СЏ РІ РјРµРЅСЋ
+			window.draw(LoadScr);
+			window.display();
+			if ((CurrLvl + 1) < TotalLvls) {
+				CurrLvl++;
+				res = Level.StartLevel(window, CurrLvl);
+				break;
+			}
+			else {
+				// ToDo РРіСЂР° РїСЂРѕР№РґРµРЅР°. Р—Р°РїСѓСЃРє С‚РёС‚СЂРѕРІ.
+				printf("The game is over");
+			}
+
+		// Р—Р°РІРµСЂС€Р°СЋС‰РёРµ
+		case EEndStatus::Exit:
+			// ToDo РїРѕС„РёРєСЃРёС‚СЊ РєСЂР°С€ РїСЂРё РІС‹С…РѕРґРµ РёР· РёРіСЂС‹
+			bGameEnd = true;
 			window.close();
+			break;
+
+		///// РћС€РёР±РєРё РёРіСЂС‹
+		case EEndStatus::GameError:
+			printf("Game was failed with error: %d", res);
+			window.close();
+			bGameEnd = true;
+			system("pause");
+			break;
+
+		case EEndStatus::FileLoadFaled:
+			printf("File load failed");
+			window.close();
+			bGameEnd = true;
 			system("pause");
 			break;
 
 		default:
 			printf("Game was crashed");
 			window.close();
+			bGameEnd = true;
 			system("pause");
 			break;
 		}
 		window.clear();
 		window.display();
 	}
-
 	return 0;
 }

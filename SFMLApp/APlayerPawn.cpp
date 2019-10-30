@@ -1,106 +1,168 @@
-#include "APlayerPawn.h"
-#include "EEndStatus.h"
+п»ї#include "Headers\APlayerPawn.h"
 
-int APlayerPawn::CreatePawn(float x, float y)
+
+APlayerPawn::APlayerPawn()
 {
-	// Инициализация основных параметров пешки
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РїРµС€РєРё
+	this->Health = 3;
+	this->Mass = 44;
+	this->bAlive = true;
+	this->bOnEarth = true;
+	this->Speed.x = 0;
+	this->Speed.y = 0;
+	this->Gravity = 10;
+	this->delay = 100;
+	this->CurrPose = 0;
+	XDirection = EDirection::Right;
+	YDirection = EDirection::Left;
+}
+
+sf::Int32 APlayerPawn::CreatePawn(float x, float y)
+{
+	// РЎРґРµР»Р°С‚СЊ, С‡С‚Рѕ Р±С‹ РєРѕР»Р»РёР·РёСЏ РёРіСЂРѕРєР° Р±С‹Р»Р° 32 РЅР° 64 РїРёРєСЃРµР»РµР№. Р СЃРѕРѕС‚РІРµСЃС‚СѓСЋС‰Р°СЏ РјРѕРґРµР»СЊРєР°.
+
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ РїРµС€РєРё
 	this->ASprite.setPosition(x, y);
 	this->Health = 3;
+	this->Mass = 50;
+	this->bOnEarth = true;
 	this->bAlive = true;
-	this->Speed = 3;
+	this->Speed.x = 0;
+	this->Speed.y = 0;
+	this->Gravity = 10;
 	this->delay = 100;
+	this->CurrPose = 0;
 
-	// Загрузка текстуры спрайта
-	if (!ATexture.loadFromFile("..\\Resource\\Boy_Sprites.png"))
-		return EEndStatus::FileLoadFale;
+	// Р—Р°РіСЂСѓР·РєР° С‚РµРєСЃС‚СѓСЂС‹ СЃРїСЂР°Р№С‚Р°
+	if (!ATexture.loadFromFile(SpritePath + "DbgDed.png"))
+		return EEndStatus::FileLoadFaled;
 
 	ASprite.setTexture(ATexture);
-	// ToDo Перенести размер тайла в переменную, для гибкости настройки текстур
-	ASprite.setTextureRect(sf::IntRect(0, 0, 64, 64));
+	ASprite.setTextureRect(sf::IntRect(0, 0, 32, 64));
 
-	CurrPose = 0;
+	XDirection = EDirection::Right;
+	YDirection = EDirection::Left;
 
 	return EEndStatus::StartGame;
 }
 
 void APlayerPawn::DrawPawn(sf::RenderWindow& window)
 {
-	window.draw(ASprite);  // ToDo Основная отрисовка и смена кадров происходит в классе уровня
+	window.draw(ASprite); 
 	
+}
+
+void APlayerPawn::ChangeSelfSpeed(EActionList Action)
+{
+	// ToDo РЎРґРµР»Р°С‚СЊ РґРІРёР¶РµРЅРёРµ РїР»Р°РІРЅС‹Рј Рё Р·Р°С‚СѓС…Р°СЋС‰РёРј
+
+	if (Action == EActionList::Move_Left) {
+		Speed.x = -10;
+	} 
+	else if (Action == EActionList::Move_Right) {
+		Speed.x = 10;
+	}
+	else if (Action == EActionList::Jump_Left || Action == EActionList::Jump_Right) {
+		if (bOnEarth)
+			Speed.y = -20;
+	}
+	else if (Action == EActionList::Idle_Left || Action == EActionList::Idle_Right) {
+		Speed.x = 0;
+	} 
+
+	SetStance(Action);
+}
+
+void APlayerPawn::MoveModificators() 
+{
+	Speed.y += Mass * g;
+
+	if (Speed.x < 0) XDirection = EDirection::Left;
+	else if (Speed.x > 0) XDirection = EDirection::Right;
+
+	if (Speed.y < 0) YDirection = EDirection::Top;
+	else if (Speed.y > 0) YDirection = EDirection::Down;
+	else YDirection = EDirection::Nowhere;
+
+}
+
+void APlayerPawn::MovePawn()
+{
+	ASprite.move(Speed.x, Speed.y);
+}
+
+void APlayerPawn::setPosition(sf::Vector2f Pos)
+{
+	ASprite.setPosition(Pos);
+}
+
+void APlayerPawn::setSpeed(sf::Vector2f Speed)
+{
+	this->Speed.x = Speed.x;
+	this->Speed.y = Speed.y;
 }
 
 void APlayerPawn::SetStance(EActionList Action)
 {
-	// ToDo Алгоритм задачи позиции по действию игрока
+	// ToDo Р РµР°Р»РёР·РѕРІР°С‚СЊ Р·РµРґРµСЂР¶РєСѓ Р°РЅРёРјР°С†РёРё
 	switch (Action) {
-	case EActionList::Move_Left:
-		// Смена текущего кадра в зависимости от времени
-		if (Clock.getElapsedTime().asMilliseconds() > delay) {
-			Clock.restart();
-		}
-
-		ASprite.setTextureRect(sf::IntRect(64 * CurrPose, 64 * 2, 64, 64));
+	case EActionList::Move_Left:	
+		// РЎРјРµРЅР° С‚РµРєСѓС‰РµРіРѕ РєР°РґСЂР° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РІСЂРµРјРµРЅРё
+		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
+		ASprite.setTextureRect(sf::IntRect(32 * CurrPose, 64 * 2, 32, 64));
 		break;
-
 	case EActionList::Move_Right:
-		// Смена текущего кадра в зависимости от времени
-		if (Clock.getElapsedTime().asMilliseconds() > delay) {
-			CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
-			Clock.restart();
-		}
-
-		ASprite.setTextureRect(sf::IntRect(64 * CurrPose, 64 * 1, 64, 64));
+		// РЎРјРµРЅР° С‚РµРєСѓС‰РµРіРѕ РєР°РґСЂР° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РІСЂРµРјРµРЅРё
+		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
+		ASprite.setTextureRect(sf::IntRect(32 * CurrPose, 64 * 1, 32, 64));
 		break;
 
 	case EActionList::Jump_Left:                 
-		ASprite.setTextureRect(sf::IntRect(192, 0, 64, 64));
+		ASprite.setTextureRect(sf::IntRect(96, 0, 32, 64));
 		break;
 
 	case EActionList::Jump_Right:
-		ASprite.setTextureRect(sf::IntRect(128, 0, 64, 64));
+		ASprite.setTextureRect(sf::IntRect(64, 0, 32, 64));
 		break;
 
 	case EActionList::Idle_Left:
-		ASprite.setTextureRect(sf::IntRect(64, 0, 64, 64));
+		ASprite.setTextureRect(sf::IntRect(32, 0, 32, 64));
 		CurrPose = 0;
 		break;
 
 	case EActionList::Idle_Right:
-		ASprite.setTextureRect(sf::IntRect(0, 0, 64, 64));
+		ASprite.setTextureRect(sf::IntRect(0, 0, 32, 64));
 		CurrPose = 0;
 		break;
 	}
 	Clock.restart();
 }
 
-bool APlayerPawn::isAlive()
-{
-	if (Health > 0)
-		return true;
-	return false;
+
+
+const sf::FloatRect APlayerPawn::GetPawnRect()
+{	
+	PawnRect = ASprite.getGlobalBounds(); 
+	return PawnRect; 
 }
 
-const sf::Sprite& APlayerPawn::GetSprite()
+bool APlayerPawn::isAlive() { return bAlive; }
+
+bool& APlayerPawn::pOnEarthStatus()
 {
-	return ASprite;
+	return bOnEarth;
 }
 
-const sf::Texture& APlayerPawn::GetTexture()
-{
-	return ATexture;
-}
+const sf::Sprite APlayerPawn::GetSprite() { return ASprite; }
 
-const sf::Vector2f& APlayerPawn::GetPos()
-{
-	return ASprite.getPosition();
-}
+const sf::Texture APlayerPawn::GetTexture() { return ATexture; }
 
-int APlayerPawn::GetHealth()
-{
-	return Health;
-}
+const sf::Vector2f APlayerPawn::GetPos(){ return ASprite.getPosition(); }
 
-float APlayerPawn::GetSpeed()
-{
-	return Speed;
-}
+const sf::Int32 APlayerPawn::GetHealth(){ return Health; }
+
+const EDirection APlayerPawn::GetXDirection(){ return XDirection; }
+
+const sf::Vector2f APlayerPawn::GetSpeed(){	return Speed; }
+
+const EDirection APlayerPawn::GetYDirection(){ return YDirection; }

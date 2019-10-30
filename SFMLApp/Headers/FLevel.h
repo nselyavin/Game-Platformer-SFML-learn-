@@ -4,34 +4,43 @@
 	Этот класс связан с классом пешки игрока и классом, и организует связанную работу между ними.
 	По завершению уровня или выхода с уровня, должен возвращать соотвествующую ошибку
 */
-
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+#include <string>
+#include "XMLtoMap.h"
 #include "APlayerPawn.h"
 #include "UWorld.h"
+#include "GameConst.h"
 
-class ULevelStarter
+class FLevel
 {
 private:
+	sf::View Camera;
 	// Объект игрока и мира
 	APlayerPawn PlayerPawn;
+	UWorld World;
 	// Позиция спавна игрока
 	sf::Vector2f StartPos;
+	float LocalTime;
 	// Результаты\миссии игры. Проверка пройден или закончен ли уровен.
 	bool bGameEnd, bGameWon;
 public:
+	FLevel();
+
 	// Иницализация класса, считывание файла по переданному названия. Задача спавна игрока и всех объектов
-	// ToDo Поменять параметр представления уровня, на тот который будет читаться из файла. Или нет.
-	int StartLevel(sf::RenderWindow& window, int ChoosenLvl);
+	// ToDo Поменять параметр представления уровня, на тот который будет читаться из файла. Если понадобится.
+	sf::Int32 StartLevel(sf::RenderWindow& window, sf::Uint32 SelectedLvl);
+
 
 	// Функция отрисовки игры
-	void DrawLevel(sf::RenderWindow& window);
+	sf::Int32 DrawCicle(sf::RenderWindow& window);
 
 	// Показывается результаты урованя в зависимости от bGameWon
 	void GameSummar(sf::RenderWindow& window);
-	// Функци скроллинга мира 
+	
+	// Функция следования камеры за игроком по позиции игрока
+	sf::View setView(sf::Vector2f Pos);
+
 
 };
 

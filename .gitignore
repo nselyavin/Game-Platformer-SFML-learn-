@@ -12,6 +12,21 @@
 .exe
 .sln
 .dll
+.sln
+SFML-2.5.1/
+![Dd]ebug/openal32.dll
+![Dd]ebug/sfml-audio-d-2.dll
+![Dd]ebug/sfml-graphics-d-2.dll
+![Dd]ebug/sfml-system-d-2.dll
+![Dd]ebug/sfml-window-d-2.dll
+
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+!SFMLApp.vcxproj
+!SFMLApp.vcxproj.filters
+!SFMLApp.vcxproj.user
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
