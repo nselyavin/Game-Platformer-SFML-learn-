@@ -23,9 +23,9 @@ enum EEndStatus
 };
 
 enum EDirection {
-	left,
-	right,
-	top,
-	down,
-	nowhere
+	Left,
+	Right,
+	Top,
+	Down,
+	Nowhere
 };

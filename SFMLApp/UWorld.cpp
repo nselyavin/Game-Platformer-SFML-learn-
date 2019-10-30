@@ -146,7 +146,7 @@ void UWorld::DownSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect
 		sf::Int32 y = YPointToTile(i + PawnRect.top + PawnRect.height);
 		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
 			printf("Speed: %f \n", Speed);
-			Speed = i - 1;
+			Speed = i;
 			break;
 		}
 	}
@@ -158,14 +158,14 @@ sf::Vector2f UWorld::GetCorrectSpeed(EDirection XDirect, EDirection YDirect, sf:
 	// ToDo реализовать параллельность выполняемых проверок.
 
 	bool bHoirizCheck = false, bVerticCheck = false;
-	if (XDirect == EDirection::left)
+	if (XDirect == EDirection::Left)
 		LeftSpeedLimmiter(Speed.x, bVerticCheck, PawnRect);
-	else if (XDirect == EDirection::right)
+	else if (XDirect == EDirection::Right)
 		RightSpeedLimmiter(Speed.x, bVerticCheck, PawnRect);
 
-	if (YDirect == EDirection::top)
+	if (YDirect == EDirection::Top)
 		TopSpeedLimmiter(Speed.y, bHoirizCheck, PawnRect);
-	else if (YDirect == EDirection::down)
+	else if (YDirect == EDirection::Down)
 		DownSpeedLimmiter(Speed.y, bHoirizCheck, PawnRect);
 
 	return Speed;

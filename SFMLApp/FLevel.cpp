@@ -12,9 +12,6 @@ sf::Int32 FLevel::StartLevel(sf::RenderWindow& window, sf::Uint32 ChoosenLvl)
 {
 	Camera.reset(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
 
-	// ToDo сделать связь с парсером, который будет искать данные по выбранному уровню для построения уровня
-
-
 	// Установка статусов игры
 	bGameEnd = false;
 	bGameWon = false;
@@ -75,37 +72,16 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 			}
 		}
 		
-		/*
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
 			// Прыжок в зависимости от направления
-			if (PlayerPawn.GetXDirection() == -1)
+			if (PlayerPawn.GetXDirection() == EDirection::Left)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Left);
-			else if (PlayerPawn.GetXDirection() == 1)
+			else if (PlayerPawn.GetXDirection() == EDirection::Right)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Right);
 			else
 				return EEndStatus::GameError;
 		}
-		*/
-		// Проверяет зажата ли клавиша
-		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))) {
-			// Прыжок в зависимости от направления
-			if (PlayerPawn.GetXDirection() == EDirection::left)
-				PlayerPawn.ChangeSelfSpeed(EActionList::Down_Left);
-			else if (PlayerPawn.GetXDirection() == EDirection::right)
-				PlayerPawn.ChangeSelfSpeed(EActionList::Down_Right);
-		}
-		else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
-			// Прыжок в зависимости от направления
-			if (PlayerPawn.GetXDirection() == EDirection::left)
-				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Left);
-			else if (PlayerPawn.GetXDirection() == EDirection::right)
-				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Right);
-		}
-		else {
-			// Простаивание в зависимости от направления
-			PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Vertical);
-		}
-		
+
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 			// Ходьба вправо
 			PlayerPawn.ChangeSelfSpeed(EActionList::Move_Right);
@@ -116,9 +92,9 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 		}
 		else {
 			// Простаивание в зависимости от направления
-			if (PlayerPawn.GetXDirection() == EDirection::left)
+			if (PlayerPawn.GetXDirection() == EDirection::Left)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Left);
-			else if (PlayerPawn.GetXDirection() == EDirection::right)
+			else if (PlayerPawn.GetXDirection() == EDirection::Right)
 				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Right);
 		}
 

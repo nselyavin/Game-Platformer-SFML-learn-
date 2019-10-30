@@ -12,8 +12,8 @@ APlayerPawn::APlayerPawn()
 	this->Gravity = 10;
 	this->delay = 100;
 	this->CurrPose = 0;
-	XDirection = EDirection::right;
-	YDirection = EDirection::left;
+	XDirection = EDirection::Right;
+	YDirection = EDirection::Left;
 }
 
 sf::Int32 APlayerPawn::CreatePawn(float x, float y)
@@ -38,8 +38,8 @@ sf::Int32 APlayerPawn::CreatePawn(float x, float y)
 	ASprite.setTexture(ATexture);
 	ASprite.setTextureRect(sf::IntRect(0, 0, 32, 64));
 
-	XDirection = EDirection::right;
-	YDirection = EDirection::left;
+	XDirection = EDirection::Right;
+	YDirection = EDirection::Left;
 
 	return EEndStatus::StartGame;
 }
@@ -52,39 +52,35 @@ void APlayerPawn::DrawPawn(sf::RenderWindow& window)
 
 void APlayerPawn::ChangeSelfSpeed(EActionList Action)
 {
+	// ToDo Сделать движение плавным и затухающим
+
 	if (Action == EActionList::Move_Left) {
 		Speed.x = -10;
-		XDirection = EDirection::left;
 	} 
 	else if (Action == EActionList::Move_Right) {
 		Speed.x = 10;
-		XDirection = EDirection::right;
 	}
 	else if (Action == EActionList::Jump_Left || Action == EActionList::Jump_Right) {
 		Speed.y = -10;
-		YDirection = EDirection::top;
-	}
-	else if (Action == EActionList::Down_Left || Action == EActionList::Down_Right) {
-		Speed.y = 10;
-		YDirection = EDirection::down;
 	}
 	else if (Action == EActionList::Idle_Left || Action == EActionList::Idle_Right) {
 		Speed.x = 0;
-	}
-	// ToDo при реализации прыжка убрать вертикальное простаивание 
-	else if (Action == EActionList::Idle_Vertical){
-		Speed.y = 0;
-	}
+	} 
 
-	//SpeedY += Mass * g;
+	Speed.y += Mass * g;
+
+	if (Speed.x < 0) XDirection = EDirection::Left;
+	else if (Speed.x > 0) XDirection = EDirection::Right;
+
+	if (Speed.y < 0) YDirection = EDirection::Top;
+	else if (Speed.y > 0) YDirection = EDirection::Down;
+	else YDirection = EDirection::Nowhere;
 
 	SetStance(Action);
 }
 
 void APlayerPawn::MovePawn()
 {
-	// ToDo Сделать движение плавным и затухающим
-
 	ASprite.move(Speed.x, Speed.y);
 }
 
