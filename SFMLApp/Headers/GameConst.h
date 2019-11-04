@@ -22,10 +22,11 @@ enum EEndStatus
 	Nothing,
 };
 
+// ToDo поменят значения, влево всегда -1, вправо 1
 enum EDirection {
-	Left,
-	Right,
-	Top,
-	Down,
-	Nowhere
+	Left = +1,
+	Right = -1,
+	Top = +1,
+	Down = -1,
+	Nowhere = 0
 };

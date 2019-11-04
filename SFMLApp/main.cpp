@@ -13,7 +13,7 @@ sf::Int32 main()
 	HWND Hide;
 	AllocConsole();
 	Hide = FindWindowA("ConsoleWindowClass", NULL);
-	ShowWindow(Hide, 0);
+	ShowWindow(Hide, 1);
 
 	//TODO Реализовать чтение настроек из файла конфига
 	sf::Uint32 ScrWidth, ScrHeight;

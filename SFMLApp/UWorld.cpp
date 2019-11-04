@@ -1,5 +1,6 @@
 ﻿#include "Headers\UWorld.h" 
 
+
 void UWorld::CreateWorld(sf::Uint32 LvlName)
 {
 	FParserXML ParserXML(std::to_string(LvlName));
@@ -89,9 +90,9 @@ void UWorld::LeftSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect
 	sf::Int32 y2 = YPointToTile(PawnRect.top + PawnRect.height / 2);
 	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height - 1);
 	for (sf::Int32 i = 0; i > Speed; i--) {
-		sf::Int32 x = XPointToTile(i + PawnRect.left);
+		sf::Int32 x = XPointToTile(i + PawnRect.left - 1);
 		if (CollisMap[y][x] == true || CollisMap[y2][x] == true || CollisMap[y3][x] == true) {
-			Speed = i + 1;
+			Speed = i;
 			break;
 		}
 	}
@@ -104,9 +105,9 @@ void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRec
 	sf::Int32 y2 = YPointToTile(PawnRect.top + PawnRect.height / 2);
 	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height - 1);
 	for (sf::Int32 i = 0; i < Speed; i++) {
-		sf::Int32 x = XPointToTile(i + PawnRect.left + PawnRect.width);
+		sf::Int32 x = XPointToTile(i + PawnRect.left + PawnRect.width + 1);
 		if (CollisMap[y][x] == true || CollisMap[y2][x] == true || CollisMap[y3][x] == true) {
-			Speed = i - 1;
+			Speed = i;
 			break;
 		}
 	}
@@ -115,12 +116,12 @@ void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRec
 
 void UWorld::TopSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
-	sf::Int32 x = XPointToTile(PawnRect.left);
-	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width);
+	sf::Int32 x = XPointToTile(PawnRect.left+1);
+	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width - 1);
 	for (sf::Int32 i = 0; i > Speed; i--) {
 		sf::Int32 y = YPointToTile(i + PawnRect.top);
 		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
-			Speed = i + 1;
+			Speed = i;
 			break;
 		}
 	}
@@ -130,11 +131,11 @@ void UWorld::TopSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 void UWorld::DownSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
 	sf::Int32 x = XPointToTile(PawnRect.left);
-	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width);
+	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width - 1);
 	for (sf::Int32 i = 0; i < Speed; i++) {
 		sf::Int32 y = YPointToTile(i + PawnRect.top + PawnRect.height);
 		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
-			Speed = i;
+			Speed = i;			
 			break;
 		}
 	}
@@ -195,6 +196,16 @@ sf::Int32 UWorld::YPointToTile(float y) {
 	if (y < 0) y = 0;
 	if (y >= LvlSize.y) y = LvlSize.y - 1;
 	return y;
+}
+
+sf::Vector2i UWorld::GetLvlSize()
+{
+	return LvlSize;
+}
+
+sf::Vector2i UWorld::GetTileSize()
+{
+	return TileSize;
 }
 
 void UWorld::DrawWorld(sf::RenderWindow& window, sf::Vector2f ViewCenter, sf::Vector2f ViewSize)
