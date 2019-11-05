@@ -52,14 +52,14 @@ void APlayerPawn::DrawPawn(sf::RenderWindow& window)
 }
 
 void APlayerPawn::MoveLeft() {
-	if (Speed.x > -10)
-		Speed.x -= 2;
+	if (Speed.x > -12)
+		Speed.x -= 3;
 	Action = EActionList::Move_Left;
 }
 
 void APlayerPawn::MoveRight() {
-	if (Speed.x < 10)
-		Speed.x += 2;
+	if (Speed.x < 12)
+		Speed.x += 3;
 	Action = EActionList::Move_Right;
 }
 
@@ -69,16 +69,22 @@ void APlayerPawn::Jump() {
 	Action = EActionList::Jump_Right;
 }
 
+void APlayerPawn::Breaking(){
+	// Сила трения
+	if (Speed.x > 0)
+		Speed.x -= 3;
+	else if (Speed.x < 0)
+		Speed.x += 3;
+}
+
+
 void APlayerPawn::MoveModificators() 
 {
 	// Гравитация
 	Speed.y += 1;
 
-	// Сила трения
-	if (Speed.x > 0)
-		Speed.x -= 1;
-	else if(Speed.x < 0)
-		Speed.x += 1;
+	std::cout << Speed.x << " " << XDirection << std::endl;
+	
 
 	if (Speed.x < 0) XDirection = EDirection::Left;
 	else if (Speed.x > 0) XDirection = EDirection::Right;
@@ -86,8 +92,6 @@ void APlayerPawn::MoveModificators()
 	if (Speed.y < 0) YDirection = EDirection::Top;
 	else if (Speed.y > 0) YDirection = EDirection::Down;
 	else YDirection = EDirection::Nowhere;
-	
-
 }
 
 void APlayerPawn::AcceptMove()
@@ -112,6 +116,8 @@ void APlayerPawn::setHealth(sf::Int32 Health)
 	this->Health = Health;
 }
 
+
+
 void APlayerPawn::ChangePose()
 {
 	// ToDo Реализовать зедержку анимации
@@ -127,16 +133,22 @@ void APlayerPawn::ChangePose()
 		ASprite.setTextureRect(sf::IntRect(32 * CurrPoseFrame, 64 * 1, 32, 64));
 		break;
 
-	case EActionList::Jump_Left:                 
-		ASprite.setTextureRect(sf::IntRect(80 + (16 * XDirection), 0, 32, 64));
-		ASprite.setTextureRect(sf::IntRect(64, 0, 32, 64));
-		break;
-
 	default:
+		// Одна формула на две стороны стояния
 		ASprite.setTextureRect(sf::IntRect(16 + (16 * XDirection), 0, 32, 64));
 		CurrPoseFrame = 0;
 
 		break;
+	}
+
+	if (!bOnEarth) {
+		if (XDirection == EDirection::Left)
+			Action = EActionList::Jump_Right;
+		else
+			Action = EActionList::Jump_Left;
+
+		ASprite.setTextureRect(sf::IntRect(80 + (16 * XDirection), 0, 32, 64));
+		ASprite.setTextureRect(sf::IntRect(64, 0, 32, 64));
 	}
 	Clock.restart();
 }

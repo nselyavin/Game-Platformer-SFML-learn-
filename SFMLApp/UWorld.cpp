@@ -105,7 +105,7 @@ void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRec
 	sf::Int32 y2 = YPointToTile(PawnRect.top + PawnRect.height / 2);
 	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height - 1);
 	for (sf::Int32 i = 0; i < Speed; i++) {
-		sf::Int32 x = XPointToTile(i + PawnRect.left + PawnRect.width + 1);
+		sf::Int32 x = XPointToTile(i + PawnRect.left + PawnRect.width);
 		if (CollisMap[y][x] == true || CollisMap[y2][x] == true || CollisMap[y3][x] == true) {
 			Speed = i;
 			break;
@@ -141,7 +141,19 @@ void UWorld::DownSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect
 	}
 	Check = true;
 }
- 
+
+bool UWorld::isEarth(sf::Vector2f PawnPos, sf::FloatRect PawnRect)
+{
+	sf::Int32 x = XPointToTile(PawnRect.left);
+	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width - 1);
+	sf::Int32 y = YPointToTile(PawnRect.top + PawnRect.height);
+
+	if (CollisMap[y][x] || CollisMap[y][x2])
+		return true;
+
+	return false;
+}
+
 sf::Vector2f UWorld::GetCorrectSpeed(EDirection XDirect, EDirection YDirect, sf::Vector2f Speed, sf::FloatRect PawnRect)
 {
 	// ToDo реализовать параллельность выполняемых проверок.
@@ -248,15 +260,5 @@ bool& UWorld::pBlockCollision(sf::Int32 i, sf::Int32 j)
 	return CollisMap[i][j];
 }
 
-bool UWorld::isEarth(sf::Vector2f PawnPos, sf::FloatRect PawnRect)
-{
-	sf::Int32 x = XPointToTile(PawnRect.left);
-	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width);
-	sf::Int32 y = YPointToTile(PawnRect.top + PawnRect.height);
 
-	if (CollisMap[y][x] || CollisMap[y][x2])
-		return true;
-	
-	return false;
-}
 

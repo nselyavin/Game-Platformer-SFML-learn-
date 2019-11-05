@@ -20,7 +20,7 @@ sf::Int32 main()
 	sf::Uint32 FrameRate;
 	ScrWidth = 800;
 	ScrHeight = 600;
-	FrameRate = 64;
+	FrameRate = 32;
 
 	// Текущий уровень игры и всего уровней. ToDo реализовать изменения.
 	sf::Uint32 CurrLvl = 0;
