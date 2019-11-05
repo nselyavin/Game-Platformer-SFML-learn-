@@ -119,7 +119,7 @@ void UWorld::TopSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 	sf::Int32 x = XPointToTile(PawnRect.left+1);
 	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width - 1);
 	for (sf::Int32 i = 0; i > Speed; i--) {
-		sf::Int32 y = YPointToTile(i + PawnRect.top);
+		sf::Int32 y = YPointToTile(i + PawnRect.top - 1);
 		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
 			Speed = i;
 			break;

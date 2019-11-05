@@ -65,7 +65,7 @@ void APlayerPawn::MoveRight() {
 
 void APlayerPawn::Jump() {
 	if (bOnEarth)
-		Speed.y = -15;
+		Speed.y = -17;
 	Action = EActionList::Jump_Right;
 }
 
