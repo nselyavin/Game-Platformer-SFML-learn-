@@ -11,15 +11,10 @@ using FClock = sf::Clock;
 
 enum EActionList
 {
-	//Idle_Left,
-	//Idle_Right,
 	Jump_Left,
 	Jump_Right,
 	Move_Left,
 	Move_Right,
-	//Down_Left,
-	//Down_Right,
-	Idle_Vertical // ToDo Убрать после реализации прыжка 
 };
 
 struct FMoveDeny {

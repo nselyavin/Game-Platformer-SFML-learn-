@@ -83,6 +83,7 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 	CollisMap = ParserXML.getCollisMap().CollisArr;
 }	
 
+#include <iostream> // ToDo iostream
 // Корректировка скоростей от наличия блока и расстояния до него
 void UWorld::LeftSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
@@ -103,11 +104,12 @@ void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRec
 {
 	sf::Int32 y = YPointToTile(PawnRect.top);
 	sf::Int32 y2 = YPointToTile(PawnRect.top + PawnRect.height / 2);
-	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height - 1);
+	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height -1);
 	for (sf::Int32 i = 0; i < Speed; i++) {
 		sf::Int32 x = XPointToTile(i + PawnRect.left + PawnRect.width);
 		if (CollisMap[y][x] == true || CollisMap[y2][x] == true || CollisMap[y3][x] == true) {
 			Speed = i;
+			std::cout << "Right" << std::endl;
 			break;
 		}
 	}
@@ -135,7 +137,9 @@ void UWorld::DownSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect
 	for (sf::Int32 i = 0; i < Speed; i++) {
 		sf::Int32 y = YPointToTile(i + PawnRect.top + PawnRect.height);
 		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
-			Speed = i;			
+
+			Speed = i;		
+			std::cout << "Down" << std::endl;
 			break;
 		}
 	}

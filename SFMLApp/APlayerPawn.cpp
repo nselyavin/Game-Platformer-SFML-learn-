@@ -1,6 +1,5 @@
 ﻿#include "Headers\APlayerPawn.h"
 
-#include <iostream>
 
 APlayerPawn::APlayerPawn()
 {
@@ -69,12 +68,21 @@ void APlayerPawn::Jump() {
 	Action = EActionList::Jump_Right;
 }
 
+// Сила трения
 void APlayerPawn::Breaking(){
-	// Сила трения
-	if (Speed.x > 0)
-		Speed.x -= 3;
-	else if (Speed.x < 0)
-		Speed.x += 3;
+	if (XDirection == EDirection::Right) {
+		if (Speed.x >= 3)
+			Speed.x -= 3;
+		else
+			Speed.x = 0;
+	}
+	if (XDirection == EDirection::Left) {
+		// ToDo Тут должен появляться баг, но пока его нет. Такм шо пофиг
+		if (Speed.x < 0)
+			Speed.x += 3;
+		else
+			Speed.x = 0;	
+	}
 }
 
 
@@ -82,9 +90,6 @@ void APlayerPawn::MoveModificators()
 {
 	// Гравитация
 	Speed.y += 1;
-
-	std::cout << Speed.x << " " << XDirection << std::endl;
-	
 
 	if (Speed.x < 0) XDirection = EDirection::Left;
 	else if (Speed.x > 0) XDirection = EDirection::Right;
@@ -120,7 +125,6 @@ void APlayerPawn::setHealth(sf::Int32 Health)
 
 void APlayerPawn::ChangePose()
 {
-	// ToDo Реализовать зедержку анимации
 	switch (Action) {
 	case EActionList::Move_Left:	
 		// Смена текущего кадра в зависимости от времени
