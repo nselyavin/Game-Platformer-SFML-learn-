@@ -5,20 +5,16 @@
 #pragma once
 
 #include "GameConst.h"
+#include <cmath>
 
 using FClock = sf::Clock;
 
 enum EActionList
 {
-	Idle_Left,
-	Idle_Right,
 	Jump_Left,
 	Jump_Right,
 	Move_Left,
 	Move_Right,
-	Down_Left,
-	Down_Right,
-	Idle_Vertical // ToDo Убрать после реализации прыжка 
 };
 
 struct FMoveDeny {
@@ -28,7 +24,6 @@ struct FMoveDeny {
 class APlayerPawn
 {
 private:
-	FMoveDeny MoveDeny = { false, false, false, false };
 	sf::Texture ATexture;
 	sf::Sprite ASprite; 
 	sf::FloatRect PawnRect;
@@ -38,20 +33,18 @@ private:
 	sf::Int32 delay;
 	// Показывает на земле ли персонаж
 	bool bOnEarth;
-	// Статус жив ли персонаж
-	bool bAlive;
 	// Жизни персонажа
 	sf::Int32 Health;
 	// Масса персонажа
 	float Mass;
 	float Gravity;
 	sf::Vector2f Speed;
-	// Направление персонажа по X, -1 - влево, 1 - вправо
 	EDirection XDirection;
-	// Направление персонажа по Y, -1 - вверх, 1 - вниз
 	EDirection YDirection;
 	// Текущая поза игрока при воспроизведении анимации
-	sf::Int32 CurrPose;
+	sf::Int32 CurrPoseFrame;
+	// Текущее действие
+	EActionList Action;
 
 public:
 	APlayerPawn();
@@ -62,17 +55,26 @@ public:
 	// Цикл отображения пешки
 	void DrawPawn(sf::RenderWindow &window);
 
-	// Метод смены спрайта в зависимости от направления
-	void SetStance(EActionList Action);
-
 	// Влияние действий игрока на скорость персонажа
 	void ChangeSelfSpeed(EActionList Action);
+
+	// Двигает пешку влево
+	void MoveLeft();
+
+	// Простаивание пешки
+	void Breaking();
+
+	// Двигает пешку вправо
+	void MoveRight();
+	
+	// Двигает пешку вправо
+	void Jump();
 
 	// Модификаторы скорости. Следует вызывать всегда
 	void MoveModificators();
 
 	// Функция движения персонажа
-	void MovePawn();
+	void AcceptMove();
 
 	// Задает текущую позицию. Влияние внешних сил
 	void setPosition(sf::Vector2f Pos);
@@ -80,9 +82,13 @@ public:
 	// Задает текущую позицию. Влияние внешних сил
 	void setSpeed(sf::Vector2f Speed);
 
+	// Устанавливает жизни пешки
+	void setHealth(sf::Int32 Health);
+
 	// Спрашивает жив ли игрок
 	bool isAlive();
 
+	// Проверяет на земел ли пешка
 	bool& pOnEarthStatus();
 
 	// Возвращает ссылку объект спрайта игрока
@@ -108,5 +114,9 @@ public:
 
 	// Возвращает направление игрока
 	const EDirection GetYDirection();
+
+protected:
+	// Метод смены спрайта в зависимости от направления
+	void ChangePose();
 };
 

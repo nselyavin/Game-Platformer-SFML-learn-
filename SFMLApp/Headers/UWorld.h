@@ -76,5 +76,11 @@ public:
 	sf::Vector2i PointToTile(sf::Vector2f PointCoord);
 	sf::Int32 XPointToTile(float x);
 	sf::Int32 YPointToTile(float y);
+
+	// Возвращает размер уровня в тайлах
+	sf::Vector2i GetLvlSize();
+
+	// Возвращает размер клетки в пикселях
+	sf::Vector2i GetTileSize();
 };
 

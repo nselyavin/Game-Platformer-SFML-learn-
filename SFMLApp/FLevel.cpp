@@ -39,7 +39,7 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 	sf::Int32 delay = 0;
 
 	// Здесь происходит главная отрисовка уровня, и считывание действий игрока
-	while (!bGameEnd || !PlayerPawn.isAlive()) {
+	while (!bGameEnd && PlayerPawn.isAlive()) {
 
 		/* // Количество кадров в секунду
 		float currentTime = clock.restart().asSeconds();
@@ -78,36 +78,37 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))) {
 			// Прыжок в зависимости от направления
-			if (PlayerPawn.GetXDirection() == EDirection::Left)
-				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Left);
-			else if (PlayerPawn.GetXDirection() == EDirection::Right)
-				PlayerPawn.ChangeSelfSpeed(EActionList::Jump_Right);
+			PlayerPawn.Jump();
 		}
 
+
+		
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 			// Ходьба вправо
-			PlayerPawn.ChangeSelfSpeed(EActionList::Move_Right);
+			PlayerPawn.MoveRight();
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))) {
 			// Ходьба влево
-			PlayerPawn.ChangeSelfSpeed(EActionList::Move_Left);
+			PlayerPawn.MoveLeft();
 		}
 		else {
-			// Простаивание в зависимости от направления
-			if (PlayerPawn.GetXDirection() == EDirection::Left)
-				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Left);
-			else if (PlayerPawn.GetXDirection() == EDirection::Right)
-				PlayerPawn.ChangeSelfSpeed(EActionList::Idle_Right);
+			PlayerPawn.Breaking();
 		}
-
+			
+		
 		// Применение модифиации скорости
 		PlayerPawn.MoveModificators();
 
-		// Проверка пересекает ли персонаж коллизию
+		// Проверка пересекает врезается ли персонаж
 		PlayerPawn.setSpeed(World.GetCorrectSpeed(PlayerPawn.GetXDirection(), PlayerPawn.GetYDirection(), PlayerPawn.GetSpeed(), PlayerPawn.GetPawnRect()));
 		
 		// Общее движение пешки
-		PlayerPawn.MovePawn();
+		PlayerPawn.AcceptMove();
+
+		// Убивает пешку если она провалилась под уровень
+		if (PlayerPawn.GetPos().y > World.GetLvlSize().y* World.GetTileSize().y + 500) {
+			PlayerPawn.setHealth(0);
+		}
 
 		// Изменение позиции камеры 
 		setView(PlayerPawn.GetPos());

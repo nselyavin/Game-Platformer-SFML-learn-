@@ -6,13 +6,12 @@ APlayerPawn::APlayerPawn()
 	// Инициализация основных параметров пешки
 	this->Health = 3;
 	this->Mass = 44;
-	this->bAlive = true;
 	this->bOnEarth = true;
 	this->Speed.x = 0;
 	this->Speed.y = 0;
 	this->Gravity = 10;
 	this->delay = 100;
-	this->CurrPose = 0;
+	this->CurrPoseFrame = 0;
 	XDirection = EDirection::Right;
 	YDirection = EDirection::Left;
 }
@@ -26,15 +25,14 @@ sf::Int32 APlayerPawn::CreatePawn(float x, float y)
 	this->Health = 3;
 	this->Mass = 50;
 	this->bOnEarth = true;
-	this->bAlive = true;
 	this->Speed.x = 0;
 	this->Speed.y = 0;
 	this->Gravity = 10;
 	this->delay = 100;
-	this->CurrPose = 0;
+	this->CurrPoseFrame = 0;
 
 	// Загрузка текстуры спрайта
-	if (!ATexture.loadFromFile(SpritePath + "DbgDed.png"))
+	if (!ATexture.loadFromFile(SpritePath + "DbgBoy.png"))
 		return EEndStatus::FileLoadFaled;
 
 	ASprite.setTexture(ATexture);
@@ -52,30 +50,46 @@ void APlayerPawn::DrawPawn(sf::RenderWindow& window)
 	
 }
 
-void APlayerPawn::ChangeSelfSpeed(EActionList Action)
-{
-	// ToDo Сделать движение плавным и затухающим
-
-	if (Action == EActionList::Move_Left) {
-		Speed.x = -10;
-	} 
-	else if (Action == EActionList::Move_Right) {
-		Speed.x = 10;
-	}
-	else if (Action == EActionList::Jump_Left || Action == EActionList::Jump_Right) {
-		if (bOnEarth)
-			Speed.y = -20;
-	}
-	else if (Action == EActionList::Idle_Left || Action == EActionList::Idle_Right) {
-		Speed.x = 0;
-	} 
-
-	SetStance(Action);
+void APlayerPawn::MoveLeft() {
+	if (Speed.x > -12)
+		Speed.x -= 3;
+	Action = EActionList::Move_Left;
 }
+
+void APlayerPawn::MoveRight() {
+	if (Speed.x < 12)
+		Speed.x += 3;
+	Action = EActionList::Move_Right;
+}
+
+void APlayerPawn::Jump() {
+	if (bOnEarth)
+		Speed.y = -17;
+	Action = EActionList::Jump_Right;
+}
+
+// Сила трения
+void APlayerPawn::Breaking(){
+	if (XDirection == EDirection::Right) {
+		if (Speed.x >= 3)
+			Speed.x -= 3;
+		else
+			Speed.x = 0;
+	}
+	if (XDirection == EDirection::Left) {
+		// ToDo Тут должен появляться баг, но пока его нет. Такм шо пофиг
+		if (Speed.x < 0)
+			Speed.x += 3;
+		else
+			Speed.x = 0;	
+	}
+}
+
 
 void APlayerPawn::MoveModificators() 
 {
-	Speed.y += Mass * g;
+	// Гравитация
+	Speed.y += 1;
 
 	if (Speed.x < 0) XDirection = EDirection::Left;
 	else if (Speed.x > 0) XDirection = EDirection::Right;
@@ -83,12 +97,12 @@ void APlayerPawn::MoveModificators()
 	if (Speed.y < 0) YDirection = EDirection::Top;
 	else if (Speed.y > 0) YDirection = EDirection::Down;
 	else YDirection = EDirection::Nowhere;
-
 }
 
-void APlayerPawn::MovePawn()
+void APlayerPawn::AcceptMove()
 {
 	ASprite.move(Speed.x, Speed.y);
+	ChangePose();
 }
 
 void APlayerPawn::setPosition(sf::Vector2f Pos)
@@ -102,38 +116,43 @@ void APlayerPawn::setSpeed(sf::Vector2f Speed)
 	this->Speed.y = Speed.y;
 }
 
-void APlayerPawn::SetStance(EActionList Action)
+void APlayerPawn::setHealth(sf::Int32 Health)
 {
-	// ToDo Реализовать зедержку анимации
+	this->Health = Health;
+}
+
+
+
+void APlayerPawn::ChangePose()
+{
 	switch (Action) {
 	case EActionList::Move_Left:	
 		// Смена текущего кадра в зависимости от времени
-		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
-		ASprite.setTextureRect(sf::IntRect(32 * CurrPose, 64 * 2, 32, 64));
+		CurrPoseFrame = (CurrPoseFrame + 1) % (ATexture.getSize().x / 64);
+		ASprite.setTextureRect(sf::IntRect(32 * CurrPoseFrame, 64 * 2, 32, 64));
 		break;
 	case EActionList::Move_Right:
 		// Смена текущего кадра в зависимости от времени
-		CurrPose = (CurrPose + 1) % (ATexture.getSize().x / 64);
-		ASprite.setTextureRect(sf::IntRect(32 * CurrPose, 64 * 1, 32, 64));
+		CurrPoseFrame = (CurrPoseFrame + 1) % (ATexture.getSize().x / 64);
+		ASprite.setTextureRect(sf::IntRect(32 * CurrPoseFrame, 64 * 1, 32, 64));
 		break;
 
-	case EActionList::Jump_Left:                 
-		ASprite.setTextureRect(sf::IntRect(96, 0, 32, 64));
-		break;
+	default:
+		// Одна формула на две стороны стояния
+		ASprite.setTextureRect(sf::IntRect(16 + (16 * XDirection), 0, 32, 64));
+		CurrPoseFrame = 0;
 
-	case EActionList::Jump_Right:
+		break;
+	}
+
+	if (!bOnEarth) {
+		if (XDirection == EDirection::Left)
+			Action = EActionList::Jump_Right;
+		else
+			Action = EActionList::Jump_Left;
+
+		ASprite.setTextureRect(sf::IntRect(80 + (16 * XDirection), 0, 32, 64));
 		ASprite.setTextureRect(sf::IntRect(64, 0, 32, 64));
-		break;
-
-	case EActionList::Idle_Left:
-		ASprite.setTextureRect(sf::IntRect(32, 0, 32, 64));
-		CurrPose = 0;
-		break;
-
-	case EActionList::Idle_Right:
-		ASprite.setTextureRect(sf::IntRect(0, 0, 32, 64));
-		CurrPose = 0;
-		break;
 	}
 	Clock.restart();
 }
@@ -146,7 +165,12 @@ const sf::FloatRect APlayerPawn::GetPawnRect()
 	return PawnRect; 
 }
 
-bool APlayerPawn::isAlive() { return bAlive; }
+bool APlayerPawn::isAlive() { 
+	if (Health <= 0)
+		return  false;
+		
+	return true;
+}
 
 bool& APlayerPawn::pOnEarthStatus()
 {

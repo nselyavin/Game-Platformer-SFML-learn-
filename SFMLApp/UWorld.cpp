@@ -1,5 +1,6 @@
 ﻿#include "Headers\UWorld.h" 
 
+
 void UWorld::CreateWorld(sf::Uint32 LvlName)
 {
 	FParserXML ParserXML(std::to_string(LvlName));
@@ -82,6 +83,7 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 	CollisMap = ParserXML.getCollisMap().CollisArr;
 }	
 
+#include <iostream> // ToDo iostream
 // Корректировка скоростей от наличия блока и расстояния до него
 void UWorld::LeftSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
@@ -89,9 +91,9 @@ void UWorld::LeftSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect
 	sf::Int32 y2 = YPointToTile(PawnRect.top + PawnRect.height / 2);
 	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height - 1);
 	for (sf::Int32 i = 0; i > Speed; i--) {
-		sf::Int32 x = XPointToTile(i + PawnRect.left);
+		sf::Int32 x = XPointToTile(i + PawnRect.left - 1);
 		if (CollisMap[y][x] == true || CollisMap[y2][x] == true || CollisMap[y3][x] == true) {
-			Speed = i + 1;
+			Speed = i;
 			break;
 		}
 	}
@@ -102,11 +104,12 @@ void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRec
 {
 	sf::Int32 y = YPointToTile(PawnRect.top);
 	sf::Int32 y2 = YPointToTile(PawnRect.top + PawnRect.height / 2);
-	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height - 1);
+	sf::Int32 y3 = YPointToTile(PawnRect.top + PawnRect.height -1);
 	for (sf::Int32 i = 0; i < Speed; i++) {
 		sf::Int32 x = XPointToTile(i + PawnRect.left + PawnRect.width);
 		if (CollisMap[y][x] == true || CollisMap[y2][x] == true || CollisMap[y3][x] == true) {
-			Speed = i - 1;
+			Speed = i;
+			std::cout << "Right" << std::endl;
 			break;
 		}
 	}
@@ -115,12 +118,12 @@ void UWorld::RightSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRec
 
 void UWorld::TopSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
-	sf::Int32 x = XPointToTile(PawnRect.left);
-	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width);
+	sf::Int32 x = XPointToTile(PawnRect.left+1);
+	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width - 1);
 	for (sf::Int32 i = 0; i > Speed; i--) {
-		sf::Int32 y = YPointToTile(i + PawnRect.top);
+		sf::Int32 y = YPointToTile(i + PawnRect.top - 1);
 		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
-			Speed = i + 1;
+			Speed = i;
 			break;
 		}
 	}
@@ -130,17 +133,31 @@ void UWorld::TopSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 void UWorld::DownSpeedLimmiter(float& Speed, bool& Check, sf::FloatRect PawnRect)
 {
 	sf::Int32 x = XPointToTile(PawnRect.left);
-	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width);
+	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width - 1);
 	for (sf::Int32 i = 0; i < Speed; i++) {
 		sf::Int32 y = YPointToTile(i + PawnRect.top + PawnRect.height);
 		if (CollisMap[y][x] == true || CollisMap[y][x2] == true) {
-			Speed = i;
+
+			Speed = i;		
+			std::cout << "Down" << std::endl;
 			break;
 		}
 	}
 	Check = true;
 }
- 
+
+bool UWorld::isEarth(sf::Vector2f PawnPos, sf::FloatRect PawnRect)
+{
+	sf::Int32 x = XPointToTile(PawnRect.left);
+	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width - 1);
+	sf::Int32 y = YPointToTile(PawnRect.top + PawnRect.height);
+
+	if (CollisMap[y][x] || CollisMap[y][x2])
+		return true;
+
+	return false;
+}
+
 sf::Vector2f UWorld::GetCorrectSpeed(EDirection XDirect, EDirection YDirect, sf::Vector2f Speed, sf::FloatRect PawnRect)
 {
 	// ToDo реализовать параллельность выполняемых проверок.
@@ -197,6 +214,16 @@ sf::Int32 UWorld::YPointToTile(float y) {
 	return y;
 }
 
+sf::Vector2i UWorld::GetLvlSize()
+{
+	return LvlSize;
+}
+
+sf::Vector2i UWorld::GetTileSize()
+{
+	return TileSize;
+}
+
 void UWorld::DrawWorld(sf::RenderWindow& window, sf::Vector2f ViewCenter, sf::Vector2f ViewSize)
 {
 	window.draw(Backgr);
@@ -237,15 +264,5 @@ bool& UWorld::pBlockCollision(sf::Int32 i, sf::Int32 j)
 	return CollisMap[i][j];
 }
 
-bool UWorld::isEarth(sf::Vector2f PawnPos, sf::FloatRect PawnRect)
-{
-	sf::Int32 x = XPointToTile(PawnRect.left);
-	sf::Int32 x2 = XPointToTile(PawnRect.left + PawnRect.width);
-	sf::Int32 y = YPointToTile(PawnRect.top + PawnRect.height);
 
-	if (CollisMap[y][x] || CollisMap[y][x2])
-		return true;
-	
-	return false;
-}
 
