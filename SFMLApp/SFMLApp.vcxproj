@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Project\Platformer-SFML-learn-\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,9 +141,6 @@
     <ClCompile Include="XMLtoMap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resource\Map\level_1.tmx" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Headers\APlayerPawn.h" />
     <ClInclude Include="Headers\FLevel.h" />
     <ClInclude Include="Headers\GameConst.h" />
@@ -151,6 +148,9 @@
     <ClInclude Include="Headers\USpell.h" />
     <ClInclude Include="Headers\UWorld.h" />
     <ClInclude Include="Headers\XMLtoMap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Resource\Levels\level_1.tmx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -24,6 +24,7 @@ void UWorld::CreateWorld(sf::Uint32 LvlName)
 	// Задаем задний фон уровня
 	// ToDo переместить название в переменную, и вызывать под нужды уровня
 	BackgrTex.loadFromFile(SpritePath + "SpaceBack.jpg");
+	BackgrTex.setRepeated(true);
 	Backgr.setTexture(BackgrTex);
 
 	// Задаем путь к тайлсету

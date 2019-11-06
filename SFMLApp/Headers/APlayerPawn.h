@@ -11,14 +11,14 @@ using FClock = sf::Clock;
 
 enum EActionList
 {
-	Idle_Left,
-	Idle_Right,
+	//Idle_Left,
+	//Idle_Right,
 	Jump_Left,
 	Jump_Right,
 	Move_Left,
 	Move_Right,
-	Down_Left,
-	Down_Right,
+	//Down_Left,
+	//Down_Right,
 	Idle_Vertical // ToDo Убрать после реализации прыжка 
 };
 
@@ -29,8 +29,12 @@ struct FMoveDeny {
 class APlayerPawn
 {
 private:
-	sf::Texture ATexture;
-	sf::Sprite ASprite; 
+	sf::Texture TxIdle;
+	sf::Texture TxMove;
+	sf::Texture TxJump;
+	sf::Sprite ASprite;
+	// Имя пешки
+	sf::String Name;
 	sf::FloatRect PawnRect;
 	// Нужны для плавной смены поз
 	FClock Clock;
@@ -66,6 +70,9 @@ public:
 	// Двигает пешку влево
 	void MoveLeft();
 
+	// Простаивание пешки
+	void Breaking();
+
 	// Двигает пешку вправо
 	void MoveRight();
 	
@@ -95,9 +102,6 @@ public:
 
 	// Возвращает ссылку объект спрайта игрока
 	const sf::Sprite GetSprite();
-
-	// Возвращает ссылку объект текстуры игрока
-	const sf::Texture GetTexture();
 
 	// Возвращает рект спарйта игрока
 	const sf::FloatRect GetPawnRect();

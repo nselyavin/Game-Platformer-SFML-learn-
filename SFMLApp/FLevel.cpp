@@ -81,6 +81,8 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 			PlayerPawn.Jump();
 		}
 
+
+		
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))) {
 			// Ходьба вправо
 			PlayerPawn.MoveRight();
@@ -89,6 +91,10 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 			// Ходьба влево
 			PlayerPawn.MoveLeft();
 		}
+		else {
+			PlayerPawn.Breaking();
+		}
+			
 		
 		// Применение модифиации скорости
 		PlayerPawn.MoveModificators();
