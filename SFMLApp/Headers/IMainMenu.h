@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <TGUI/Text.hpp>
 #include "GameConst.h"
 
 using FText = sf::Text;
@@ -57,4 +58,18 @@ public:
 
 	// Вовзращает последний выбранный уровень
 	const sf::Int32 getSelectedLvl();
+};
+
+class ISettingMenu : public IMainMenu {
+	// Шрифт кнопок
+	FFont Font;
+	// Спрайты кнопок в виде текста
+	FText WindSizeBtn, FullscrBtn, AudioBtn;
+	// Текстуры и спрайты логотипа и заднего фона меню
+	sf::Texture LogoTexture, BackMenuText;
+	sf::Sprite Logo, BackMenu;
+public:
+	tgui::Text dsd;
+	sf::Int32 DrawCicle(sf::RenderWindow& window);
+	sf::Int32 BtnActivate(sf::Int32 CurrBtn);
 };

@@ -5,22 +5,28 @@
 
 #include "Headers\IMainMenu.h"
 #include "Headers\FLevel.h"
+#include "Headers\INIReader.h"
 // #include <windows.h> Нужня для сокрытия консоли
 
 sf::Int32 main()
 {
+	INIReader iniReader("\config.ini");
 	// Код для сокрытия консоли, нужен для релизной сборки
 	HWND Hide;
 	AllocConsole();
 	Hide = FindWindowA("ConsoleWindowClass", NULL);
-	ShowWindow(Hide, 1);
+	ShowWindow(Hide, iniReader.GetBoolean("other", "DebugConsole", 0));
 
 	//TODO Реализовать чтение настроек из файла конфига
 	sf::Uint32 ScrWidth, ScrHeight;
 	sf::Uint32 FrameRate;
-	ScrWidth = 800;
-	ScrHeight = 600;
-	FrameRate = 64;
+	ScrWidth = iniReader.GetInteger("video", "ScreenWidth", 800);
+	ScrHeight = iniReader.GetInteger("video", "ScreenHeight", 600);
+	FrameRate = 32;
+	// Режим окна
+	UINT32 WindowStyle = sf::Style::Default;
+	if (iniReader.GetBoolean("video", "FullScreen", false) == true)
+		WindowStyle = sf::Style::Fullscreen;
 
 	// Текущий уровень игры и всего уровней. ToDo реализовать изменения.
 	sf::Uint32 CurrLvl = 0;
@@ -28,7 +34,7 @@ sf::Int32 main()
 
 	// Иницализации игрового пространства (окна, в котором происходит игра)
 	// Установка соотношения сторон и частоты кадров
-	sf::RenderWindow window(sf::VideoMode(ScrWidth, ScrHeight, 64), "SFML works!");
+	sf::RenderWindow window(sf::VideoMode(ScrWidth, ScrHeight, 64), "SFML works!", WindowStyle);
 	window.setFramerateLimit(FrameRate);
 
 	// Инициализация класса меню, уровня и загрузочного экрана.

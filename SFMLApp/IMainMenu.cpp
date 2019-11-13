@@ -40,7 +40,7 @@ sf::Int32 IMainMenu::BeginMenu(sf::RenderWindow &window, sf::Uint32 ScrWidth, sf
 	sf::FloatRect LogoRect = Logo.getLocalBounds();
 	Logo.setOrigin(LogoRect.left + LogoRect.width / 2,
 		LogoRect.top + LogoRect.height / 2);
-	Logo.setPosition(ScrWidth / 2, 130);
+	Logo.setPosition(ScrWidth / 2, ScrHeight/2 - 230);
 
 	// Задний фон игры
 	if (!BackMenuText.loadFromFile(SpritePath + "MenuBack.png")) {
@@ -97,6 +97,7 @@ sf::Int32 IMainMenu::BtnActivate(sf::Int32 CurrBtn)
 		return EEndStatus::StartGame; 
 		break;
 	case(1):
+		// Вызывается цикл окна настроек (рекурсия)
 		printf("Nothing");
 		return EEndStatus::Menu;
 		break;
@@ -142,11 +143,11 @@ sf::Int32 IMainMenu::DrawCicle(sf::RenderWindow& window)
 
 	// Центрирование кнопок по середине экрана
 	Center(StartBtn);
-	StartBtn.setPosition(ScrWidth / 2, 260);
+	StartBtn.setPosition(ScrWidth / 2, ScrHeight/2 - 100);
 	Center(SettingBtn);
-	SettingBtn.setPosition(ScrWidth / 2, 340);
+	SettingBtn.setPosition(ScrWidth / 2, ScrHeight/2);
 	Center(EndBtn);
-	EndBtn.setPosition(ScrWidth / 2, 420);
+	EndBtn.setPosition(ScrWidth / 2, ScrHeight/2 + 100);
 
 	// Здесь можно ретюрнить все ошибки через код, следовательно делать проверки.  
 	while (!bMenuClosed) {

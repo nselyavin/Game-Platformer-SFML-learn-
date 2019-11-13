@@ -76,12 +76,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\TGUI\include;..\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>..\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\TGUI\lib;..\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>tgui-d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -135,6 +135,9 @@
     <ClCompile Include="APlayerPawn.cpp" />
     <ClCompile Include="FLevel.cpp" />
     <ClCompile Include="IMainMenu.cpp" />
+    <ClCompile Include="IMenu.cpp" />
+    <ClCompile Include="ini.c" />
+    <ClCompile Include="INIReader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="USpell.cpp" />
     <ClCompile Include="UWorld.cpp" />
@@ -142,15 +145,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resource\Map\level_1.tmx" />
+    <None Include="config.ini" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\APlayerPawn.h" />
     <ClInclude Include="Headers\FLevel.h" />
     <ClInclude Include="Headers\GameConst.h" />
     <ClInclude Include="Headers\IMainMenu.h" />
+    <ClInclude Include="Headers\ini.h" />
+    <ClInclude Include="Headers\INIReader.h" />
     <ClInclude Include="Headers\USpell.h" />
     <ClInclude Include="Headers\UWorld.h" />
     <ClInclude Include="Headers\XMLtoMap.h" />
+    <ClInclude Include="IMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -124,7 +124,8 @@ sf::Int32 FLevel::DrawCicle(sf::RenderWindow& window)
 
 sf::View FLevel::setView(sf::Vector2f Pos) {
 	// ToDo когда в игре будет больше 2 пешек, доабвить динамичное изменение размеры камеры, по мере отдаления пешек друг от друга.
-	Camera.setCenter(Pos.x + 100, Pos.y);
+
+	//Camera.setCenter(Camera.getCenter().x, Camera.getCenter().y);
 	return Camera;
 }
 

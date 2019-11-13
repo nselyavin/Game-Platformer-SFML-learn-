@@ -36,9 +36,21 @@
     <ClCompile Include="XMLtoMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="INIReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ini.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resource\Map\level_1.tmx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="config.ini">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -62,6 +74,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\XMLtoMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\INIReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\ini.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,6 +14,7 @@
 .dll
 .sln
 SFML-2.5.1/
+TGUI/
 ![Dd]ebug/openal32.dll
 ![Dd]ebug/sfml-audio-d-2.dll
 ![Dd]ebug/sfml-graphics-d-2.dll
